@@ -1,0 +1,15 @@
+@import url(trix.css);
+
+.trix-container {
+  max-width: 100%; }
+
+.trix-content h1 {
+  margin-bottom: 0.4em; }
+.trix-content .attachment--preview {
+  margin: 0.6em 0; }
+
+trix-toolbar {
+  font-family: sans-serif; }
+
+trix-editor {
+  min-height: 320px !important; }
