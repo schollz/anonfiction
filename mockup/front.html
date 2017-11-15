@@ -36,16 +36,33 @@
 						</div>
 					</nav>
 					<div class="mt4 mt5-m mt6-l ph3" style="max-width: 58rem;">
-						<h1 class="f2 f1-l fw2 white-90 mb0 lh-title">eight billion stories</h1>
-						<h2 class="fw1 f3 white-80 mt3 mb4">Beautifully written stories from real anonymous people.</h2>
-						<a class="f6 no-underline grow dib v-mid bg-blue white ba b--blue ph3 pv2 mb3" href="/">Read stories</a>
+						<h1 class="f2 f1-l fw2 white-90 mb0 lh-title">I'm <span id="js-rotating">John, Jane</span> Doe</h1>
+						<h2 class="fw1 f3 white-80 mt3 mb4">Beautifully written stories from real anonymous people</h2>
+						<a class="f6 no-underline grow dib v-mid bg-blue white ba b--blue ph4 pv3 mb3" href="/" style="font-size: 120%;"><strong>Read stories</strong></a>
 						<span class="dib v-mid ph3 white-70 mb3">or</span>
-						<a class="f6 no-underline grow dib v-mid white ba b--white ph3 pv2 mb3" href="">Write a story</a>
+						<a class="f6 no-underline grow dib v-mid white ba b--white ph4 pv3 mb3" href="" style="font-size: 120%;"><strong>Write stories</strong></a>
 					</div>
 				</div>
 			</div>
 		</header>
 
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/animatecss/3.4.0/animate.min.css">
+    <link rel="stylesheet" href="http://morphext.fyianlai.com/assets/css/morphext.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="http://morphext.fyianlai.com/assets/js/morphext.js"></script>
+    <script>
+    $("#js-rotating").Morphext({
+    // The [in] animation type. Refer to Animate.css for a list of available animations.
+    animation: "flash",
+    // An array of phrases to rotate are created based on this separator. Change it if you wish to separate the phrases differently (e.g. So Simple | Very Doge | Much Wow | Such Cool).
+    separator: ",",
+    // The delay between the changing of each phrase in milliseconds.
+    speed: 2000,
+    complete: function () {
+        // Called after the entrance animation is executed.
+    }
+});
+    </script>
 <br>
 <article data-name="article-full-bleed-background" class="ph5-ns" style="max-width: 67rem;">
   <div class="cf" style="background: url(back1.jpg) no-repeat center center fixed; background-size: cover; ">
