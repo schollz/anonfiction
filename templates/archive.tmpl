@@ -1,21 +1,41 @@
 {{ template "header" . }}
-<article style="padding-bottom: 0px; padding-top: 0px;">
-  <header class="avenir ph3 ph5-ns pt4 pt5-ns">
-    <h1 class="f1 pa2 measure lh-title mt0">Previous topics</h1>
-  </header>
-  <ul class="list ph5-ns" style="padding-top: 0px; max-width: 70rem;">
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Losing</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">That Night</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Accomplishments</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">The First Year</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Mischief</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Bad Habits</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Winter</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">In The Middle</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Dating</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">What Really Matters</a></li>
-    <li class="dib mr2"><a href="#" class="f4 f2-ns b db pa2 link dim mid-gray">Upstairs</a></li>
-  </ul>
+<section class="pa2 pv2 ph5-ns">
+<article class="ph2">
+ <h1 class="db f1-l f2 mb1">topics</h1>
+    <span class="f5 db lh-copy measure-wide">
+      Each month we select a new topic to explore stories that are related to that topic. </span>
+ </article>
+ <article class="ph2 pv4">
+    <span class="f5 db lh-copy measure">
+    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
+    </span>
+ </article>
+</section>
+
+
+
+<section class="pa2 pv2 ph5-ns mb5">
+<article class="ph2">
+  <div class="overflow-auto measure-wide">
+    <table class="f6 w-100 mw8 center" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Topic</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"># Stories</th>
+        </tr>
+      </thead>
+      <tbody class="lh-copy">
+        <tr>
+          <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink" href="#0">Losing</a>
+  </td>
+          <td class="pv3 pr3 bb b--black-20">November 2017</td>
+          <td class="pv3 pr3 bb b--black-20">18</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </article>
+</section>
 
 {{ template "footer" . }}

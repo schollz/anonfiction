@@ -1,21 +1,21 @@
 {{ template "header" . }}
 
-<article class="pv5 bg-lightest-blue  dark-blue mb2 ph3 " >
-  <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb3">
-  Write your story
+<article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 " >
+  <h1 class="db f1-l f2 mb1 fw6 ph5-ns lh-title mt0 mb3">
+  Submit your story
   </h1>
-  <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
+  <!-- <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
     Current topic is <span class="f3">“Losing”</span> and closes in 15 days.
-  </h2>
+  </h2> -->
   <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
   </p> -->
   <div class="ph5-ns">
-    <a class="f6 br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3"
+    <a class="f4 leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3"
       href="/edit">
       Write online
     </a>
-    <a class="f6 br-pill dark-blue no-underline ba grow pv2 ph3 dib"
+    <a class="f4  leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
       href="/submit">
      Upload from computer
     </a>
@@ -23,51 +23,60 @@
 </span>
 </article>
 
-<section class="ph3 ph5-ns" style="max-width: 66rem;">
-<h1 class="flex f3 f2-m f1-l">Submitted stories</h1>
+<section class="pa2 pv2 ph5-ns mb5">
+<article class="ph2">
+ <h1 class="db f1-l f2 mb1">Your stories</h1>
+    <span class="f5 db lh-copy measure-wide">
+      The stories you have authored are listed below. If you wish to no longer have your story available, feel free to delete. If you need to update your story, just click Edit. Once submitted, you will no longer be able to Edit.
+    </span>
+ </article>
+ <article class="ph2 pv4">
+ <ul class="list pl0 mt0 measure">
+
+   <li
+     class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
+       <div class="flex-auto">
+         <span class="f6 db gray-70">Losing</span>
+         <span class="f6 db black-70">August 17th, 2017</span>
+       </div>
+       <div>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="#0">Edit</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
+       </div>
+   </li>
+   <li
+       class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
+         <div class="flex-auto">
+           <span class="f6 db gray-70">Being Broke</span>
+           <span class="f6 db black-70">August 17th, 2017</span>
+         </div>
+         <div>
+           <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
+         </div>
+     </li>
+     <li
+         class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
+           <div class="flex-auto">
+             <span class="f6 db gray-70">Being Broke <em>(submitted)</em></span>
+             <span class="f6 db black-70">August 17th, 2017</span>
+           </div>
+           <div>
+             <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
+           </div>
+       </li>
+ <div class="pv4 ph2">
+   <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="#0">Download all</a>
+   <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>
+</article>
+
+ <!-- <article class="ph2 pv4">
+    <span class="f5 db lh-copy measure">
+    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
+    </span>
+ </article> -->
+</section>
 
 
-<ul class="list pl0 mt0 measure">
-
-  <li
-    class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-      <div class="pl3 flex-auto">
-        <span class="f6 db gray-70">Losing</span>
-        <span class="f6 db black-70">August 17th, 2017</span>
-      </div>
-      <div>
-        <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="#0">Edit</a>
-        <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
-      </div>
-  </li>
-  <li
-      class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-        <div class="pl3 flex-auto">
-          <span class="f6 db gray-70">Being Broke <em>(submitted)</em></span>
-          <span class="f6 db black-70">August 17th, 2017</span>
-        </div>
-        <div>
-          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="#0">Edit</a>
-          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
-        </div>
-    </li>
-    <li
-        class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-          <div class="pl3 flex-auto">
-            <span class="f6 db gray-70">Being Broke <em>(pending)</em></span>
-            <span class="f6 db black-70">August 17th, 2017</span>
-          </div>
-          <div>
-            <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="#0">Edit</a>
-            <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
-          </div>
-      </li>
-<div class="pv4 ph2">
-  <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="#0">Download all</a>
-  <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>
-
-</div>
-  </section>
 
 
 {{ template "footer" . }}

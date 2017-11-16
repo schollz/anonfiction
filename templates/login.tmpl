@@ -1,12 +1,25 @@
 {{ template "header" . }}
 
-<section class="ph5-ns pv4 ph3" style="max-width: 66rem;">
-		<article class="mw8 center br2">
-			<div class="dt-ns dt--fixed-ns w-100">
+<section class="pa2 pv2 ph5-ns">
+<article class="ph2">
+ <h1 class="db f1-l f2 mb1">Sign In</h1>
+    <span class="f5 db lh-copy measure-wide">
+      Sign in to submit and review your own stories.
+    </span>
+ </article>
+ <!-- <article class="ph2 pv4">
+    <span class="f5 db lh-copy measure">
+    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
+    </span>
+ </article> -->
+</section>
+
+<section class="pa2 pv2 ph5-ns mb5">
+<article class="ph2">
+ 			<div class="dt-ns dt--fixed-ns w-100">
 				<main class="black-80">
 					<form action="sign-up_submit" method="get" accept-charset="utf-8">
 	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
-		 <h1>Sign In</h1>
 		 <div class="mt3">
 			 <label class="db fw4 lh-copy f6" for="email-address">Email address</label>
 			 <input class="pa2 input-reset ba bg-transparent w-100 measure" type="email" name="email-address"  id="email-address">
@@ -33,5 +46,13 @@
 		</article>
 	</section>
 
+  <style>
+  footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:100px;
+  }
+  </style>
 
 {{ template "footer" . }}
