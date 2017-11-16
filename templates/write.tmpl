@@ -1,55 +1,47 @@
 {{ template "header" . }}
-<link rel="stylesheet" type="text/css" href="/static/css/trix.css">
-<script type="text/javascript" src="https://trix-editor.org/js/trix.js"></script>
-<script src="https://trix-editor.org/js/attachments.js"></script>
-
-<style>
-@import url("/static/css/trix.css");
-
-.trix-container {
-  max-width: 100%; }
-
-.trix-content h1 {
-  margin-bottom: 0.4em; }
-.trix-content .attachment--preview {
-  margin: 0.6em 0; }
-
-trix-toolbar {
-  font-family: sans-serif; }
-
-trix-editor {
-  min-height: 320px !important; }
-</style>
 
 <section class="ph3 ph5-ns pv5" style="max-width: 66rem;">
-    <div class="dt-ns dt--fixed-ns w-100">
-    </div>
+  <div class="pa4-l">
+    <form class="bg-light-red mw7 center pa4 br2-ns ba b--black-10">
+      <fieldset class="cf bn ma0 pa0">
+        <legend class="pa0 f5 f4-ns mb3 black-80">Sign up for our newsletter</legend>
+        <div class="cf">
+          <label class="clip" for="email-address">Email Address</label>
+          <input class="f6 f5-l input-reset bn fl black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns" placeholder="Your Email Address" type="text" name="email-address" value="" id="email-address">
+          <input class="f6 f5-l button-reset fl pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" type="submit" value="Subscribe">
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  
   <article class="mw8 center br2 ba b--light-blue bg-lightest-blue">
     <div class="dt-ns dt--fixed-ns w-100">
       <div class="pa3 pa4-ns dtc-ns v-mid">
-          <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
-          <p class="black-70 measure lh-copy mv0">
-            Write as much or as little as you want. Once you submit your story will be received by an editor.
-          </p>
+        <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
+        <p class="black-70 measure lh-copy mv0">
+          Write as much or as little as you want. Once you submit your story will be received by an editor.
+        </p>
       </div>
       <div class="pa3 pa4-ns dtc-ns v-mid">
-        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Submit story</a>
+        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Edit story</a>
       </div>
     </div>
   </article>
   <br>
-  <article class="mw8 center br2 ba">
+  <article class="mw8 center br2 ba b--light-blue bg-lightest-blue">
     <div class="dt-ns dt--fixed-ns w-100">
-    <form>
-      <div class="trix-container">
-        <input type="hidden" id="content" value="">
-      <trix-editor input="content" class="trix-content" autofocus></trix-editor>
-    </div>
-  </form>
-    </div>
-    <div class="dt-ns dt--fixed-ns w-100">
+      <div class="pa3 pa4-ns dtc-ns v-mid">
+        <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
+        <p class="black-70 measure lh-copy mv0">
+          Write as much or as little as you want. Once you submit your story will be received by an editor.
+        </p>
+      </div>
+      <div class="pa3 pa4-ns dtc-ns v-mid">
+        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Edit story</a>
+      </div>
     </div>
   </article>
+  <br>
 </section>
 
 

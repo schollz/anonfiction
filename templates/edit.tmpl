@@ -1,0 +1,56 @@
+{{ template "header" . }}
+<link rel="stylesheet" type="text/css" href="/static/css/trix.css">
+<script type="text/javascript" src="https://trix-editor.org/js/trix.js"></script>
+<script src="https://trix-editor.org/js/attachments.js"></script>
+
+<style>
+@import url("/static/css/trix.css");
+
+.trix-container {
+  max-width: 100%; }
+
+.trix-content h1 {
+  margin-bottom: 0.4em; }
+.trix-content .attachment--preview {
+  margin: 0.6em 0; }
+
+trix-toolbar {
+  font-family: sans-serif; }
+
+trix-editor {
+  min-height: 320px !important; }
+</style>
+
+<section class="ph3 ph5-ns pv5" style="max-width: 66rem;">
+    <div class="dt-ns dt--fixed-ns w-100">
+    </div>
+  <article class="mw8 center br2 ba b--light-blue bg-lightest-blue">
+    <div class="dt-ns dt--fixed-ns w-100">
+      <div class="pa3 pa4-ns dtc-ns v-mid">
+          <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
+          <p class="black-70 measure lh-copy mv0">
+            Write as much or as little as you want. Once you submit your story will be received by an editor.
+          </p>
+      </div>
+      <div class="pa3 pa4-ns dtc-ns v-mid">
+        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Submit story</a>
+      </div>
+    </div>
+  </article>
+  <br>
+  <article class="mw8 center br2 ba">
+    <div class="dt-ns dt--fixed-ns w-100">
+    <form>
+      <div class="trix-container">
+        <input type="hidden" id="content" value="">
+      <trix-editor input="content" class="trix-content" autofocus></trix-editor>
+    </div>
+  </form>
+    </div>
+    <div class="dt-ns dt--fixed-ns w-100">
+    </div>
+  </article>
+</section>
+
+
+{{ template "footer" . }}
