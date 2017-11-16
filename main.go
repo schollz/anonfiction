@@ -31,6 +31,12 @@ func main() {
 	router.GET("/archive", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "archive.tmpl", MainView{})
 	})
+	router.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.tmpl", MainView{})
+	})
+	router.GET("/signup", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "signup.tmpl", MainView{})
+	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
