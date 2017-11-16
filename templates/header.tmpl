@@ -1,0 +1,72 @@
+{{ define "header" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title> </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+	<link rel="stylesheet" href="/static/css/style.css">
+	<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+
+</head>
+
+<body>
+	<header class="sans-serif">
+		<div class="cover bg-left bg-center-l" {{ if .Landing }}style="background-image: url(https://schollz.github.io/img/bisons.jpg)" {{end}}>
+			<div class="bg-black-80 {{ if .Landing }}pb5 pb6-m pb7-l{{end}} ph5-ns">
+				{{ template "navigation" . }} {{ if .Landing }}
+				<div class="mt4 mt5-m mt6-l ph3" style="max-width: 58rem;">
+					<h1 class="f2 f1-l fw2 white-90 mb0 lh-title">stories, incognito </h1>
+
+					<h2 class="fw1 f3 white-80 mt3 mb4">“<span id="js-rotating">I bought a burn phone.,It made a tear come to my eye.,Where do the peanuts go?,I was 18 and I pledged myself to three things.,Those fleshy emotional people would be appalled.</span>”</h2>
+					<a class="f6 no-underline grow dib v-mid bg-blue white ba b--blue ph4 pv3 mb3" href="/read" style="font-size: 120%;"><strong>Read stories</strong></a>
+					<span class="dib v-mid ph3 white-70 mb3">or</span>
+					<a class="f6 no-underline grow dib v-mid white ba b--white ph4 pv3 mb3" href="/write" style="font-size: 120%;"><strong>Write stories</strong></a>
+				</div>
+				{{ end}}
+			</div>
+		</div>
+	</header>
+
+	<link rel="stylesheet" href="http://cdn.jsdelivr.net/animatecss/3.4.0/animate.min.css">
+	<link rel="stylesheet" href="http://morphext.fyianlai.com/assets/css/morphext.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	{{ if .Landing }}
+	<script src="http://morphext.fyianlai.com/assets/js/morphext.js"></script>
+	<script>
+		var $morphext = $("#js-rotating").Morphext({
+			// The [in] animation type. Refer to Animate.css for a list of available animations.
+			animation: "fadeIn",
+			// An array of phrases to rotate are created based on this separator. Change it if you wish to separate the phrases differently (e.g. So Simple | Very Doge | Much Wow | Such Cool).
+			separator: ",",
+			// The delay between the changing of each phrase in milliseconds.
+			speed: 3000,
+			complete: function() {
+				// Called after the entrance animation is executed.
+			}
+		});
+		// Fisher-Yates Shuffle (see http://bost.ocks.org/mike/shuffle/)
+		function shuffle(array) {
+			var m = array.length,
+				t, i;
+
+			// While there remain elements to shuffle…
+			while (m) {
+
+				// Pick a remaining element…
+				i = Math.floor(Math.random() * m--);
+
+				// And swap it with the current element.
+				t = array[m];
+				array[m] = array[i];
+				array[i] = t;
+			}
+
+			return array;
+		}
+
+		var $data = $morphext.data("plugin_Morphext");
+		shuffle($data.phrases);
+	</script>
+	{{ end }} {{ end }}
