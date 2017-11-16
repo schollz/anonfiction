@@ -40,6 +40,9 @@ func main() {
 	router.GET("/signup", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{})
 	})
+	router.GET("/admin", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "admin.tmpl", MainView{})
+	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
