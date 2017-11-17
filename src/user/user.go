@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/hex"
+	"log"
 
 	"github.com/asdine/storm"
 	"github.com/gtank/cryptopasta"
@@ -39,12 +40,14 @@ func Add(username, password, language string, subscribed bool) (err error) {
 		Subscribed:   subscribed,
 		APIKey:       utils.NewAPIKey(),
 	}
+	log.Println("opening db to Add")
 	db, err := storm.Open(DB)
 	defer db.Close()
 	if err != nil {
 		return
 	}
 	err = db.Save(u)
+	log.Println("saved user " + username)
 	if err == storm.ErrAlreadyExists {
 		err = errors.Wrap(err, "'"+username+"' is taken")
 	}
@@ -92,6 +95,11 @@ func Validate(username, password string) (apikey string, err error) {
 	}
 	apikey = u.APIKey
 	return
+}
+
+func UserExists(username string) bool {
+	_, err := Get(username)
+	return err == nil
 }
 
 // SetAdmin gives admin privileges to a user

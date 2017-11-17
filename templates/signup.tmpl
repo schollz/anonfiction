@@ -1,5 +1,6 @@
 {{ template "header" . }}
 
+{{ template "messages" . }}
 <section class="pa2 pv2 ph5-ns">
 <article class="ph2">
  <h1 class="db f1-l f2 mb1">Sign Up</h1>
@@ -19,26 +20,26 @@
 <article class="ph2">
 			<div class="dt-ns dt--fixed-ns w-100">
 				<main class="black-80">
-					<form action="sign-up_submit" method="get" accept-charset="utf-8">
+					<form action="/signup" method="POST" enctype="multipart/form-data" id="formdata" >
 	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
 		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="email-address">Email address</label>
-			 <input class="pa2 input-reset ba bg-transparent w-100 measure" type="email" name="email-address"  id="email-address">
+			 <label class="db fw4 lh-copy f6" for="username">Username:</label>
+			 <input class="pa2 input-reset ba bg-transparent w-100 measure" name="username"  id="username">
 		 </div>
 		 <div class="mt3">
 			 <label class="db fw4 lh-copy f6" for="password">Password</label>
 			 <input class="b pa2 input-reset ba bg-transparent" type="password" name="password"  id="password">
 		 </div>
 		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="password">Preferred language</label>
-			 <select class="b pa2 input-reset ba bg-transparent">
-			  <option value="volvo">English</option>
-			  <option value="saab">German</option>
-			  <option value="mercedes">Spanish</option>
-			  <option value="audi">Chinese</option>
+			 <label class="db fw4 lh-copy f6" for="language">Preferred language</label>
+			 <select class="b pa2 input-reset ba bg-transparent" name="language">
+			  <option value="english">English</option>
+			  <option value="german">German</option>
+			  <option value="spanish">Spanish</option>
+			  <option value="chinese">Chinese</option>
 			</select>
 			<div class="mt3">
- 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Send me monthly digest</label>
+ 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest"> Send me monthly digest</label>
  				 </div>
 
 				 </div>
