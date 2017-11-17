@@ -18,7 +18,7 @@ func init() {
 
 type User struct {
 	ID           int    `storm:"increment"` // primary key
-	Username     string `storm:"unique"`    // this field will be indexed with a unique constraint
+	Email     string `storm:"unique"`    // this field will be indexed with a unique constraint
 	PasswordHash string // this field will not be indexed
 	Language     string
 	Subscribed   bool
@@ -27,14 +27,14 @@ type User struct {
 }
 
 // New creates a new user and attempts to add it to the database
-func Add(username, password, language string, subscribed bool) (err error) {
+func Add(email, password, language string, subscribed bool) (err error) {
 	var hashedPassword []byte
 	hashedPassword, err = cryptopasta.HashPassword([]byte(password))
 	if err != nil {
 		return
 	}
 	u := &User{
-		Username:     username,
+		Email:     email,
 		PasswordHash: hex.EncodeToString(hashedPassword),
 		Language:     language,
 		Subscribed:   subscribed,
@@ -47,21 +47,21 @@ func Add(username, password, language string, subscribed bool) (err error) {
 		return
 	}
 	err = db.Save(u)
-	log.Println("saved user " + username)
+	log.Println("saved user " + email)
 	if err == storm.ErrAlreadyExists {
-		err = errors.Wrap(err, "'"+username+"' is taken")
+		err = errors.Wrap(err, "'"+email+"' is taken")
 	}
 	return
 }
 
-// Get returns the User object for the specified username
-func Get(username string) (u User, err error) {
+// Get returns the User object for the specified email
+func Get(email string) (u User, err error) {
 	db, err := storm.Open(DB)
 	defer db.Close()
 	if err != nil {
 		return
 	}
-	err = db.One("Username", username, &u)
+	err = db.One("Email", email, &u)
 	return
 }
 
@@ -77,10 +77,10 @@ func GetByAPIKey(apikey string) (u User, err error) {
 }
 
 // Validate checks the password for the specified user, and if successful, returns the APIKey
-func Validate(username, password string) (apikey string, err error) {
-	u, err := Get(username)
+func Validate(email, password string) (apikey string, err error) {
+	u, err := Get(email)
 	if err != nil {
-		err = errors.New("user '" + username + "' does not exist")
+		err = errors.New("user '" + email + "' does not exist")
 		return
 	}
 
@@ -97,16 +97,16 @@ func Validate(username, password string) (apikey string, err error) {
 	return
 }
 
-func UserExists(username string) bool {
-	_, err := Get(username)
+func UserExists(email string) bool {
+	_, err := Get(email)
 	return err == nil
 }
 
 // SetAdmin gives admin privileges to a user
-func SetAdmin(username string, isadmin bool) (err error) {
-	u, err := Get(username)
+func SetAdmin(email string, isadmin bool) (err error) {
+	u, err := Get(email)
 	if err != nil {
-		err = errors.New("user '" + username + "' does not exist")
+		err = errors.New("user '" + email + "' does not exist")
 		return
 	}
 

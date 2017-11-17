@@ -122,7 +122,7 @@ func handlePOSTStory(c *gin.Context) {
 
 func handlePOSTSignup(c *gin.Context) {
 	type FormInput struct {
-		Username string `form:"username" json:"username" binding:"required"`
+		Email string `form:"email" json:"email" binding:"required"`
 		Password string `form:"password" json:"password"`
 		Language string `form:"language" json:"language"`
 		Digest   string `form:"digest" json:"digest"`
@@ -130,10 +130,10 @@ func handlePOSTSignup(c *gin.Context) {
 	var form FormInput
 	if err := c.ShouldBind(&form); err == nil {
 		log.Println(form)
-		log.Println(user.UserExists(form.Username))
-		if user.UserExists(form.Username) {
+		log.Println(user.UserExists(form.Email))
+		if user.UserExists(form.Email) {
 			c.HTML(http.StatusOK, "signup.tmpl", MainView{
-				ErrorMessage: "Username already exists",
+				ErrorMessage: "Email already exists",
 			})
 			return
 		}
@@ -144,12 +144,12 @@ func handlePOSTSignup(c *gin.Context) {
 			})
 			return
 		}
-		log.Println("Adding new user " + form.Username)
-		err := user.Add(form.Username, form.Password, form.Language, form.Digest == "on")
+		log.Println("Adding new user " + form.Email)
+		err := user.Add(form.Email, form.Password, form.Language, form.Digest == "on")
 		log.Println(err)
 		if err != nil {
 			c.HTML(http.StatusOK, "signup.tmpl", MainView{
-				ErrorMessage: "Username already exists",
+				ErrorMessage: "Email already exists",
 			})
 		} else {
 			log.Println("redirecting to profile")
