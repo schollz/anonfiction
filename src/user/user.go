@@ -6,7 +6,7 @@ import (
 	"github.com/asdine/storm"
 	"github.com/gtank/cryptopasta"
 	"github.com/pkg/errors"
-	"github.com/schollz/yourstories/src/utils"
+	"github.com/schollz/storiesincognito/src/utils"
 )
 
 var DB string

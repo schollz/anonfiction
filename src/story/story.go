@@ -5,8 +5,8 @@ import (
 
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
+	"github.com/schollz/storiesincognito/src/user"
 	"github.com/schollz/versionedtext"
-	"github.com/schollz/yourstories/src/user"
 )
 
 var DB string

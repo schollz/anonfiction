@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/schollz/yourstories/src/user"
+	"github.com/schollz/storiesincognito/src/user"
 	"github.com/stretchr/testify/assert"
 )
 
