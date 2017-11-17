@@ -1,9 +1,12 @@
 {{ template "header" . }}
 
 <article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 " >
-  <h1 class="db f1-l f2 mb1 fw6 ph5-ns lh-title mt0 mb3">
-  Submit your story
+  <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb0">
+Me's Profile
   </h1>
+  <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
+   Manage your stories. Make new ones, edit old ones, delete unwanted ones. <span class="f3">&nbsp;</span>
+  </h2>
   <!-- <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
     Current topic is <span class="f3">“Losing”</span> and closes in 15 days.
   </h2> -->
@@ -12,11 +15,11 @@
   </p> -->
   <div class="ph5-ns">
     <a class="f4 leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3"
-      href="/edit">
+      href="/write">
       Write online
     </a>
     <a class="f4  leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
-      href="/submit">
+      href="/upload">
      Upload from computer
     </a>
   </div>
@@ -25,10 +28,13 @@
 
 <section class="pa2 pv2 ph5-ns mb5">
 <article class="ph2">
- <h1 class="db f1-l f2 mb1">Your stories</h1>
-    <span class="f5 db lh-copy measure-wide">
-      The stories you have authored are listed below. If you wish to no longer have your story available, feel free to delete. If you need to update your story, just click Edit. Once submitted, you will no longer be able to Edit.
-    </span>
+ <h1 class="db f4 mb1">Your stories</h1>
+ <span class="f5 db lh-copy measure-wide">
+   The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
+ </span>
+ <span class="f5 db lh-copy measure pt3">
+   Only you can see the stories you have published. When your stories are published, only the content of the story will be publicly visible. Any personally identifying information will be removed before your story is published.
+ </span>
  </article>
  <article class="ph2 pv4">
  <ul class="list pl0 mt0 measure">
@@ -40,8 +46,8 @@
          <span class="f6 db black-70">August 17th, 2017</span>
        </div>
        <div>
-         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="#0">Edit</a>
-         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?id=ALKSJDAL">Edit</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?id=ALKJSAF">Delete</a>
        </div>
    </li>
    <li

@@ -1,41 +1,83 @@
 {{ template "header" . }}
+
+
+<article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 ">
+  <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb0">
+  Topics
+  </h1>
+  <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
+    See current, past, and future topics for
+   <span class="f3">stories, incognito.</span>
+  </h2>
+  <!-- <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
+    Current topic is <span class="f3">“Losing”</span> and closes in 15 days.
+  </h2> -->
+  <!-- <p class="fw1 f5 mt0 mb3">
+    Sign up for beta access or learn more about x.
+  </p> -->
+  <div class="ph5-ns">
+    <a class="f4  leader br-pill dark-blue no-underline ba grow pv2 ph3 dib" href="/upload">
+      Suggest Topic
+    </a>
+  </div>
+  </span>
+</article>
+
+
 <section class="pa2 pv2 ph5-ns">
-<article class="ph2">
- <h1 class="db f1-l f2 mb1">topics</h1>
+  <article class="ph2 pb4">
+    <h1 class="db f4 mb1 pv">topic List</h1>
     <span class="f5 db lh-copy measure-wide">
-      Each month we select a new topic to explore stories that are related to that topic. </span>
- </article>
- <article class="ph2 pv4">
+      Each month we select a new topic to explore stories that are related to that topic.
+      This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
+
+    </span>
+  </article>
+  <!-- <article class="ph2 pv4">
     <span class="f5 db lh-copy measure">
     This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
     </span>
- </article>
+  </article> -->
 </section>
 
 
 
 <section class="pa2 pv2 ph5-ns mb5">
-<article class="ph2">
-  <div class="overflow-auto measure-wide">
-    <table class="f6 w-100 mw8 center" cellspacing="0">
-      <thead>
-        <tr>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Topic</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"># Stories</th>
-        </tr>
-      </thead>
-      <tbody class="lh-copy">
-        <tr>
-          <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink" href="#0">Losing</a>
-  </td>
-          <td class="pv3 pr3 bb b--black-20">November 2017</td>
-          <td class="pv3 pr3 bb b--black-20">18</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</article>
+  <article class="ph2">
+    <div class="overflow-auto measure-wide">
+      <table class="f6 w-100 mw8 center" cellspacing="0">
+        <thead>
+          <tr>
+            <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"></th>
+            <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Topic</th>
+            <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
+          </tr>
+        </thead>
+        <tbody class="lh-copy">
+          <tr>
+            <td class="pv3 pr3 bb b--black-20">
+              <div class="ph3">
+                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?topic=losing">Submit</a>
+              </div>
+            </td>
+            <td class="pv3 pr3 bb b--black-20"><span class="f4 fw6 db black link hover-dark-pink" href="#0">Losing</span>
+            </td>
+            <td class="pv3 pr3 bb b--black-20">November 2017</td>
+          </tr>
+          <tr>
+            <td class="pv3 pr3 bb b--black-20">
+              <div>
+                <!-- <button class="f6 link br1 ba bw1 ph3 pv2 mb2 dib black" href="#0" disabled>Submit</button> -->
+              </div>
+            </td>
+            <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink" href="#0">Being broke</a>
+            </td>
+            <td class="pv3 pr3 bb b--black-20">October 2017</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
 </section>
 
 {{ template "footer" . }}

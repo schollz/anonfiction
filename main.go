@@ -25,6 +25,9 @@ func main() {
 	router.GET("/write", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "edit.tmpl", MainView{})
 	})
+	router.GET("/upload", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "upload.tmpl", MainView{})
+	})
 	router.GET("/stories", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{})
 	})
