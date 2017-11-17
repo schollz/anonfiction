@@ -20,59 +20,59 @@ trix-toolbar {
 trix-editor {
   min-height: 320px !important; }
 </style>
-<article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 " >
-  <h1 class="db f1-l f2 mb1 fw6 ph5-ns lh-title mt0 mb3">
-  Current topic: Losing
-  </h1>
-  <!-- <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
-    Current topic is <span class="f3">“Losing”</span> and closes in 15 days.
-  </h2> -->
-  <!-- <p class="fw1 f5 mt0 mb3">
-    Sign up for beta access or learn more about x.
-  </p> -->
-  <div class="ph5-ns">
-    <a class="f4 leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3"
-      href="/edit">
-      Submit story
-    </a>
-  </div>
-</span>
-</article>
 
 
-<section class="ph3 ph5-ns pv3" style="max-width: 66rem;">
-  <!-- <article class="mw8 center br2 ba b--light-blue bg-lightest-blue">
-    <div class="dt-ns dt--fixed-ns w-100">
-      <div class="pa3 pa4-ns dtc-ns v-mid">
-          <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
-          <p class="black-70 measure lh-copy mv0">
-            Write as much or as little as you want. Once you submit your story will be received by an editor.
-          </p>
+
+  <section class="ph3 ph5-ns pv4" style="max-width: 66rem;">
+    <form action="http://localhost:3000/sign-up_submit" method="get" accept-charset="utf-8">
+      <article class="mw8 center br2 ba">
+        <div class="dt-ns dt--fixed-ns w-100">
+          <div class="trix-container">
+            <input type="hidden" id="content" value="Write your story here.">
+            <trix-editor input="content" class="trix-content" autofocus></trix-editor>
+          </div>
+        </div>
+        <div class="dt-ns dt--fixed-ns w-100">
+        </div>
+      </article>
+
+
+      <div class="measure pv2 mt2">
+
+        <label for="name" class="f3 b db mb2 leader">Keywords
+          <span class="normal black-60">(optional)</span>
+        </label>
+        <input id="name" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc">
       </div>
-      <div class="pa3 pa4-ns dtc-ns v-mid">
-        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Submit story</a>
-      </div>
-    </div>
-  </article> -->
-  <br>
-  <article class="mw8 center br2 ba">
-    <div class="dt-ns dt--fixed-ns w-100">
-    <form>
-      <div class="trix-container">
-        <input type="hidden" id="content" value="">
-      <trix-editor input="content" class="trix-content" autofocus></trix-editor>
-    </div>
-  </form>
-    </div>
-    <div class="dt-ns dt--fixed-ns w-100">
-    </div>
-  </article>
-  <div class="measure pv3">
-    <label for="name" class="f6 b db mb2">Keywords <span class="normal black-60">(optional)</span></label>
-    <input id="name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
-    <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small>
-  </div>
-</section>
+
+
+
+
+        <div class="measure">
+            <div class="mt2">
+
+                <article class="cf">
+                    <div class="fl w-100 w-50-ns pv2 flex">
+                        <select class="leader f2 pa2 pointer ">
+                            <option value="volvo">Losing</option>
+                            <option value="saab">Love</option>
+                            <option value="mercedes">Being Broke</option>
+                          </select>
+                    </div>
+                    <div class="fl w-100 w-50-ns pv2 flex">
+                        <input class="leader f2 pa2 input-reset ba bg-transparent black ph4 grow pointer" type="submit" value="Submit">
+                    </div>
+                  </article>
+                  <small id="name-desc" class="f6 black-60 db mb2">Select the topic and submit.</small>
+                  
+            </div>
+          </div>
+    
+    </form>
+
+
+  </section>
+
 
 
 {{ template "footer" . }}

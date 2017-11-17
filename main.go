@@ -23,10 +23,10 @@ func main() {
 	router.Static("/static", "./static")
 	router.GET("/", handleIndex)
 	router.GET("/write", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "write.tmpl", MainView{})
-	})
-	router.GET("/edit", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "edit.tmpl", MainView{})
+	})
+	router.GET("/stories", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "write.tmpl", MainView{})
 	})
 	router.GET("/read", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "read.tmpl", MainView{})
@@ -45,6 +45,9 @@ func main() {
 	})
 	router.GET("/terms", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "terms.tmpl", MainView{})
+	})
+	router.GET("/privacy", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "privacy.tmpl", MainView{})
 	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
