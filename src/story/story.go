@@ -175,6 +175,10 @@ func ConvertTrix(s string) (paragraphs []template.HTML) {
 	paragraphText := strings.Split(filteredContent, "<break>")
 	paragraphs = make([]template.HTML, len(paragraphText))
 	for i, p := range paragraphText {
+		if i == 0 {
+			p = `<span class="leader f4">` + strings.Replace(p, ". ", "</span>. ", 1)
+
+		}
 		paragraphs[i] = template.HTML(strings.TrimSpace(p))
 	}
 	return

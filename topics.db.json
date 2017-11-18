@@ -23,5 +23,10 @@
     "name": "What Really Matters",
     "month": "September 2017",
     "open": true
+  },
+  {
+    "name": "Losing",
+    "month": "October 2017",
+    "open": false
   }
 ]

@@ -11,3 +11,14 @@ h1, h2, h3, h4, h5, h6, header, header.a, .leader {
     text-transform: lowercase;
     font-family: alegreya sans sc,sans-serif;
 }
+
+a {
+    text-decoration: none;
+    color: #357edd;;
+    -moz-transition-property: background;
+    -webkit-transition-property: background;
+    transition-property: background;
+    -moz-transition-duration: .2s;
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s
+}
