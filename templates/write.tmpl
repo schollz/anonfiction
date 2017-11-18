@@ -51,27 +51,14 @@
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
     <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information.
+    Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information.{{ .StoryHTML }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
-    <!-- <article class="mw8 center br2 ba b--light-blue bg-lightest-blue">
-    <div class="dt-ns dt--fixed-ns w-100">
-      <div class="pa3 pa4-ns dtc-ns v-mid">
-          <h2 class="fw4 blue mt0 mb3">Current topic: <strong>Animals</strong></h2>
-          <p class="black-70 measure lh-copy mv0">
-            Write as much or as little as you want. Once you submit your story will be received by an editor.
-          </p>
-      </div>
-      <div class="pa3 pa4-ns dtc-ns v-mid">
-        <a href="#" class="no-underline f6 tc db w-100 pv3 bg-animate bg-blue hover-bg-dark-blue white br2">Submit story</a>
-      </div>
-    </div>
-  </article> -->
 
     <article class="mw8 center br2 ba mt3">
       <div class="dt-ns dt--fixed-ns w-100">
         <div class="trix-container">
-          <input type="hidden" id="content" name="content" value="<div>This is &quot;some&quot; text 'hi'</div>">
+          <input type="hidden" id="content" name="content" value="{{ .StoryHTML }}">
           <trix-editor input="content" class="trix-content" autofocus></trix-editor>
         </div>
       </div>

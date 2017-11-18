@@ -1,18 +1,6 @@
 {{ template "header" . }}
 
-<div class="pa3 pv4 bg-light-yellow red">
-  <section class=" pv2 ph5-ns">
-      <i data-feather="alert-circle" class="dib h2 w2 v-mid"></i>
-  <span class="lh-title ml3  v-mid">Could not find user.</span>
-</section>
-</div>
-
-<div class="pa3 pv4 bg-lightest-blue navy">
-  <section class=" pv2 ph5-ns">
-    <i data-feather="info" class="dib h2 w2 v-mid"></i>
-  <span class="lh-title ml3 v-mid">Please sign in first. / You are signed out.</span>
-</section>
-</div>
+{{ template "messages" . }}
 
 <section class="pa2 pv2 ph5-ns">
 <article class="ph2">
@@ -21,18 +9,13 @@
       Sign in to submit and review your own stories.
     </span>
  </article>
- <!-- <article class="ph2 pv4">
-    <span class="f5 db lh-copy measure">
-    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
-    </span>
- </article> -->
 </section>
 
 <section class="pa2 pv2 ph5-ns mb5">
 <article class="ph2">
  			<div class="dt-ns dt--fixed-ns w-100">
 				<main class="black-80">
-					<form action="sign-up_submit" method="get" accept-charset="utf-8">
+				<form action="/signin" method="POST" enctype="multipart/form-data" id="formdata" >
 	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
 		 <div class="mt3">
 			 <label class="db fw4 lh-copy f6" for="email">Email:</label>

@@ -18,7 +18,7 @@ func init() {
 
 type User struct {
 	ID           int    `storm:"increment"` // primary key
-	Email     string `storm:"unique"`    // this field will be indexed with a unique constraint
+	Email        string `storm:"unique"`    // this field will be indexed with a unique constraint
 	PasswordHash string // this field will not be indexed
 	Language     string
 	Subscribed   bool
@@ -34,7 +34,7 @@ func Add(email, password, language string, subscribed bool) (err error) {
 		return
 	}
 	u := &User{
-		Email:     email,
+		Email:        email,
 		PasswordHash: hex.EncodeToString(hashedPassword),
 		Language:     language,
 		Subscribed:   subscribed,
@@ -99,6 +99,11 @@ func Validate(email, password string) (apikey string, err error) {
 
 func UserExists(email string) bool {
 	_, err := Get(email)
+	return err == nil
+}
+
+func APIKeyExists(apikey string) bool {
+	_, err := GetByAPIKey(apikey)
 	return err == nil
 }
 
