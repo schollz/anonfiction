@@ -54,26 +54,23 @@
           </tr>
         </thead>
         <tbody class="lh-copy">
+        {{range .Topics}}
           <tr>
             <td class="pv3 pr3 bb b--black-20">
               <div class="ph3">
-                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?topic=losing">Submit</a>
+                {{ if .Open }}
+                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/write?topic={{.Name}}">Write</a>
+                {{ else }}
+                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/read?topic={{.Name}}">Read</a>
+                {{ end }}
               </div>
             </td>
-            <td class="pv3 pr3 bb b--black-20"><span class="f4 fw6 db black link hover-dark-pink" href="#0">Losing</span>
+            <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink pointer" href="{{ if .Open }}/write?topic={{.Name}}{{else}}/read?topic={{.Name}}{{end}}">{{.Name}}</a>
             </td>
-            <td class="pv3 pr3 bb b--black-20">November 2017</td>
+            <td class="pv3 pr3 bb b--black-20">{{.Month}}</td>
           </tr>
-          <tr>
-            <td class="pv3 pr3 bb b--black-20">
-              <div>
-                <!-- <button class="f6 link br1 ba bw1 ph3 pv2 mb2 dib black" href="#0" disabled>Submit</button> -->
-              </div>
-            </td>
-            <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink" href="#0">Being broke</a>
-            </td>
-            <td class="pv3 pr3 bb b--black-20">October 2017</td>
-          </tr>
+
+{{end}}
         </tbody>
       </table>
     </div>

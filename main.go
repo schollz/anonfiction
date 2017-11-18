@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/schollz/storiesincognito/src/story"
+	"github.com/schollz/storiesincognito/src/topic"
 	"github.com/schollz/storiesincognito/src/user"
 	"github.com/schollz/storiesincognito/src/utils"
 )
@@ -29,6 +31,10 @@ type Session struct {
 var (
 	port           string
 	currentSession Session
+)
+
+const (
+	TopicDB = "topics.db.json"
 )
 
 func init() {
@@ -49,15 +55,22 @@ func main() {
 	router.GET("/", handleIndex)
 	router.GET("/write", func(c *gin.Context) {
 		// if !IsSignedIn(c) {
-		// 	c.Redirect(302, "/signin")
+		// 	SignInAndContinueOn(c)
+		// 	return
 		// }
 		storyID := c.DefaultQuery("story", utils.NewAPIKey())
+		topicName := c.DefaultQuery("topic", "")
+		t, err := topic.Get(TopicDB, topicName)
+		if err != nil {
+			t, _ = topic.Default(TopicDB, false)
+		}
 		s, err := story.Get(storyID)
 		if err != nil {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
 				StoryID:  storyID,
 				APIKey:   GetSignedInUserAPIKey(c),
 				SignedIn: true,
+				Topic:    t,
 			})
 		} else {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
@@ -65,6 +78,8 @@ func main() {
 				APIKey:    GetSignedInUserAPIKey(c),
 				SignedIn:  true,
 				StoryHTML: template.HTML(s.Content.GetCurrent()),
+				Keywords:  strings.Join(s.Keywords, ", "),
+				Topic:     t,
 			})
 		}
 	})
@@ -85,12 +100,33 @@ func main() {
 		})
 	})
 	router.GET("/read", func(c *gin.Context) {
+		topicName := c.DefaultQuery("topic", "")
+		t, err := topic.Get(TopicDB, topicName)
+		if err != nil {
+			var err error
+			t, err = topic.Default(TopicDB, true)
+			if err != nil {
+				c.HTML(http.StatusOK, "read.tmpl", MainView{
+					ErrorMessage: err.Error(),
+				})
+			}
+		}
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
+			Topic:    t,
 		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
+		topics, err := topic.Load(TopicDB)
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorMessage: err.Error(),
+				ErrorCode:    "503",
+			})
+			return
+		}
 		c.HTML(http.StatusOK, "topics.tmpl", MainView{
+			Topics:   topics,
 			SignedIn: IsSignedIn(c),
 		})
 	})
@@ -101,6 +137,13 @@ func main() {
 		}
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
 			SignedIn: false,
+		})
+	})
+	router.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusOK, "error.tmpl", MainView{
+			ErrorCode:    "404",
+			ErrorMessage: "Sorry, we can't find the page you are looking for.",
+			SignedIn:     false,
 		})
 	})
 	router.GET("/signup", func(c *gin.Context) {
@@ -142,17 +185,20 @@ func main() {
 type MainView struct {
 	Title        string
 	ErrorMessage string
+	ErrorCode    string
 	InfoMessage  string
 	Landing      bool
 	SignedIn     bool
 	// Story stuff
-	Topic     string
+	Topic     topic.Topic
 	APIKey    string
 	StoryID   string
 	Keywords  string
 	StoryHTML template.HTML
 	DataURL   template.URL
 	DataJS    template.JS
+	// Topic stuff
+	Topics []topic.Topic
 }
 
 func handleIndex(c *gin.Context) {
@@ -167,14 +213,24 @@ func handlePOSTStory(c *gin.Context) {
 		Keywords string `form:"keywords" json:"keywords"`
 		APIKey   string `form:"apikey" json:"apikey" binding:"required"`
 		StoryID  string `form:"storyid" json:"storyid" binding:"required"`
-		Topic    string `form:"storyid" json:"storyid" binding:"required"`
+		Topic    string `form:"topic" json:"topic" binding:"required"`
 	}
+	defaultTopic, _ := topic.Default(TopicDB, false)
 	var form FormInput
 	if err := c.ShouldBind(&form); err == nil {
 		log.Println(form)
+		// check topic is valid
+		t, err := topic.Get(TopicDB, form.Topic)
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorCode:    "503",
+				ErrorMessage: err.Error(),
+			})
+			return
+		}
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
-		err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords)
+		err = story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords)
 		var infoMessage, errorMessage string
 		if err != nil {
 			errorMessage = err.Error()
@@ -184,7 +240,7 @@ func handlePOSTStory(c *gin.Context) {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
 			StoryID:      form.StoryID,
 			APIKey:       form.APIKey,
-			Topic:        form.Topic,
+			Topic:        t,
 			Keywords:     strings.Join(keywords, ", "),
 			ErrorMessage: errorMessage,
 			InfoMessage:  infoMessage,
@@ -195,6 +251,7 @@ func handlePOSTStory(c *gin.Context) {
 			StoryID:      form.StoryID,
 			APIKey:       form.APIKey,
 			ErrorMessage: err.Error(),
+			Topic:        defaultTopic,
 		})
 	}
 }
@@ -241,7 +298,6 @@ func handlePOSTSignup(c *gin.Context) {
 				return
 			}
 			SignInUser(u.APIKey, c)
-			c.Redirect(302, "/profile")
 		}
 	} else {
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
@@ -273,7 +329,6 @@ func handlePOSTSignin(c *gin.Context) {
 			return
 		}
 		SignInUser(apikey, c)
-		c.Redirect(302, "/profile")
 	} else {
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
 			ErrorMessage: err.Error(),
@@ -328,6 +383,12 @@ func SignInUser(apikey string, c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
+	continueOn := cookies.Get("continueon")
+	if continueOn != nil {
+		c.Redirect(302, continueOn.(string))
+	} else {
+		c.Redirect(302, "/profile")
+	}
 }
 
 func SignOutUser(c *gin.Context) {
@@ -343,4 +404,15 @@ func SignOutUser(c *gin.Context) {
 		delete(currentSession.Keys, clientKey.(string))
 	}
 	cookies.Clear()
+}
+
+func SignInAndContinueOn(c *gin.Context) {
+	fmt.Println(c.Request.URL.String())
+	cookies := sessions.Default(c)
+	cookies.Set("continueon", c.Request.URL.String())
+	err := cookies.Save()
+	if err != nil {
+		log.Println(err)
+	}
+	c.Redirect(302, "/signin")
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Threats",
+    "month": "January 2018",
+    "open": true,
+    "default": false
+  },
+  {
+    "name": "Being Broke",
+    "month": "December 2017",
+    "open": true,
+    "default": true
+  },
+  {
+    "name": "Odd One Out",
+    "month": "November 2017",
+    "open": false,
+    "default": false
+  },
+  {
+    "name": "Dating",
+    "month": "October 2017",
+    "open": false,
+    "default": false
+  },
+  {
+    "name": "What Really Matters",
+    "month": "September 2017",
+    "open": false,
+    "default": false
+  }
+]

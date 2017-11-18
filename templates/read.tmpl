@@ -1,9 +1,12 @@
 {{ template "header" . }}
+
+{{ template "messages" .}}
+
 <article class="cf ph3 ph5-ns pv4 mw8">
   <header class="fn fl-ns w-50-ns pr4-ns">
-    <h1 class="f1 mb3 mt0 lh-title">“Losing”</h1>
+    <h1 class="f1 mb3 mt0 lh-title">“{{ .Topic.Name }}”</h1>
     <span class="pa1">
-    <time class="f6 ttu tracked gray">November 17th, 2017</time>
+    <time class="f6 ttu tracked gray">{{ .Topic.Month }}</time>
   </span>
     <div class="pv2">
       <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="#0">biking</a>

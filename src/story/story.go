@@ -89,6 +89,9 @@ func Update(id, apikey, topic, content string, keywords []string) (err error) {
 	// story exists, update it
 	s.Content.Update(content)
 	s.Keywords = keywords
+	for i, k := range s.Keywords {
+		s.Keywords[i] = strings.ToLower(strings.TrimSpace(k))
+	}
 	db, err := storm.Open(DB)
 	defer db.Close()
 	if err != nil {

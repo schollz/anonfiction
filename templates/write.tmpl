@@ -27,20 +27,25 @@
   }
 </style>
 
-<form action="/write?story={{ .StoryID }}" method="POST" enctype="multipart/form-data" id="formdata" >
-  <article class="pv4 bg-lightest-blue dark-blue ph3 ">
-    <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb0">
+<form action="/write?story={{ .StoryID }}&topic={{ .Topic.Name }}" method="POST" enctype="multipart/form-data" id="formdata" >
+  <article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
+    <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
   Write your story
   </h1>
-    <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
-    Current topic is <span class="f3">“Losing.”</span>
+    <h2 class="fw2 f4 lh-copy mt0 mb3">
+    Current topic is <span class="f3">“{{ .Topic.Name }}.”</span>
   </h2>
     <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
   </p> -->
-    <div class="ph5-ns">
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="Submit Story">
-      </input>
+    <div>
+    {{ if .Topic.Open }}
+      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="Submit Story">            </input>
+
+      {{ else }}
+      This topic was closed after {{ .Topic.Month }}. 
+      {{ end }}
+
       </a>
     </div>
     </span>
@@ -71,10 +76,11 @@
       <label for="keywords" class="f3 b db mb2 leader">Keywords
             <span class="normal black-60">(optional)</span>
           </label>
-      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc">
+      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ .Keywords }}">
     </div>
     <input type="hidden" id="apikey" name="apikey" value="{{ .APIKey }}">
     <input type="hidden" id="storyid" name="storyid" value="{{ .StoryID }}">
+    <input type="hidden" id="topic" name="topic" value="{{ .Topic.Name }}">
 </form>
 
 </section>
