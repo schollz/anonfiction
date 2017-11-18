@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -79,6 +80,7 @@ func main() {
 				APIKey:   GetSignedInUserAPIKey(c),
 				SignedIn: true,
 				Story:    s,
+				TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
 				Topic:    t,
 				IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
@@ -101,6 +103,7 @@ func main() {
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
 			SignedIn: true,
 			Stories:  stories,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/read", func(c *gin.Context) {
@@ -139,14 +142,16 @@ func main() {
 					break
 				}
 			}
+		} else {
+			s = stories[storyI]
 		}
-		s = stories[storyI]
 		if storyI > 0 {
 			previousStory = stories[storyI-1].ID
 		}
 		if storyI < len(stories)-1 {
 			nextStory = stories[storyI+1].ID
 		}
+		log.Println(s)
 
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
@@ -154,6 +159,7 @@ func main() {
 			Story:    s,
 			Next:     nextStory,
 			Previous: previousStory,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
@@ -162,12 +168,14 @@ func main() {
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
 				ErrorMessage: err.Error(),
 				ErrorCode:    "503",
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 			return
 		}
 		c.HTML(http.StatusOK, "topics.tmpl", MainView{
 			Topics:   topics,
 			SignedIn: IsSignedIn(c),
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/signin", func(c *gin.Context) {
@@ -177,6 +185,7 @@ func main() {
 		}
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
 			SignedIn: false,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.NoRoute(func(c *gin.Context) {
@@ -184,6 +193,7 @@ func main() {
 			ErrorCode:    "404",
 			ErrorMessage: "Sorry, we can't find the page you are looking for.",
 			SignedIn:     false,
+			IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/signup", func(c *gin.Context) {
@@ -192,6 +202,7 @@ func main() {
 		}
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
 			SignedIn: false,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/signout", func(c *gin.Context) {
@@ -199,27 +210,52 @@ func main() {
 		c.Redirect(302, "/")
 	})
 	router.GET("/admin", func(c *gin.Context) {
+		if !IsSignedIn(c) {
+			SignInAndContinueOn(c)
+			return
+		}
+		u, err := user.GetByAPIKey(GetSignedInUserAPIKey(c))
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorCode:    "503",
+				ErrorMessage: err.Error(),
+				SignedIn:     true,
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
+			})
+		}
+		if !u.IsAdmin {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorCode:    "401",
+				ErrorMessage: "Unauthorized",
+				SignedIn:     true,
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
+			})
+		}
 		stories, err := story.All()
 		if err != nil {
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
 				ErrorCode:    "503",
 				ErrorMessage: err.Error(),
 				SignedIn:     true,
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 		}
 		c.HTML(http.StatusOK, "admin.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
 			Stories:  stories,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/terms", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "terms.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/privacy", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "privacy.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
@@ -247,11 +283,13 @@ type MainView struct {
 	Stories      []story.Story
 	Next         string
 	Previous     string
+	TrixAttr     template.HTMLAttr
 }
 
 func handleIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "landing.tmpl", MainView{
 		Landing: true,
+		IsAdmin: user.IsAdmin(GetSignedInUserAPIKey(c)),
 	})
 }
 
@@ -274,12 +312,14 @@ func handlePOSTStory(c *gin.Context) {
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
 				ErrorCode:    "503",
 				ErrorMessage: err.Error(),
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 			return
 		}
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
 		s, err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords, form.Published == "on")
+		log.Println(form.Published, s.Published)
 		fmt.Println(err)
 		var infoMessage, errorMessage string
 		if err != nil {
@@ -296,6 +336,8 @@ func handlePOSTStory(c *gin.Context) {
 			InfoMessage:  infoMessage,
 			Story:        s,
 			IsAdmin:      user.IsAdmin(form.APIKey),
+			TrixAttr:     template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
+			SignedIn:     true,
 		})
 	} else {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
@@ -304,6 +346,7 @@ func handlePOSTStory(c *gin.Context) {
 			ErrorMessage: err.Error(),
 			Topic:        defaultTopic,
 			IsAdmin:      user.IsAdmin(form.APIKey),
+			SignedIn:     true,
 		})
 	}
 }

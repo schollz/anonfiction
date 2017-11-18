@@ -2,6 +2,7 @@ package story
 
 import (
 	"html/template"
+	"log"
 	"strings"
 	"time"
 
@@ -96,6 +97,7 @@ func Get(id string) (s Story, err error) {
 	// get story
 	query := db.Select(q.Eq("ID", id))
 	err = query.First(&s)
+	log.Println(s.Published)
 	return
 }
 
@@ -139,6 +141,7 @@ func Update(id, apikey, topic, content string, keywords []string, published bool
 	s.Paragraphs = ConvertTrix(content)
 	// only admin can publish
 	if u.IsAdmin {
+		log.Println("Publishing story", published)
 		s.Published = published
 	}
 	db, err := storm.Open(DB)
@@ -146,7 +149,7 @@ func Update(id, apikey, topic, content string, keywords []string, published bool
 	if err != nil {
 		return
 	}
-	err = db.Update(&s)
+	err = db.Save(&s)
 	return
 }
 

@@ -40,12 +40,15 @@
   </p> -->
     <div>
 {{ if .APIKey }}
-    {{ if .Story.Published }}
+    {{ if .IsAdmin }}
+      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
+    {{ else }}
+      {{ if .Story.Published }}
       This story is published and cannot be edited.
-
       {{ else }}
       <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
       {{ end }}
+    {{ end }}
 {{ else }}
       <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" href="/signin">Sign in to start writing</a>          {{end }}
       </a>
@@ -73,7 +76,7 @@
     <article class="mw8 center br2 ba mt3">
       <div class="dt-ns dt--fixed-ns w-100">
         <div class="trix-container">
-          <input type="hidden" id="content" name="content" value="">
+          <input type="hidden" id="content" name="content" {{ .TrixAttr }}>
           <trix-editor input="content" class="trix-content" autofocus></trix-editor>
         </div>
       </div>
@@ -95,12 +98,19 @@
 
 </section>
 
+
 <script>
-window.onload = function () { 
-  var element = document.querySelector("trix-editor");
-  element.editor.setSelectedRange([0, 0]);
-  element.editor.insertHTML(unescape("{{ .Story.Content.CurrentText }}"));
-}
+(function() {
+  Trix.config.attachments.preview.caption = {
+    name: false,
+    size: false
+  };
+
+  document.addEventListener("trix-attachment-add", function(event) {
+    event.preventDefault();
+  });
+
+}).call(this);
 </script>
 
 {{ template "footer" . }}

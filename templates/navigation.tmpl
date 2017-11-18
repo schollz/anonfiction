@@ -24,11 +24,12 @@
 <i data-feather="user" class="dib h1 w1 v-mid"></i>
 <span class="f6 pr2  v-mid">Me</span>
 </a>
-
+{{ if .IsAdmin }}
 <a class="f6 fw4 hover-white no-underline white-70 dn dib-l dib-m pv2 ph1 v-mid" href="/admin">
 <i data-feather="stop-circle" class="dib h1 w1 v-mid"></i>
 <span class="f6 pr2  v-mid">Admin</span>
 </a>
+{{ end }}
 
 		<!-- <a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1" href="/about">
 								<i data-feather="help-circle" class="dib h1 w1"></i>
