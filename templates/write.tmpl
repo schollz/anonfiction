@@ -56,7 +56,7 @@
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
     <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information.
+    Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information. {{ with .Story.ID }}View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
 
@@ -76,7 +76,7 @@
       <label for="keywords" class="f3 b db mb2 leader">Keywords
             <span class="normal black-60">(optional)</span>
           </label>
-      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ .Keywords }}">
+      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element}}{{end}}{{end}}">
     </div>
     <input type="hidden" id="apikey" name="apikey" value="{{ .APIKey }}">
     <input type="hidden" id="storyid" name="storyid" value="{{ .StoryID }}">
@@ -89,7 +89,7 @@
 window.onload = function () { 
   var element = document.querySelector("trix-editor");
   element.editor.setSelectedRange([0, 0]);
-  element.editor.insertHTML(unescape("{{ .StoryHTML }}"));
+  element.editor.insertHTML(unescape("{{ .Story.Content.CurrentText }}"));
 }
 </script>
 

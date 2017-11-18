@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -74,12 +73,11 @@ func main() {
 			})
 		} else {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
-				StoryID:   storyID,
-				APIKey:    GetSignedInUserAPIKey(c),
-				SignedIn:  true,
-				StoryHTML: template.HTML(s.Content.GetCurrent()),
-				Keywords:  strings.Join(s.Keywords, ", "),
-				Topic:     t,
+				StoryID:  storyID,
+				APIKey:   GetSignedInUserAPIKey(c),
+				SignedIn: true,
+				Story:    s,
+				Topic:    t,
 			})
 		}
 	})
@@ -93,27 +91,66 @@ func main() {
 	})
 	router.GET("/profile", func(c *gin.Context) {
 		if !IsSignedIn(c) {
-			c.Redirect(302, "/signin")
+			SignInAndContinueOn(c)
+			return
 		}
+		stories, _ := story.ListByUser(GetSignedInUserAPIKey(c))
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
 			SignedIn: true,
+			Stories:  stories,
 		})
 	})
 	router.GET("/read", func(c *gin.Context) {
+		var stories []story.Story
+		var s story.Story
+		var t topic.Topic
+		var err error
+		var nextStory, previousStory string
+		storyID := c.DefaultQuery("story", "")
 		topicName := c.DefaultQuery("topic", "")
-		t, err := topic.Get(TopicDB, topicName)
-		if err != nil {
-			var err error
-			t, err = topic.Default(TopicDB, true)
+		if storyID != "" {
+			s, err = story.Get(storyID)
 			if err != nil {
-				c.HTML(http.StatusOK, "read.tmpl", MainView{
+				c.HTML(http.StatusOK, "error.tmpl", MainView{
 					ErrorMessage: err.Error(),
+					ErrorCode:    "503",
 				})
+				return
+			}
+			topicName = s.Topic
+		}
+
+		t, err = topic.Get(TopicDB, topicName)
+		if err != nil {
+			t, _ = topic.Default(TopicDB, true)
+		}
+		stories, err = story.ListByTopic(t.Name)
+		if err != nil {
+			stories = []story.Story{s}
+		}
+		storyI := 0
+		if storyID != "" {
+			for i := range stories {
+				storyI = i
+				if stories[i].ID == storyID {
+					break
+				}
 			}
 		}
+		s = stories[storyI]
+		if storyI > 0 {
+			previousStory = stories[storyI-1].ID
+		}
+		if storyI < len(stories)-1 {
+			nextStory = stories[storyI+1].ID
+		}
+
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
 			Topic:    t,
+			Story:    s,
+			Next:     nextStory,
+			Previous: previousStory,
 		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
@@ -189,16 +226,14 @@ type MainView struct {
 	InfoMessage  string
 	Landing      bool
 	SignedIn     bool
-	// Story stuff
-	Topic     topic.Topic
-	APIKey    string
-	StoryID   string
-	Keywords  string
-	StoryHTML template.HTML
-	DataURL   template.URL
-	DataJS    template.JS
-	// Topic stuff
-	Topics []topic.Topic
+	Story        story.Story
+	Topic        topic.Topic
+	APIKey       string
+	StoryID      string
+	Topics       []topic.Topic
+	Stories      []story.Story
+	Next         string
+	Previous     string
 }
 
 func handleIndex(c *gin.Context) {
@@ -230,7 +265,7 @@ func handlePOSTStory(c *gin.Context) {
 		}
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
-		err = story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords)
+		s, err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords)
 		var infoMessage, errorMessage string
 		if err != nil {
 			errorMessage = err.Error()
@@ -241,10 +276,9 @@ func handlePOSTStory(c *gin.Context) {
 			StoryID:      form.StoryID,
 			APIKey:       form.APIKey,
 			Topic:        t,
-			Keywords:     strings.Join(keywords, ", "),
 			ErrorMessage: errorMessage,
 			InfoMessage:  infoMessage,
-			StoryHTML:    template.HTML(form.Content),
+			Story:        s,
 		})
 	} else {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{

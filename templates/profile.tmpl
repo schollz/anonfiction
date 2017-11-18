@@ -28,48 +28,32 @@ Your Profile
 
 <section class="pa2 pv2 ph5-ns mb5">
 <article class="ph2">
+ <h1 class="db f4 mb1">Your profile</h1>
+ <span class="f5 db lh-copy measure-wide">
+   Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
+ </span>
+
  <h1 class="db f4 mb1">Your stories</h1>
  <span class="f5 db lh-copy measure-wide">
    The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
  </span>
- <span class="f5 db lh-copy measure pt3">
-   Only you can see the stories you have published. When your stories are published, only the content of the story will be publicly visible. Any personally identifying information will be removed before your story is published.
- </span>
  </article>
  <article class="ph2 pv4">
  <ul class="list pl0 mt0 measure">
-
+{{range .Stories }}
    <li
      class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
        <div class="flex-auto">
-         <span class="f6 db gray-70">Losing</span>
-         <span class="f6 db black-70">August 17th, 2017</span>
+         <span class="f6 db gray-70">{{ .Topic }}</span>
+         <span class="f6 db black-70">{{ .Date.Format "January 2, 2006" }}</span>
        </div>
        <div>
-         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?id=ALKSJDAL">Edit</a>
-         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?id=ALKJSAF">Delete</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read?story={{ .ID }}">Read</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?story={{ .ID }}">Edit</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story=={{ .ID }}">Delete</a>
        </div>
    </li>
-   <li
-       class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-         <div class="flex-auto">
-           <span class="f6 db gray-70">Being Broke</span>
-           <span class="f6 db black-70">August 17th, 2017</span>
-         </div>
-         <div>
-           <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
-         </div>
-     </li>
-     <li
-         class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-           <div class="flex-auto">
-             <span class="f6 db gray-70">Being Broke <em>(submitted)</em></span>
-             <span class="f6 db black-70">August 17th, 2017</span>
-           </div>
-           <div>
-             <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="#0">Delete</a>
-           </div>
-       </li>
+{{end}}
  <div class="pv4 ph2">
    <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="#0">Download all</a>
    <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>

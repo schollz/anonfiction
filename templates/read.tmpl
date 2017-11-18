@@ -9,44 +9,44 @@
     <time class="f6 ttu tracked gray">{{ .Topic.Month }}</time>
   </span>
     <div class="pv2">
-      <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="#0">biking</a>
-      <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="#0">thieves</a>
-      <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="#0">police</a>
+    {{ with .Story}}{{ range $index, $element := .Keywords }}
+    
+    <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read?keyword={{$element}}">{{ $element }}</a>
+    {{end}}{{end}}
 
 </div>
   </header>
-  <div class="fn fl-ns w-50-ns">
-    <p class="lh-copy measure mt4 mt0-ns">
-      On Wednesday, after work, in 2010, I went to get my bike to ride home. My brand new gray-and-red racing bike. It had bright red tires and red bar-tape. It looked and fast and it was fast. But, I glanced to where my bike should be and noticed my bike was
-      gone. There was a piece of Velcro from my bike lock in the place my bike had been. Stolen, I thought. The Velcro could only come off if the bike lock had been cut. I called the police. They weren't interested. Lots of bikes go missing and they are
-      impossible to get back, they said.
-    </p>
-    <p class="lh-copy measure">
-      I ran home. I got onto my computer. Maybe my bike would be on Craigslist? Probably not. I looked, and sure enough, I found my bike for sale on Craigslist! I called the police again and told them the good news. Unfortunately, they told me the bike is most
-      certainly not mine and that it was not worth pursuing. I told them I had the original receipt for the bike with the serial number, and it would take only a second to compare it to the stolen bike. The police still were not interested. I went for
-      another run to clear my mind, but I couldn't stop thinking about how to get my bike back. I decided to act, on my own.
-    </p>
-    <p class="lh-copy measure">
-      I went to Walmart and bought a burn phone. While I was in the checkout line I made some fake personas complete with backstories and email addresses - James Hannover and Mathew Phillipe. My backstory for James Hannover was a that he was a relatively new
-      student to NCSU who works at a pizzeria and is interested in doing triathlons. For Mathew Phillipe the backstory was that he was a Durhamite who loved soccer and was looking to race his friend on Tobacco Road.
-    </p>
+  <div class="fn fl-ns w-50-ns mt3">
+
+  {{ with .Story}}
+    {{ range $index, $element := .Paragraphs }}
+      {{if eq $index 0 }}<p class="lh-copy measure mt4 mt0-ns">{{else}}<p class="lh-copy measure">{{end}} 
+      {{ $element }}
+      </p>
+    {{end}}
+  {{end}}
+
   </div>
   <footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
   <div class="flex">
-    <a href="#0" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+    {{ with .Previous }}
+    <a href="/read?story={{.}}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
             <title>chevronLeft icon</title>
           <path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
         </svg>
         <span class="pl1">Previous</span>
       </a>
-    <a href="#0" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+    {{ end }}
+    {{ with .Next }}
+    <a href="/read?story={{.}}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
         <span class="pr1">Next</span>
         <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
           <title>chevronRight icon</title>
         <path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
       </svg>
     </a>
+    {{ end }}
   </div>
 </footer>
 </article>
