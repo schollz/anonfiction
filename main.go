@@ -60,14 +60,11 @@ func main() {
 				SignedIn: true,
 			})
 		} else {
-			log.Println(s.Content.GetCurrent())
-			q := template.HTML(`<em>hi</em><b>test</b><br><br>paragraph><<>`)
-			log.Println(q)
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
 				StoryID:   storyID,
 				APIKey:    GetSignedInUserAPIKey(c),
 				SignedIn:  true,
-				StoryHTML: q,
+				StoryHTML: template.HTML(s.Content.GetCurrent()),
 			})
 		}
 	})
@@ -136,7 +133,7 @@ func main() {
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
-	router.POST("/story", handlePOSTStory)
+	router.POST("/write", handlePOSTStory)
 	router.POST("/signup", handlePOSTSignup)
 	router.POST("/signin", handlePOSTSignin)
 	router.Run(":" + port)
@@ -154,6 +151,8 @@ type MainView struct {
 	StoryID   string
 	Keywords  string
 	StoryHTML template.HTML
+	DataURL   template.URL
+	DataJS    template.JS
 }
 
 func handleIndex(c *gin.Context) {
@@ -192,7 +191,11 @@ func handlePOSTStory(c *gin.Context) {
 			StoryHTML:    template.HTML(form.Content),
 		})
 	} else {
-		c.JSON(200, gin.H{"error": err.Error()})
+		c.HTML(http.StatusOK, "write.tmpl", MainView{
+			StoryID:      form.StoryID,
+			APIKey:       form.APIKey,
+			ErrorMessage: err.Error(),
+		})
 	}
 }
 
