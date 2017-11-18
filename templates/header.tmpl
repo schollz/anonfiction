@@ -5,15 +5,15 @@
 <head>
 	<title> </title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+	<link rel="stylesheet" href="/static/css/tachyons.min.css">
 	<link rel="stylesheet" href="/static/css/style.css">
-	<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+	<script src="/static/js/feather.min.js"></script>
 
 </head>
 
 <body>
 	<header class="sans-serif">
-		<div class="cover bg-left bg-center-l" {{ if .Landing }}style="background-image: url(https://schollz.github.io/img/bisons.jpg)" {{end}}>
+		<div class="cover bg-left bg-center-l" {{ if .Landing }}style="background-image: url(/static/img/bisons.jpg)" {{end}}>
 			<div class="bg-black-80 {{ if .Landing }}pb5 pb6-m pb7-l{{end}} ph5-ns">
 				{{ template "navigation" . }} {{ if .Landing }}
 				<div class="mt4 mt5-m mt6-l ph3" style="max-width: 58rem;">
@@ -29,11 +29,11 @@
 		</div>
 	</header>
 
-	<link rel="stylesheet" href="http://cdn.jsdelivr.net/animatecss/3.4.0/animate.min.css">
-	<link rel="stylesheet" href="http://morphext.fyianlai.com/assets/css/morphext.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<link rel="stylesheet" href="/static/css/animate.min.css">
+	<link rel="stylesheet" href="/static/css/morphext.css">
+	<script src="/static/js/jquery.min.js"></script>
 	{{ if .Landing }}
-	<script src="http://morphext.fyianlai.com/assets/js/morphext.js"></script>
+	<script src="/static/js/morphext.js"></script>
 	<script>
 		var $morphext = $("#js-rotating").Morphext({
 			// The [in] animation type. Refer to Animate.css for a list of available animations.
