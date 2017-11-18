@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/schollz/storiesincognito/src/story"
 	"github.com/schollz/storiesincognito/src/topic"
 	"github.com/schollz/storiesincognito/src/user"
@@ -70,6 +71,7 @@ func main() {
 				APIKey:   GetSignedInUserAPIKey(c),
 				SignedIn: true,
 				Topic:    t,
+				IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 		} else {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
@@ -78,6 +80,7 @@ func main() {
 				SignedIn: true,
 				Story:    s,
 				Topic:    t,
+				IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 		}
 	})
@@ -196,8 +199,17 @@ func main() {
 		c.Redirect(302, "/")
 	})
 	router.GET("/admin", func(c *gin.Context) {
+		stories, err := story.All()
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorCode:    "503",
+				ErrorMessage: err.Error(),
+				SignedIn:     true,
+			})
+		}
 		c.HTML(http.StatusOK, "admin.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
+			Stories:  stories,
 		})
 	})
 	router.GET("/terms", func(c *gin.Context) {
@@ -220,6 +232,7 @@ func main() {
 }
 
 type MainView struct {
+	IsAdmin      bool
 	Title        string
 	ErrorMessage string
 	ErrorCode    string
@@ -244,11 +257,12 @@ func handleIndex(c *gin.Context) {
 
 func handlePOSTStory(c *gin.Context) {
 	type FormInput struct {
-		Content  string `form:"content" json:"content" binding:"required"`
-		Keywords string `form:"keywords" json:"keywords"`
-		APIKey   string `form:"apikey" json:"apikey" binding:"required"`
-		StoryID  string `form:"storyid" json:"storyid" binding:"required"`
-		Topic    string `form:"topic" json:"topic" binding:"required"`
+		Content   string `form:"content" json:"content" binding:"required"`
+		Keywords  string `form:"keywords" json:"keywords"`
+		APIKey    string `form:"apikey" json:"apikey" binding:"required"`
+		StoryID   string `form:"storyid" json:"storyid" binding:"required"`
+		Topic     string `form:"topic" json:"topic" binding:"required"`
+		Published string `form:"published" json:"published"`
 	}
 	defaultTopic, _ := topic.Default(TopicDB, false)
 	var form FormInput
@@ -265,9 +279,11 @@ func handlePOSTStory(c *gin.Context) {
 		}
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
-		s, err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords)
+		s, err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords, form.Published == "on")
+		fmt.Println(err)
 		var infoMessage, errorMessage string
 		if err != nil {
+			err = errors.Wrap(err, "story not submitted")
 			errorMessage = err.Error()
 		} else {
 			infoMessage = "Updated your story"
@@ -279,6 +295,7 @@ func handlePOSTStory(c *gin.Context) {
 			ErrorMessage: errorMessage,
 			InfoMessage:  infoMessage,
 			Story:        s,
+			IsAdmin:      user.IsAdmin(form.APIKey),
 		})
 	} else {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
@@ -286,6 +303,7 @@ func handlePOSTStory(c *gin.Context) {
 			APIKey:       form.APIKey,
 			ErrorMessage: err.Error(),
 			Topic:        defaultTopic,
+			IsAdmin:      user.IsAdmin(form.APIKey),
 		})
 	}
 }
@@ -390,7 +408,7 @@ func IsSignedIn(c *gin.Context) bool {
 
 func GetSignedInUserAPIKey(c *gin.Context) string {
 	if !IsSignedIn(c) {
-		return "uhoh"
+		return ""
 	}
 	cookies := sessions.Default(c)
 	clientKey := cookies.Get("sessionkey")

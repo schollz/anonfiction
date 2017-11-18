@@ -1,13 +1,13 @@
 package story
 
 import (
-	"errors"
 	"html/template"
 	"strings"
 	"time"
 
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
+	"github.com/pkg/errors"
 	"github.com/schollz/storiesincognito/src/user"
 	"github.com/schollz/versionedtext"
 )
@@ -19,14 +19,14 @@ func init() {
 }
 
 type Story struct {
-	ID         string `storm:"unique"` // primary key, provided by client
-	UserID     int
-	Date       time.Time
-	Topic      string
+	ID         string    `storm:"unique"` // primary key, provided by client
+	UserID     int       `storm:"index"`
+	Date       time.Time `storm:"index"`
+	Topic      string    `storm:"index"`
 	Keywords   []string
 	Paragraphs []template.HTML
 	Content    versionedtext.VersionedText
-	Published  bool
+	Published  bool `storm:"index"`
 }
 
 func ListByUser(apikey string) (stories []Story, err error) {
@@ -110,7 +110,7 @@ func GetStory(id, apikey string) (content string, err error) {
 }
 
 // Update will create or update a story for a user
-func Update(id, apikey, topic, content string, keywords []string) (s Story, err error) {
+func Update(id, apikey, topic, content string, keywords []string, published bool) (s Story, err error) {
 	s, errNew := Get(id)
 	if errNew != nil {
 		// create a new story since it doesn't exist
@@ -120,10 +120,15 @@ func Update(id, apikey, topic, content string, keywords []string) (s Story, err 
 	// story exists, update it
 	u, err := user.GetByAPIKey(apikey)
 	if err != nil {
+		err = errors.New("must sign in to edit story")
+		return
+	}
+	if !u.IsAdmin && s.Published {
+		err = errors.New("cannot edit published story")
 		return
 	}
 	if s.UserID != u.ID && !u.IsAdmin {
-		err = errors.New("must sign in to edit this story")
+		err = errors.New("must sign in to edit story")
 		return
 	}
 	s.Content.Update(content)
@@ -132,12 +137,30 @@ func Update(id, apikey, topic, content string, keywords []string) (s Story, err 
 		s.Keywords[i] = strings.ToLower(strings.TrimSpace(k))
 	}
 	s.Paragraphs = ConvertTrix(content)
+	// only admin can publish
+	if u.IsAdmin {
+		s.Published = published
+	}
 	db, err := storm.Open(DB)
 	defer db.Close()
 	if err != nil {
 		return
 	}
 	err = db.Update(&s)
+	return
+}
+
+func All() (s []Story, err error) {
+	db, err := storm.Open(DB)
+	defer db.Close()
+	if err != nil {
+		err = errors.Wrap(err, "problem opening DB")
+		return
+	}
+	err = db.AllByIndex("Date", &s)
+	if err != nil {
+		err = errors.Wrap(err, "problem getting all by date")
+	}
 	return
 }
 

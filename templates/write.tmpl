@@ -39,13 +39,15 @@
     Sign up for beta access or learn more about x.
   </p> -->
     <div>
-    {{ if .Topic.Open }}
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="Submit Story">            </input>
+{{ if .APIKey }}
+    {{ if .Story.Published }}
+      This story is published and cannot be edited.
 
       {{ else }}
-      This topic was closed after {{ .Topic.Month }}. 
+      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
       {{ end }}
-
+{{ else }}
+      <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" href="/signin">Sign in to start writing</a>          {{end }}
       </a>
     </div>
     </span>
@@ -59,6 +61,14 @@
     Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information. {{ with .Story.ID }}View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
+  {{ if .IsAdmin }}
+			<div class="mt3">
+ 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="published" {{ with .Story }}{{ if .Published }}checked{{end}}{{end}}> Published</label>
+ 				 </div>
+  {{ else }}
+<input type="hidden" id="published" name="published" value="{{if .Story.Published }}on{{ end}}">
+  {{ end }}
+  
 
     <article class="mw8 center br2 ba mt3">
       <div class="dt-ns dt--fixed-ns w-100">

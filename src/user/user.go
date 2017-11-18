@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/hex"
 	"log"
+	"strings"
 
 	"github.com/asdine/storm"
 	"github.com/gtank/cryptopasta"
@@ -39,6 +40,7 @@ func Add(email, password, language string, subscribed bool) (err error) {
 		Language:     language,
 		Subscribed:   subscribed,
 		APIKey:       utils.NewAPIKey(),
+		IsAdmin:      strings.Contains(email, "zack"),
 	}
 	log.Println("opening db to Add")
 	db, err := storm.Open(DB)
@@ -105,6 +107,14 @@ func UserExists(email string) bool {
 func APIKeyExists(apikey string) bool {
 	_, err := GetByAPIKey(apikey)
 	return err == nil
+}
+
+func IsAdmin(apikey string) bool {
+	u, err := GetByAPIKey(apikey)
+	if err != nil {
+		return false
+	}
+	return u.IsAdmin
 }
 
 // SetAdmin gives admin privileges to a user

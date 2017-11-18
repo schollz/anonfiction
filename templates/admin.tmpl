@@ -6,28 +6,23 @@
     <table class="f6 w-100 mw8 center" cellspacing="0">
       <thead>
         <tr class="stripe-dark">
+          <th class="fw6 tl pa2 bg-white">Date</th>
           <th class="fw6 tl pa2 bg-white">Topic</th>
-          <th class="fw6 tl pa2 bg-white">Submitted</th>
-          <th class="fw6 tl pa2 bg-white">Status</th>
-          <th class="fw6 tl pa2 bg-white">Manage</th>
+          <th class="fw6 tl pa2 bg-white">ID</th>
+          <th class="fw6 tl pa2 bg-white">User</th>
+          <th class="fw6 tl pa2 bg-white">Published</th>
         </tr>
       </thead>
       <tbody class="lh-copy">
-        <tr class="stripe-dark">
-          <td class="pa2">Losing</td>
-          <td class="pa2">01/01/2017</td>
-          <td class="pa2">published</td>
-          <td class="pa2"><a class="blue no-underline underline-hover" href="#0">edit </a><a class="ph2 red no-underline underline-hover" href="#0">unpublish </a>
-  </td>
-        </tr>
-        <tr class="stripe-dark">
-          <td class="pa2">Losing</td>
-          <td class="pa2">01/01/2017</td>
-          <td class="pa2">unpublished</td>
-          <td class="pa2"><a class="blue no-underline underline-hover" href="#0">edit </a><a class="ph2 green no-underline underline-hover" href="#0">publish </a>
-  </td>
-        </tr>
-        
+{{ range .Stories }}
+<tr class="stripe-dark">
+          <td class="pa2">{{ .Date }}</td>
+          <td class="pa2">{{ .Topic }}</td>
+          <td class="pa2"><a href="/write?story={{ .ID }}">{{ .ID }}</a></td>
+          <td class="pa2">{{ .UserID }}</td>
+          <td class="pa2">{{ .Published }}</td>
+</tr>  
+{{ end }}        
       </tbody>
     </table>
   </div>
