@@ -66,8 +66,9 @@
               </div>
             </td>
             <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink pointer" href="{{ if .Open }}/write?topic={{.Name}}{{else}}/read?topic={{.Name}}{{end}}">{{.Name}}</a>
+            {{.Month}}
             </td>
-            <td class="pv3 pr3 bb b--black-20">{{.Month}}</td>
+            <td class="pv3 pr3 bb b--black-20"><img src="/static/img/{{ .Name }}.jpg" style="width:100%;" onerror="this.style.display='none'"></td>
           </tr>
 
 {{end}}
