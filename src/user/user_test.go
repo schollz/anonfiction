@@ -24,10 +24,19 @@ func TestUser(t *testing.T) {
 	assert.NotNil(t, err)
 
 	// test admin rights
-	u, _ := Get("zack")
+	Add("jlkjklj", "pass123", "english", false)
+	u, _ := Get("jlkjklj")
 	assert.Equal(t, false, u.IsAdmin)
-	err = SetAdmin("zack", true)
+	err = SetAdmin("jlkjklj", true)
 	assert.Nil(t, err)
-	u, _ = Get("zack")
+	u, _ = Get("jlkjklj")
 	assert.Equal(t, true, u.IsAdmin)
+
+	// test re-adding
+	Add("bob1", "pass123", "english", false)
+	u, _ = Get("bob1")
+	err = Add("bob1", "pass234", "english", false)
+	assert.NotNil(t, err)
+	u2, _ := Get("bob1")
+	assert.Equal(t, u2.PasswordHash, u.PasswordHash)
 }

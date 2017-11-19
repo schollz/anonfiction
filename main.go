@@ -53,12 +53,21 @@ func main() {
 	router.Use(sessions.Sessions("mysession", store))
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
-	router.GET("/", handleIndex)
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "landing.tmpl", MainView{
+			Landing:  true,
+			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+			SignedIn: IsSignedIn(c),
+		})
+	})
 	router.GET("/write", func(c *gin.Context) {
-		// if !IsSignedIn(c) {
-		// 	SignInAndContinueOn(c)
-		// 	return
-		// }
+		// allow anonymous users
+		var apikey string
+		if IsSignedIn(c) {
+			apikey = GetSignedInUserAPIKey(c)
+		} else {
+			apikey = user.AnonymousAPIKey()
+		}
 		storyID := c.DefaultQuery("story", utils.NewAPIKey())
 		topicName := c.DefaultQuery("topic", "")
 		t, err := topic.Get(TopicDB, topicName)
@@ -69,20 +78,20 @@ func main() {
 		if err != nil {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
 				StoryID:  storyID,
-				APIKey:   GetSignedInUserAPIKey(c),
-				SignedIn: true,
+				APIKey:   apikey,
+				SignedIn: IsSignedIn(c),
 				Topic:    t,
-				IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+				IsAdmin:  user.IsAdmin(apikey),
 			})
 		} else {
 			c.HTML(http.StatusOK, "write.tmpl", MainView{
 				StoryID:  storyID,
 				APIKey:   GetSignedInUserAPIKey(c),
-				SignedIn: true,
+				SignedIn: IsSignedIn(c),
 				Story:    s,
 				TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
 				Topic:    t,
-				IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+				IsAdmin:  user.IsAdmin(apikey),
 			})
 		}
 	})
@@ -326,13 +335,6 @@ type MainView struct {
 	Next         string
 	Previous     string
 	TrixAttr     template.HTMLAttr
-}
-
-func handleIndex(c *gin.Context) {
-	c.HTML(http.StatusOK, "landing.tmpl", MainView{
-		Landing: true,
-		IsAdmin: user.IsAdmin(GetSignedInUserAPIKey(c)),
-	})
 }
 
 func handlePOSTStory(c *gin.Context) {

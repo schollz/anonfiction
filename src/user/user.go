@@ -15,6 +15,7 @@ var DB string
 
 func init() {
 	DB = "users.db"
+	Add("anonymous@storiesincognito.org", "abcd1234", "english", false)
 }
 
 type User struct {
@@ -25,6 +26,11 @@ type User struct {
 	Subscribed   bool
 	IsAdmin      bool
 	APIKey       string
+}
+
+func AnonymousAPIKey() string {
+	u, _ := Get("anonymous@storiesincognito.org")
+	return u.APIKey
 }
 
 // New creates a new user and attempts to add it to the database

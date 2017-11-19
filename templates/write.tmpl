@@ -1,7 +1,6 @@
 {{ template "header" . }}
 <link rel="stylesheet" type="text/css" href="/static/css/trix.css">
 <script type="text/javascript" src="/static/js/trix.js"></script>
-<script src="/static/js/attachments.js"></script>
 
 <style>
   @import url("/static/css/trix.css");
@@ -47,6 +46,7 @@
       This story is published and cannot be edited.
       {{ else }}
       <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
+
       {{ end }}
     {{ end }}
 {{ else }}
@@ -63,7 +63,7 @@
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
     <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story as long as short as you want. Once submitted, the story will reach an editor who will proofread and remove personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information. {{ with .Story.ID }}View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
+    Write your story. Once submitted,an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a> for more info). {{if not .SignedIn}}<em><a href="/signin">Sign in</a> to manage your stories.</em>{{end}}{{ with .Story.ID }} View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
   {{ if .IsAdmin }}
