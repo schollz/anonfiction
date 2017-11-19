@@ -4,11 +4,15 @@
 
 <article class="cf ph3 ph5-ns pv4 mw8">
   <header class="fn fl-ns w-50-ns pr4-ns">
-    <h1 class="f1 mb3 mt0 lh-title">“{{ .Topic.Name }}”</h1>
-    <span class="pa1">
+<div class="pv2">
+<img src="/static/img/{{ .Topic.Name }}.jpg">
+</div>
+
+    <h1 class="f1 mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
+    <span class="pa1 pv1">
     <time class="f6 ttu tracked gray">{{ .Topic.Month }}</time>
   </span>
-    <div class="pv2">
+    <div class="pv1">
     {{ with .Story}}{{ range $index, $element := .Keywords }}
     
     <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read?keyword={{$element}}">{{ $element }}</a>
@@ -16,7 +20,7 @@
 
 </div>
   </header>
-  <div class="fn fl-ns w-50-ns mt3">
+  <div class="fn fl-ns w-50-ns">
 
   {{ with .Story}}
     {{ range $index, $element := .Paragraphs }}
