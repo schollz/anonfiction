@@ -111,6 +111,29 @@ func GetStory(id, apikey string) (content string, err error) {
 	return
 }
 
+func Delete(id, apikey string) error {
+	s, err := Get(id)
+	if err != nil {
+		return errors.Wrap(err, "story not deleted")
+	}
+	u, err := user.GetByAPIKey(apikey)
+	if err != nil {
+		return errors.Wrap(err, "story not deleted")
+	}
+	if s.UserID == u.ID || u.IsAdmin {
+		db, err := storm.Open(DB)
+		defer db.Close()
+		if err != nil {
+			return err
+		}
+		err = db.DeleteStruct(&s)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Update will create or update a story for a user
 func Update(id, apikey, topic, content string, keywords []string, published bool) (s Story, err error) {
 	s, errNew := Get(id)

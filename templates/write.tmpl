@@ -63,7 +63,7 @@
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
     <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story as long as short as you want. Once submitted, the story will reach and editor who will proofread and remove any personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information. {{ with .Story.ID }}View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
+    Write your story as long as short as you want. Once submitted, the story will reach an editor who will proofread and remove personally identifying information. See <a href="/privacy" target="_blank">Privacy</a> for more information. {{ with .Story.ID }}View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
   {{ if .IsAdmin }}
@@ -116,14 +116,7 @@
 </script>
 
 {{ else }}
-<style>
-footer{
-  position:absolute;
-  bottom:0;
-  width:100%;
-  height:100px;
-}
-</style>
+
 {{ end }}
 
 {{ template "footer" . }}

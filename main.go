@@ -106,6 +106,30 @@ func main() {
 			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
+	router.GET("/delete", func(c *gin.Context) {
+		if !IsSignedIn(c) {
+			SignInAndContinueOn(c)
+			return
+		}
+		storyID := c.DefaultQuery("story", "")
+		err := story.Delete(storyID, GetSignedInUserAPIKey(c))
+		stories, _ := story.ListByUser(GetSignedInUserAPIKey(c))
+		if err != nil {
+			c.HTML(http.StatusOK, "profile.tmpl", MainView{
+				SignedIn:     true,
+				Stories:      stories,
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
+				ErrorMessage: err.Error(),
+			})
+		} else {
+			c.HTML(http.StatusOK, "profile.tmpl", MainView{
+				SignedIn:    true,
+				Stories:     stories,
+				IsAdmin:     user.IsAdmin(GetSignedInUserAPIKey(c)),
+				InfoMessage: "Story '" + storyID + "' deleted",
+			})
+		}
+	})
 	router.GET("/read", func(c *gin.Context) {
 		var stories []story.Story
 		var s story.Story
@@ -150,8 +174,14 @@ func main() {
 		}
 		if storyI < len(stories)-1 {
 			nextStory = stories[storyI+1].ID
+		} else {
+			log.Println(topic.Next(TopicDB, t.Name))
+			stories, err = story.ListByTopic(topic.Next(TopicDB, t.Name))
+			if len(stories) > 0 {
+				nextStory = stories[0].ID
+			}
 		}
-		log.Println(s)
+		log.Println(nextStory)
 
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
@@ -203,6 +233,7 @@ func main() {
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
 			SignedIn: false,
 			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+			APIKey:   GetSignedInUserAPIKey(c),
 		})
 	})
 	router.GET("/signout", func(c *gin.Context) {
@@ -240,9 +271,19 @@ func main() {
 				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 			})
 		}
+		users, err := user.All()
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				ErrorCode:    "503",
+				ErrorMessage: err.Error(),
+				SignedIn:     true,
+				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
+			})
+		}
 		c.HTML(http.StatusOK, "admin.tmpl", MainView{
 			SignedIn: IsSignedIn(c),
 			Stories:  stories,
+			Users:    users,
 			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
@@ -281,6 +322,7 @@ type MainView struct {
 	StoryID      string
 	Topics       []topic.Topic
 	Stories      []story.Story
+	Users        []user.User
 	Next         string
 	Previous     string
 	TrixAttr     template.HTMLAttr

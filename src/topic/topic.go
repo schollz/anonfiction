@@ -33,7 +33,23 @@ func IsClosed(filename string, topicName string) bool {
 		}
 	}
 	return true
+}
 
+// Next returns the next topic
+func Next(filename string, topicName string) string {
+	topics, err := Load(filename)
+	if err != nil {
+		return ""
+	}
+	for i, t := range topics {
+		if i == 0 {
+			continue
+		}
+		if strings.ToLower(topicName) == strings.ToLower(t.Name) {
+			return topics[i-1].Name
+		}
+	}
+	return ""
 }
 
 func Default(filename string, reading bool) (defaultTopic Topic, err error) {

@@ -1,6 +1,6 @@
 {{ template "header" . }}
 
-<article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 " >
+<article class="pv4 bg-lightest-blue  dark-blue ph3 " >
   <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb0">
 Your Profile
   </h1>
@@ -26,7 +26,10 @@ Your Profile
 </span>
 </article>
 
-<section class="pa2 pv2 ph5-ns mb5">
+{{ template "messages" . }}
+
+
+<section class="pa2 pv2 ph5-ns mb5 mt2">
 <article class="ph2">
  <h1 class="db f4 mb1">Your profile</h1>
  <span class="f5 db lh-copy measure-wide">
@@ -44,13 +47,13 @@ Your Profile
    <li
      class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
        <div class="flex-auto">
-         <span class="f6 db gray-70">{{ .Topic }}</span>
+         <span class="f6 db gray-70">{{ .Topic }} (<code>{{ .ID }}</code>)</span>
          <span class="f6 db black-70">{{ .Date.Format "January 2, 2006" }}</span>
        </div>
        <div>
          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read?story={{ .ID }}">Read</a>
          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write?story={{ .ID }}">Edit</a>
-         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story=={{ .ID }}">Delete</a>
+         <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}">Delete</a>
        </div>
    </li>
 {{end}}

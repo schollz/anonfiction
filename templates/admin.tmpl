@@ -1,6 +1,7 @@
 {{ template "header" . }}
 
 <section class="ph5-ns pv4 ph3" style="max-width: 66rem;">
+<h1>Stories</h1>
 		<div >
   <div class="overflow-auto">
     <table class="f6 w-100 mw8 center" cellspacing="0">
@@ -21,6 +22,36 @@
           <td class="pa2"><a href="/write?story={{ .ID }}">{{ .ID }}</a></td>
           <td class="pa2">{{ .UserID }}</td>
           <td class="pa2">{{ .Published }}</td>
+</tr>  
+{{ end }}        
+      </tbody>
+    </table>
+  </div>
+</div>
+	</section>
+
+  <section class="ph5-ns pv4 ph3" style="max-width: 66rem;">
+<h1>Users</h1>
+		<div >
+  <div class="overflow-auto">
+    <table class="f6 w-100 mw8 center" cellspacing="0">
+      <thead>
+        <tr class="stripe-dark">
+          <th class="fw6 tl pa2 bg-white">ID</th>
+          <th class="fw6 tl pa2 bg-white">Email</th>
+          <th class="fw6 tl pa2 bg-white">Language</th>
+          <th class="fw6 tl pa2 bg-white">Subscribed</th>
+          <th class="fw6 tl pa2 bg-white">IsAdmin</th>
+        </tr>
+      </thead>
+      <tbody class="lh-copy">
+{{ range .Users }}
+<tr class="stripe-dark">
+          <td class="pa2">{{ .ID }}</td>
+          <td class="pa2">{{ .Email }}</td>
+          <td class="pa2">{{ .Language }}</td>
+          <td class="pa2">{{ .Subscribed }}</td>
+          <td class="pa2">{{ .IsAdmin }}</td>
 </tr>  
 {{ end }}        
       </tbody>

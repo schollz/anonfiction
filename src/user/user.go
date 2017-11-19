@@ -134,3 +134,17 @@ func SetAdmin(email string, isadmin bool) (err error) {
 	err = db.Update(&u)
 	return
 }
+
+func All() (u []User, err error) {
+	db, err := storm.Open(DB)
+	defer db.Close()
+	if err != nil {
+		err = errors.Wrap(err, "problem opening DB")
+		return
+	}
+	err = db.AllByIndex("ID", &u)
+	if err != nil {
+		err = errors.Wrap(err, "problem getting all by ID")
+	}
+	return
+}
