@@ -37,7 +37,7 @@
 
 </head>
 
-<body>
+<body id="touchsurface">
 	<header class="sans-serif">
 		<div class="cover bg-left bg-center-l" {{ if .Landing }}style="background-image: url(/static/img/bisons.jpg)" {{end}}>
 			<div class="bg-black-80 {{ if .Landing }}pb5 pb6-m pb7-l{{end}} ph5-ns">
@@ -55,10 +55,10 @@
 		</div>
 	</header>
 
-	<link rel="stylesheet" href="/static/css/animate.min.css">
-	<link rel="stylesheet" href="/static/css/morphext.css">
 	<script src="/static/js/jquery.min.js"></script>
 	{{ if .Landing }}
+	<link rel="stylesheet" href="/static/css/animate.min.css">
+	<link rel="stylesheet" href="/static/css/morphext.css">
 	<script src="/static/js/morphext.js"></script>
 	<script>
 		var $morphext = $("#js-rotating").Morphext({

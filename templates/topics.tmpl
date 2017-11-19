@@ -50,7 +50,7 @@
           <tr>
             <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"></th>
             <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Topic</th>
-            <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
+            <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"># Stories</th>
           </tr>
         </thead>
         <tbody class="lh-copy">
@@ -58,17 +58,22 @@
           <tr>
             <td class="pv3 pr3 bb b--black-20">
               <div class="ph3">
-                {{ if .Open }}
-                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/write?topic={{.Name}}">Write</a>
-                {{ else }}
-                <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/read?topic={{.Name}}">Read</a>
+              {{ if .Open }}
+                <a class="f5 f4-m f3-l link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/write?topic={{.Name}}">Write</a>
+                {{ end }}
+                {{ if .NumberOfStories }}
+                <a class="f5 f4-m f3-l link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/read?topic={{.Name}}">Read</a>
                 {{ end }}
               </div>
             </td>
-            <td class="pv3 pr3 bb b--black-20"><a class="f4 fw6 db black link hover-dark-pink pointer" href="{{ if .Open }}/write?topic={{.Name}}{{else}}/read?topic={{.Name}}{{end}}">{{.Name}}</a>
+            <td class="pv3 pr3 bb b--black-20">
+            <img src="/static/img/{{ .Name }}.jpg" style="width:100%;" onerror="this.style.display='none'">
+            <a class="f4 fw6 db black link hover-dark-pink pointer" href="{{ if .Open }}/write?topic={{.Name}}{{else}}/read?topic={{.Name}}{{end}}">{{.Name}}</a>
             {{.Month}}
+
+            
             </td>
-            <td class="pv3 pr3 bb b--black-20"><img src="/static/img/{{ .Name }}.jpg" style="width:100%;" onerror="this.style.display='none'"></td>
+            <td class="f3 f2-m f1-l pv3 pr3 bb b--black-20">{{ .NumberOfStories }}</td>
           </tr>
 
 {{end}}

@@ -5,12 +5,15 @@ import (
 	"errors"
 	"io/ioutil"
 	"strings"
+
+	"github.com/schollz/storiesincognito/src/story"
 )
 
 type Topic struct {
-	Name  string
-	Month string
-	Open  bool
+	Name            string
+	Month           string
+	Open            bool
+	NumberOfStories int
 }
 
 func Load(filename string) (t []Topic, err error) {
@@ -19,6 +22,9 @@ func Load(filename string) (t []Topic, err error) {
 		return
 	}
 	err = json.Unmarshal(b, &t)
+	for i := range t {
+		t[i].NumberOfStories = story.NumberOfStories(t[i].Name)
+	}
 	return
 }
 
@@ -77,6 +83,7 @@ func Get(filename string, topicName string) (t Topic, err error) {
 	for _, topic := range topics {
 		if strings.ToLower(topic.Name) == strings.ToLower(topicName) {
 			t = topic
+			t.NumberOfStories = story.NumberOfStories(t.Name)
 			return
 		}
 	}

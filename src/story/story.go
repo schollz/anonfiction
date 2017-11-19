@@ -57,6 +57,11 @@ func ListByTopic(topic string) (stories []Story, err error) {
 	return
 }
 
+func NumberOfStories(topic string) int {
+	s, _ := ListByTopic(topic)
+	return len(s)
+}
+
 func New(id, apikey, topic, content string, keywords []string) (s Story, err error) {
 	// first get user
 	u, err := user.GetByAPIKey(apikey)

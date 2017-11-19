@@ -34,7 +34,7 @@
   <footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
   <div class="flex">
     {{ with .Previous }}
-    <a href="/read?story={{.}}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+    <a href="/read?story={{.}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
             <title>chevronLeft icon</title>
           <path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
@@ -42,45 +42,54 @@
         <span class="pl1">Previous</span>
       </a>
 
-<script>
-$(function(){
-  // Bind the swipeleftHandler callback function to the swipe event on div.box
-  $( "body" ).on( "swiperight", swipeRightHandler );
- 
-  // Callback function references the event target and adds the 'swipeleft' class to it
-  function swipeRightHandler( event ){
-    window.location = "/read?story={{.}}";
-  }
-});
-</script>
-
     {{ end }}
     {{ with .Next }}
-    <a href="/read?story={{.}}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+    <a href="/read?story={{.}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
         <span class="pr1">Next</span>
         <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
           <title>chevronRight icon</title>
         <path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
       </svg>
     </a>
-<script>
-$(function(){
-  // Bind the swipeleftHandler callback function to the swipe event on div.box
-  $( "body" ).on( "swipeleft", swipeLeftHandler );
- 
-  // Callback function references the event target and adds the 'swipeleft' class to it
-  function swipeLeftHandler( event ){
-    window.location = "/read?story={{.}}";
-  }
-});
-</script>
+
 
     {{ end }}
   </div>
 </footer>
 </article>
 
+<script>
 
-  <script src="/static/js/jquery.mobile-1.5.0-alpha.1.min.js"></script>
+
+window.addEventListener('load', function(){
+ document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode == '38') {
+        // up arrow
+    }
+    else if (e.keyCode == '40') {
+        // down arrow
+    }
+    else if (e.keyCode == '37' && document.querySelectorAll('a.PrevP').length > 0) {
+       // left arrow
+        var prevPageURL = document.querySelectorAll('a.PrevP')[0].href;
+      window.location.href = prevPageURL;
+    }
+    else if (e.keyCode == '39' && document.querySelectorAll('a.NextP').length > 0) {
+       // right arrow
+        var nextPageUrl = document.querySelectorAll('a.NextP')[0].href;
+        window.location.href = nextPageUrl;
+    }
+
+}
+
+ 
+}, false) // end window.onload
+</script>
+
 
 {{ template "footer" . }}
