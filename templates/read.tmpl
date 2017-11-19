@@ -41,18 +41,18 @@
         </svg>
         <span class="pl1">Previous</span>
       </a>
+
 <script>
 $(function(){
   // Bind the swipeleftHandler callback function to the swipe event on div.box
-  $( "body" ).on( "swipeleft", swipeLeftHandler );
+  $( "body" ).on( "swiperight", swipeRightHandler );
  
   // Callback function references the event target and adds the 'swipeleft' class to it
-  function swipeLeftHandler( event ){
+  function swipeRightHandler( event ){
     window.location = "/read?story={{.}}";
   }
 });
 </script>
-
 
     {{ end }}
     {{ with .Next }}
@@ -66,10 +66,10 @@ $(function(){
 <script>
 $(function(){
   // Bind the swipeleftHandler callback function to the swipe event on div.box
-  $( "body" ).on( "swiperight", swipeRightHandler );
+  $( "body" ).on( "swipeleft", swipeLeftHandler );
  
   // Callback function references the event target and adds the 'swipeleft' class to it
-  function swipeRightHandler( event ){
+  function swipeLeftHandler( event ){
     window.location = "/read?story={{.}}";
   }
 });
