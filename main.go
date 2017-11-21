@@ -265,6 +265,7 @@ func main() {
 	})
 	router.POST("/write", handlePOSTStory)
 	router.POST("/login", handlePOSTSignup)
+	fmt.Println("Running at http://localhost:3001")
 	router.Run(":" + port)
 }
 
