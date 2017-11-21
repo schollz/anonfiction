@@ -32,20 +32,19 @@
   Write your story
   </h1>
     <h2 class="fw2 f4 lh-copy mt0 mb3">
-    Current topic is <span class="f3">“{{ .Story.Topic }}.”</span>
+    Submit online or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>
   </h2>
     <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
   </p> -->
     <div>
-
     {{ if .IsAdmin }}
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
+      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
     {{ else }}
       {{ if .Story.Published }}
       This story is published and cannot be edited.
       {{ else }}
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
+      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
 
       {{ end }}
     {{ end }}
@@ -58,10 +57,9 @@
 {{ template "messages" .}}
 
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
-    <h1 class="db f4 mb1">Submitting stories</h1>
+<!--    <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story. Submit your story online, <a href="/about#contact">or mail your story to use the old-fashioned way</a>. Once submitted,an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a> for more info). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ with .Story.ID }} View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
-    <!-- You can also <a href="/upload">upload a file</a> instead. -->
+   Once submitted, an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a>). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ if .Story.Content.CurrentText }} View your story at <a href="/read?story={{ .Story.ID }}">/read?story={{ .Story.ID }}</a>.{{ end }}
   </span>
   {{ if .IsAdmin }}
 			<div class="mt3">
@@ -70,7 +68,19 @@
   {{ else }}
 <input type="hidden" id="published" name="published" value="{{if .Story.Published }}on{{ end}}">
   {{ end }}
+  -->
+
+      <div class="measure pv2 mt2">
+
+      <label for="keywords" class="f3 b db mb2 leader">Topic
+          </label>
+      <select name="topic" class="f4 pa2 ">
+  <option class="f3" value="volvo">I Laughed</option>
+  <option value="saab">Wild Animals</option>
+</select>
+    </div>
   
+   
 
     <article class="mw8 center br2 ba mt3">
       <div class="dt-ns dt--fixed-ns w-100">
@@ -94,8 +104,8 @@
     <input type="hidden" id="topic" name="topic" value="{{ .Story.Topic }}">
     <script>
   function tlen(el) {
-    var n = el.value.length - 160;
-    el.nextSibling.innerText = n > 0 ? n + ' too long' : '';
+    var n = 160 - el.value.length;
+    el.nextSibling.innerText = n > 0 ? n + ' characters left' : '';
   }
 
 </script>

@@ -1,22 +1,21 @@
 {{ template "header" . }}
 
 
-<article class="pv4 bg-lightest-blue  dark-blue mb2 ph3 ">
-  <h1 class="fw6 f3 ph5-ns f2-ns lh-title mt0 mb0">
+<article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
+   <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
   Topics
   </h1>
-  <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
-    See current, past, and future topics for
-   <span class="f3">stories, incognito.</span>
+  <h2 class="fw2 f4 lh-copy mt0 mb3">
+    See current, past, and future topics.
   </h2>
-  <!-- <h2 class="fw2 f4 ph5-ns lh-copy mt0 mb3">
+  <!-- <h2 class="fw2 f4 lh-copy mt0 mb3">
     Current topic is <span class="f3">“Losing”</span> and closes in 15 days.
   </h2> -->
   <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
   </p> -->
-  <div class="ph5-ns">
-    <a class="f4  leader br-pill dark-blue no-underline ba grow pv2 ph3 dib" href="/upload">
+  <div>
+    <a class="f4 f3-m f3-l    leader br-pill dark-blue no-underline ba grow pv2 ph3 dib" href="/upload">
       Suggest Topic
     </a>
   </div>
@@ -24,25 +23,21 @@
 </article>
 
 
-<section class="pa2 pv2 ph5-ns">
-  <article class="ph2 pb4">
-    <h1 class="db f4 mb1 pv">topic List</h1>
+<section class="ph3 ph5-ns pv1">
+  <article class="pb4">
+    <h1 class="db f4 mb1">topic List</h1>
     <span class="f5 db lh-copy measure-wide">
       Each month we select a new topic to explore stories that are related to that topic.
       This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
 
     </span>
   </article>
-  <!-- <article class="ph2 pv4">
-    <span class="f5 db lh-copy measure">
-    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
-    </span>
-  </article> -->
 </section>
 
 
+<!--
 
-<section class="pa2 pv2 ph5-ns mb5">
+<section class="pa2 pv1 ph5-ns mb5">
   <article class="ph2">
     <div class="overflow-auto measure-wide">
       <table class="f6 w-100 mw8 center" cellspacing="0">
@@ -80,5 +75,31 @@
     </div>
   </article>
 </section>
+-->
 
+
+
+<section class="pa2 pv2 ph5-ns center">
+  {{range .Topics}}
+  <article class="bt bb b--black-10">
+    <a class="db pv4 ph3 ph0-l no-underline black dim" href="#0">
+      <div class="flex flex-column flex-row-ns">
+        <div class="pr3-ns mb4 mb0-ns w-100 w-40-ns">
+          <img src="/static/img/{{ .Name }}.jpg" class="db" alt="Photo of a dimly lit room with a computer interface terminal.">
+        </div>
+        <div class="w-100 w-60-ns pl3-ns">
+          <h1 class="f2 fw1 mt0 lh-title"><strong>{{.Name}}</strong></h1>
+          <p class="f6 f5-l lh-copy"><em>
+            The tech giant says it is ready to begin planning a quantum
+            computer, a powerful cpu machine that relies on subatomic particles instead
+            of transistors.
+          </em></p>
+          <p class="f6 lh-copy mv0">{{.Month}}</p>
+        </div>
+      </div>
+    </a>
+  </article>
+  {{ end }}
+
+</section>
 {{ template "footer" . }}
