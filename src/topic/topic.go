@@ -11,6 +11,7 @@ import (
 
 type Topic struct {
 	Name            string
+	Description     string
 	Month           string
 	Open            bool
 	NumberOfStories int

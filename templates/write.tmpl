@@ -26,19 +26,19 @@
   }
 </style>
 
-<form action="/write?story={{ .StoryID }}&topic={{ .Topic.Name }}" method="POST" enctype="multipart/form-data" id="formdata" >
+<form action="/write?story={{ .Story.ID }}&topic={{ .Story.Topic }}" method="POST" enctype="multipart/form-data" id="formdata" >
   <article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
     <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
   Write your story
   </h1>
     <h2 class="fw2 f4 lh-copy mt0 mb3">
-    Current topic is <span class="f3">“{{ .Topic.Name }}.”</span>
+    Current topic is <span class="f3">“{{ .Story.Topic }}.”</span>
   </h2>
     <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
   </p> -->
     <div>
-{{ if .APIKey }}
+
     {{ if .IsAdmin }}
       <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Topic }}Update{{ else }}Submit{{end }} Story">            </input>
     {{ else }}
@@ -49,8 +49,7 @@
 
       {{ end }}
     {{ end }}
-{{ else }}
-      <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" href="/signin">Sign in to start writing</a>          {{end }}
+
       </a>
     </div>
     </span>
@@ -58,12 +57,10 @@
 
 {{ template "messages" .}}
 
-{{ if .APIKey }}
-
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
     <h1 class="db f4 mb1">Submitting stories</h1>
     <span class="f6 db lh-copy measure-wide">
-    Write your story. Once submitted,an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a> for more info). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ with .Story.ID }} View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
+    Write your story. Submit your story online, <a href="/about#contact">or mail your story to use the old-fashioned way</a>. Once submitted,an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a> for more info). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ with .Story.ID }} View your story at <a href="/read?story={{ . }}">/read?story={{ . }}</a>.{{ end }}
     <!-- You can also <a href="/upload">upload a file</a> instead. -->
   </span>
   {{ if .IsAdmin }}
@@ -93,9 +90,22 @@
           </label>
       <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element}}{{end}}{{end}}">
     </div>
-    <input type="hidden" id="apikey" name="apikey" value="{{ .APIKey }}">
-    <input type="hidden" id="storyid" name="storyid" value="{{ .StoryID }}">
-    <input type="hidden" id="topic" name="topic" value="{{ .Topic.Name }}">
+    <input type="hidden" id="storyid" name="storyid" value="{{ .Story.ID }}">
+    <input type="hidden" id="topic" name="topic" value="{{ .Story.Topic }}">
+    <script>
+  function tlen(el) {
+    var n = el.value.length - 160;
+    el.nextSibling.innerText = n > 0 ? n + ' too long' : '';
+  }
+
+</script>
+<div class="measure pv2 mt2">
+<label for="description" class="f3 b db mb2 leader">Description
+            <span class="normal black-60">(optional)</span>
+          </label>
+<textarea name="description" value="" cols=60 rows=3 oninput="tlen(this)" onfocus="tlen(this)" type="text"></textarea><span style="margin-left:10px"></span>
+
+</div>
 </form>
 
 </section>
@@ -115,8 +125,5 @@
 }).call(this);
 </script>
 
-{{ else }}
-
-{{ end }}
 
 {{ template "footer" . }}

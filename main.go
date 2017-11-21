@@ -7,31 +7,22 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
-	"time"
+
+	"github.com/rs/xid"
+	"github.com/schollz/jsonstore"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/schollz/storiesincognito/src/encrypt"
 	"github.com/schollz/storiesincognito/src/story"
 	"github.com/schollz/storiesincognito/src/topic"
 	"github.com/schollz/storiesincognito/src/user"
-	"github.com/schollz/storiesincognito/src/utils"
 )
 
-type SessionKey struct {
-	APIKey   string
-	LastSeen time.Time
-}
-
-type Session struct {
-	Keys map[string]SessionKey
-	sync.RWMutex
-}
-
 var (
-	port           string
-	currentSession Session
+	port string
+	keys *jsonstore.JSONStore
 )
 
 const (
@@ -39,9 +30,11 @@ const (
 )
 
 func init() {
-	currentSession.Lock()
-	currentSession.Keys = make(map[string]SessionKey)
-	currentSession.Unlock()
+	var err error
+	keys, err = jsonstore.Open("keys.json")
+	if err != nil {
+		keys = new(jsonstore.JSONStore)
+	}
 }
 
 func main() {
@@ -56,51 +49,42 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "landing.tmpl", MainView{
 			Landing:  true,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 		})
 	})
 	router.GET("/write", func(c *gin.Context) {
-		// allow anonymous users
-		var apikey string
-		if IsSignedIn(c) {
-			apikey = GetSignedInUserAPIKey(c)
-		} else {
-			apikey = user.AnonymousAPIKey()
-		}
-		storyID := c.DefaultQuery("story", utils.NewAPIKey())
+		storyID := c.DefaultQuery("story", xid.New().String())
 		topicName := c.DefaultQuery("topic", "")
 		t, err := topic.Get(TopicDB, topicName)
 		if err != nil {
 			t, _ = topic.Default(TopicDB, false)
 		}
-		s, err := story.Get(storyID)
+		userID, err := GetUserIDFromCookie(c)
 		if err != nil {
-			c.HTML(http.StatusOK, "write.tmpl", MainView{
-				StoryID:  storyID,
-				APIKey:   apikey,
-				SignedIn: IsSignedIn(c),
-				Topic:    t,
-				IsAdmin:  user.IsAdmin(apikey),
-			})
-		} else {
-			c.HTML(http.StatusOK, "write.tmpl", MainView{
-				StoryID:  storyID,
-				APIKey:   GetSignedInUserAPIKey(c),
-				SignedIn: IsSignedIn(c),
-				Story:    s,
-				TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
-				Topic:    t,
-				IsAdmin:  user.IsAdmin(apikey),
-			})
+			userID = user.AnonymousUserID()
 		}
+		fmt.Println(storyID)
+		s, err := story.Get(storyID)
+		fmt.Println(s)
+		if err != nil {
+			log.Println(err)
+			s = story.New(userID, t.Name, "", "", []string{})
+		}
+		c.HTML(http.StatusOK, "write.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
+			Story:    s,
+			TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
+		})
 	})
 	router.GET("/upload", func(c *gin.Context) {
 		if !IsSignedIn(c) {
-			c.Redirect(302, "/signin")
+			c.Redirect(302, "/login")
 		}
 		c.HTML(http.StatusOK, "upload.tmpl", MainView{
-			SignedIn: true,
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
 		})
 	})
 	router.GET("/profile", func(c *gin.Context) {
@@ -108,11 +92,16 @@ func main() {
 			SignInAndContinueOn(c)
 			return
 		}
-		stories, _ := story.ListByUser(GetSignedInUserAPIKey(c))
+		userID, err := GetUserIDFromCookie(c)
+		if err != nil {
+			ShowError(err, c)
+			return
+		}
+		stories, _ := story.ListByUser(userID)
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
-			SignedIn: true,
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
 			Stories:  stories,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/delete", func(c *gin.Context) {
@@ -121,118 +110,96 @@ func main() {
 			return
 		}
 		storyID := c.DefaultQuery("story", "")
-		err := story.Delete(storyID, GetSignedInUserAPIKey(c))
-		stories, _ := story.ListByUser(GetSignedInUserAPIKey(c))
+		s, err := story.Get(storyID)
 		if err != nil {
-			c.HTML(http.StatusOK, "profile.tmpl", MainView{
-				SignedIn:     true,
-				Stories:      stories,
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-				ErrorMessage: err.Error(),
-			})
-		} else {
-			c.HTML(http.StatusOK, "profile.tmpl", MainView{
-				SignedIn:    true,
-				Stories:     stories,
-				IsAdmin:     user.IsAdmin(GetSignedInUserAPIKey(c)),
-				InfoMessage: "Story '" + storyID + "' deleted",
-			})
+			ShowError(err, c)
+			return
 		}
+		err = s.Delete()
+		if err != nil {
+			ShowError(err, c)
+			return
+		}
+		userID, err := GetUserIDFromCookie(c)
+		if err != nil {
+			ShowError(err, c)
+			return
+		}
+		stories, _ := story.ListByUser(userID)
+		c.HTML(http.StatusOK, "profile.tmpl", MainView{
+			IsAdmin:     IsAdmin(c),
+			SignedIn:    IsSignedIn(c),
+			Stories:     stories,
+			InfoMessage: "Story '" + storyID + "' deleted",
+		})
 	})
 	router.GET("/read", func(c *gin.Context) {
-		var stories []story.Story
+		var err error
 		var s story.Story
 		var t topic.Topic
-		var err error
 		var nextStory, previousStory string
 		storyID := c.DefaultQuery("story", "")
 		topicName := c.DefaultQuery("topic", "")
 		if storyID != "" {
 			s, err = story.Get(storyID)
 			if err != nil {
-				c.HTML(http.StatusOK, "error.tmpl", MainView{
-					ErrorMessage: err.Error(),
-					ErrorCode:    "503",
-				})
+				ShowError(err, c)
 				return
 			}
 			topicName = s.Topic
 		}
-
-		t, err = topic.Get(TopicDB, topicName)
-		if err != nil {
-			t, _ = topic.Default(TopicDB, true)
-		}
-		stories, err = story.ListByTopic(t.Name)
-		if err != nil {
-			stories = []story.Story{s}
-		}
-		storyI := 0
-		if storyID != "" {
-			for i := range stories {
-				storyI = i
-				if stories[i].ID == storyID {
-					break
-				}
-			}
-		} else {
-			s = stories[storyI]
-		}
-		if storyI > 0 {
-			previousStory = stories[storyI-1].ID
-		}
-		if storyI < len(stories)-1 {
-			nextStory = stories[storyI+1].ID
-		} else {
-			log.Println(topic.Next(TopicDB, t.Name))
-			stories, err = story.ListByTopic(topic.Next(TopicDB, t.Name))
-			if len(stories) > 0 {
-				nextStory = stories[0].ID
-			}
-		}
-		log.Println(nextStory)
-
+		t, _ = topic.Get(TopicDB, topicName)
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 			Topic:    t,
 			Story:    s,
 			Next:     nextStory,
 			Previous: previousStory,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
 		topics, err := topic.Load(TopicDB)
 		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorMessage: err.Error(),
-				ErrorCode:    "503",
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
+			ShowError(err, c)
 			return
 		}
 		c.HTML(http.StatusOK, "topics.tmpl", MainView{
-			Topics:   topics,
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+			Topics:   topics,
 		})
 	})
-	router.GET("/signin", func(c *gin.Context) {
+	router.GET("/login", func(c *gin.Context) {
 		if IsSignedIn(c) {
 			c.Redirect(302, "/profile")
 			return
 		}
-		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			SignedIn: false,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
-		})
+		uuid := c.DefaultQuery("key", "")
+		if uuid == "" {
+			c.HTML(http.StatusOK, "login.tmpl", MainView{
+				IsAdmin:  IsAdmin(c),
+				SignedIn: IsSignedIn(c),
+			})
+			return
+		}
+		err := SignIn(uuid, c)
+		if err != nil {
+			c.HTML(http.StatusOK, "login.tmpl", MainView{
+				ErrorMessage: err.Error(),
+				IsAdmin:      IsAdmin(c),
+				SignedIn:     IsSignedIn(c),
+			})
+			return
+		}
+		c.Redirect(302, "/profile")
 	})
 	router.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusOK, "error.tmpl", MainView{
+			IsAdmin:      IsAdmin(c),
+			SignedIn:     IsSignedIn(c),
 			ErrorCode:    "404",
 			ErrorMessage: "Sorry, we can't find the page you are looking for.",
-			SignedIn:     false,
-			IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/signup", func(c *gin.Context) {
@@ -240,13 +207,12 @@ func main() {
 			c.Redirect(302, "/profile")
 		}
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
-			SignedIn: false,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
-			APIKey:   GetSignedInUserAPIKey(c),
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
 		})
 	})
 	router.GET("/signout", func(c *gin.Context) {
-		SignOutUser(c)
+		SignOut(c)
 		c.Redirect(302, "/")
 	})
 	router.GET("/admin", func(c *gin.Context) {
@@ -254,66 +220,51 @@ func main() {
 			SignInAndContinueOn(c)
 			return
 		}
-		u, err := user.GetByAPIKey(GetSignedInUserAPIKey(c))
-		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorCode:    "503",
-				ErrorMessage: err.Error(),
-				SignedIn:     true,
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
-		}
-		if !u.IsAdmin {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorCode:    "401",
-				ErrorMessage: "Unauthorized",
-				SignedIn:     true,
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
+
+		if !IsAdmin(c) {
+			ShowError(errors.New("Not admin"), c)
+			return
 		}
 		stories, err := story.All()
 		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorCode:    "503",
-				ErrorMessage: err.Error(),
-				SignedIn:     true,
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
+			ShowError(err, c)
+			return
 		}
 		users, err := user.All()
 		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorCode:    "503",
-				ErrorMessage: err.Error(),
-				SignedIn:     true,
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
+			ShowError(err, c)
+			return
 		}
 		c.HTML(http.StatusOK, "admin.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 			Stories:  stories,
 			Users:    users,
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/terms", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "terms.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
 		})
 	})
 	router.GET("/privacy", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "privacy.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
-			IsAdmin:  user.IsAdmin(GetSignedInUserAPIKey(c)),
+		})
+	})
+	router.GET("/about", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "about.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
 		})
 	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
 	router.POST("/write", handlePOSTStory)
-	router.POST("/signup", handlePOSTSignup)
-	router.POST("/signin", handlePOSTSignin)
+	router.POST("/login", handlePOSTSignup)
 	router.Run(":" + port)
 }
 
@@ -339,105 +290,107 @@ type MainView struct {
 
 func handlePOSTStory(c *gin.Context) {
 	type FormInput struct {
-		Content   string `form:"content" json:"content" binding:"required"`
-		Keywords  string `form:"keywords" json:"keywords"`
-		APIKey    string `form:"apikey" json:"apikey" binding:"required"`
-		StoryID   string `form:"storyid" json:"storyid" binding:"required"`
-		Topic     string `form:"topic" json:"topic" binding:"required"`
-		Published string `form:"published" json:"published"`
+		StoryID     string `form:"storyid" json:"storyid"`
+		Topic       string `form:"topic" json:"topic" binding:"required"`
+		Content     string `form:"content" json:"content" binding:"required"`
+		Description string `form:"description" json:"description"`
+		Keywords    string `form:"keywords" json:"keywords"`
+		Published   string `form:"published" json:"published"`
 	}
 	defaultTopic, _ := topic.Default(TopicDB, false)
 	var form FormInput
 	if err := c.ShouldBind(&form); err == nil {
 		log.Println(form)
-		// check topic is valid
-		t, err := topic.Get(TopicDB, form.Topic)
-		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", MainView{
-				ErrorCode:    "503",
-				ErrorMessage: err.Error(),
-				IsAdmin:      user.IsAdmin(GetSignedInUserAPIKey(c)),
-			})
-			return
-		}
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
-		s, err := story.Update(form.StoryID, form.APIKey, form.Topic, form.Content, keywords, form.Published == "on")
-		log.Println(form.Published, s.Published)
-		fmt.Println(err)
+		var s story.Story
+		userID, err := GetUserIDFromCookie(c)
+		if err != nil {
+			userID = user.AnonymousUserID()
+		}
+		s, err = story.Get(form.StoryID)
+		isNewStory := false
+		if err != nil {
+			s = story.New(userID, form.Topic, "", "", []string{})
+			s.ID = form.StoryID
+			isNewStory = true
+		}
+		s.Content.Update(form.Content)
+		s.Keywords = keywords
+		s.Description = form.Description
+		s.Published = form.Published == "on"
+		if !isNewStory && userID == user.AnonymousUserID() {
+			err = errors.New("cannot update an anonymous story")
+		} else if userID != s.UserID {
+			err = errors.New("cannot update someone elses story")
+		} else {
+			err = s.Save()
+		}
 		var infoMessage, errorMessage string
 		if err != nil {
 			err = errors.Wrap(err, "story not submitted")
 			errorMessage = err.Error()
 		} else {
-			infoMessage = "Updated your story"
+			infoMessage = "updated story"
 		}
+		fmt.Println("storyID", s.ID)
+		fmt.Println("userID", s.UserID)
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
-			StoryID:      form.StoryID,
-			APIKey:       form.APIKey,
-			Topic:        t,
-			ErrorMessage: errorMessage,
+			IsAdmin:      IsAdmin(c),
+			SignedIn:     IsSignedIn(c),
 			InfoMessage:  infoMessage,
+			ErrorMessage: errorMessage,
 			Story:        s,
-			IsAdmin:      user.IsAdmin(form.APIKey),
 			TrixAttr:     template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
-			SignedIn:     true,
 		})
 	} else {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
-			StoryID:      form.StoryID,
-			APIKey:       form.APIKey,
+			IsAdmin:      IsAdmin(c),
+			SignedIn:     IsSignedIn(c),
 			ErrorMessage: err.Error(),
 			Topic:        defaultTopic,
-			IsAdmin:      user.IsAdmin(form.APIKey),
-			SignedIn:     true,
 		})
 	}
 }
 
 func handlePOSTSignup(c *gin.Context) {
+	defer jsonstore.Save(keys, "keys.json")
 	type FormInput struct {
 		Email    string `form:"email" json:"email" binding:"required"`
-		Password string `form:"password" json:"password"`
 		Language string `form:"language" json:"language"`
 		Digest   string `form:"digest" json:"digest"`
 	}
 	var form FormInput
 	if err := c.ShouldBind(&form); err == nil {
-		log.Println(form)
 		form.Email = strings.ToLower(form.Email)
-		log.Println(user.UserExists(form.Email))
-		if user.UserExists(form.Email) {
-			c.HTML(http.StatusOK, "signup.tmpl", MainView{
-				ErrorMessage: "Email already exists",
-			})
-			return
-		}
-		form.Password = strings.TrimSpace(form.Password)
-		if len(form.Password) == 0 {
-			c.HTML(http.StatusOK, "signup.tmpl", MainView{
-				ErrorMessage: "Must choose better password",
-			})
-			return
-		}
-		log.Println("Adding new user " + form.Email)
-		err := user.Add(form.Email, form.Password, form.Language, form.Digest == "on")
-		log.Println(err)
+		userID, err := user.GetID(form.Email)
 		if err != nil {
-			c.HTML(http.StatusOK, "signup.tmpl", MainView{
-				ErrorMessage: "Email already exists",
-			})
-		} else {
-			log.Println("redirecting to profile")
-			u, err := user.Get(form.Email)
+			// create user
+			err = user.Add(form.Email, form.Language, form.Digest == "on")
 			if err != nil {
-				c.HTML(http.StatusOK, "signup.tmpl", MainView{
-					ErrorMessage: err.Error(),
-				})
+				ShowError(err, c)
 				return
 			}
-			SignInUser(u.APIKey, c)
+			userID, err = user.GetID(form.Email)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
+
+		// add to validation keys
+		uuid := xid.New().String()
+		err = keys.Set("uuid:"+uuid, userID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		go jsonstore.Save(keys, "keys.json")
+		// send the link to email
+		fmt.Println("http://localhost:" + port + "/login?key=" + uuid)
+		c.HTML(http.StatusOK, "login.tmpl", MainView{
+			InfoMessage: "http://localhost:" + port + "/login?key=" + uuid,
+			IsAdmin:     IsAdmin(c),
+			SignedIn:    IsSignedIn(c),
+		})
 	} else {
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
 			ErrorMessage: err.Error(),
@@ -445,104 +398,112 @@ func handlePOSTSignup(c *gin.Context) {
 	}
 }
 
-func handlePOSTSignin(c *gin.Context) {
-	type FormInput struct {
-		Email    string `form:"email" json:"email" binding:"required"`
-		Password string `form:"password" json:"password"`
+func getCookie(key string, c *gin.Context) (cookie string, err error) {
+	cookies := sessions.Default(c)
+	data := cookies.Get(key)
+	if data == nil {
+		err = errors.New("Cookie not available for '" + key + "'")
+		return
 	}
-	var form FormInput
-	if err := c.ShouldBind(&form); err == nil {
-		form.Email = strings.ToLower(form.Email)
-		if !user.UserExists(form.Email) {
-			c.HTML(http.StatusOK, "login.tmpl", MainView{
-				ErrorMessage: "User does not exist",
-			})
-			return
-		}
-		form.Password = strings.TrimSpace(form.Password)
-		apikey, err := user.Validate(form.Email, form.Password)
-		if err != nil {
-			c.HTML(http.StatusOK, "login.tmpl", MainView{
-				ErrorMessage: err.Error(),
-			})
-			return
-		}
-		SignInUser(apikey, c)
-	} else {
-		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			ErrorMessage: err.Error(),
-		})
+	cookie, err = encrypt.Decrypt(data.(string), "secrete")
+	return
+}
+
+func setCookie(key, value string, c *gin.Context) (err error) {
+	cookies := sessions.Default(c)
+	encrypted, err := encrypt.Encrypt(value, "secrete")
+	if err != nil {
+		return
 	}
+	cookies.Set(key, encrypted)
+	err = cookies.Save()
+	return
 }
 
 func IsSignedIn(c *gin.Context) bool {
-	cookies := sessions.Default(c)
-	clientKey := cookies.Get("sessionkey")
-	if clientKey == nil {
+	apikey, err := getCookie("apikey", c)
+	if err != nil {
 		return false
 	}
-	currentSession.Lock()
-	defer currentSession.Unlock()
-	_, ok := currentSession.Keys[clientKey.(string)]
-	if ok {
-		currentSession.Keys[utils.NewAPIKey()] = SessionKey{
-			APIKey:   currentSession.Keys[clientKey.(string)].APIKey,
-			LastSeen: time.Now(),
-		}
+	var userID string
+	err = keys.Get("apikey:"+apikey, &userID)
+	if err == nil {
+		return true
 	}
-	return ok
+	return false
 }
 
-func GetSignedInUserAPIKey(c *gin.Context) string {
-	if !IsSignedIn(c) {
-		return ""
+func IsAdmin(c *gin.Context) bool {
+	apikey, err := getCookie("apikey", c)
+	if err != nil {
+		return false
 	}
-	cookies := sessions.Default(c)
-	clientKey := cookies.Get("sessionkey")
-	if clientKey == nil {
-		return ""
+	var userID string
+	err = keys.Get("apikey:"+apikey, &userID)
+	if err != nil {
+		return false
 	}
-	currentSession.Lock()
-	defer currentSession.Unlock()
-	key := currentSession.Keys[clientKey.(string)].APIKey
-	return key
+	var foo string
+	err = keys.Get("admin:"+userID, &foo)
+	return err == nil
 }
 
-func SignInUser(apikey string, c *gin.Context) {
-	currentSession.Lock()
-	defer currentSession.Unlock()
-	tempAPIKey := utils.NewAPIKey()
-	currentSession.Keys[tempAPIKey] = SessionKey{
-		APIKey:   apikey,
-		LastSeen: time.Now(),
+func SignIn(uuid string, c *gin.Context) (err error) {
+	defer jsonstore.Save(keys, "keys.json")
+	var userID string
+	// First check to see if its in the validator
+	err = keys.Get("uuid:"+uuid, &userID)
+	if err != nil {
+		err = errors.New("Must request new sign-in")
+		return
 	}
-	cookies := sessions.Default(c)
-	cookies.Set("sessionkey", tempAPIKey)
-	err := cookies.Save()
+
+	// Generate a new API key
+	apikey := xid.New().String()
+	err = keys.Set("apikey:"+apikey, userID)
+	if err != nil {
+		return
+	}
+
+	// Set the cookie with the API key
+	err = setCookie("apikey", apikey, c)
 	if err != nil {
 		log.Println(err)
 	}
+
+	// Delete the UUID to prevent being used again
+	keys.Delete("uuid:" + uuid)
+
+	// Check the continue on if it needs to be done
+	cookies := sessions.Default(c)
 	continueOn := cookies.Get("continueon")
 	if continueOn != nil {
 		c.Redirect(302, continueOn.(string))
 	} else {
 		c.Redirect(302, "/profile")
 	}
+	return nil
 }
 
-func SignOutUser(c *gin.Context) {
-	cookies := sessions.Default(c)
-	clientKey := cookies.Get("sessionkey")
-	if clientKey == nil {
+func GetUserIDFromCookie(c *gin.Context) (userID string, err error) {
+	apikey, err := getCookie("apikey", c)
+	if err != nil {
 		return
 	}
-	currentSession.Lock()
-	defer currentSession.Unlock()
-	_, ok := currentSession.Keys[clientKey.(string)]
-	if ok {
-		delete(currentSession.Keys, clientKey.(string))
+	err = keys.Get("apikey:"+apikey, &userID)
+	return
+}
+
+func SignOut(c *gin.Context) (err error) {
+	defer jsonstore.Save(keys, "keys.json")
+	cookies := sessions.Default(c)
+	apikey, err := getCookie("apikey", c)
+	if err != nil {
+		return
 	}
+	keys.Delete("apikey:" + apikey)
 	cookies.Clear()
+	return
 }
 
 func SignInAndContinueOn(c *gin.Context) {
@@ -553,5 +514,14 @@ func SignInAndContinueOn(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	c.Redirect(302, "/signin")
+	c.Redirect(302, "/login")
+}
+
+func ShowError(err error, c *gin.Context) {
+	c.HTML(http.StatusOK, "error.tmpl", MainView{
+		IsAdmin:      IsAdmin(c),
+		SignedIn:     IsSignedIn(c),
+		ErrorMessage: err.Error(),
+		ErrorCode:    "503",
+	})
 }
