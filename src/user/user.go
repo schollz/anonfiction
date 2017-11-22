@@ -7,6 +7,7 @@ import (
 	"github.com/asdine/storm"
 	"github.com/pkg/errors"
 	"github.com/schollz/storiesincognito/src/utils"
+	"github.com/sirupsen/logrus"
 )
 
 var DB string
@@ -41,14 +42,16 @@ func Add(email, language string, subscribed bool) (err error) {
 		Subscribed: subscribed,
 		Joined:     time.Now(),
 	}
-	log.Println("opening db to Add")
+	logrus.WithFields(logrus.Fields{
+		"func": "user.Add",
+	}).Infof("userid:%s email:%s", u.ID, u.Email)
+
 	db, err := storm.Open(DB)
 	defer db.Close()
 	if err != nil {
 		return
 	}
 	err = db.Save(u)
-	log.Println("saved user " + email)
 	if err == storm.ErrAlreadyExists {
 		err = errors.Wrap(err, "'"+email+"' is taken")
 	}

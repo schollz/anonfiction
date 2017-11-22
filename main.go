@@ -36,7 +36,9 @@ func init() {
 	var err error
 	keys, err = jsonstore.Open("keys.json")
 	if err != nil {
-		log.Println("could not open jsonstore! " + err.Error())
+		logrus.WithFields(logrus.Fields{
+			"func": "init",
+		}).Error(err.Error())
 		keys = new(jsonstore.JSONStore)
 	}
 }
@@ -97,19 +99,16 @@ func main() {
 			}
 			fmt.Println(len(stories))
 		} else if action == "keyword" {
-			log.Println("got /keyword")
 			if id == "" {
-				t, err := topic.Default(TopicDB, true)
-				log.Println(t, err)
 				c.Redirect(302, "/read/topic/")
+				return
 			}
 			stories, err = story.ListByKeyword(id)
-			log.Println(stories, err)
 		} else {
 			if id == "" {
-				t, err := topic.Default(TopicDB, true)
-				log.Println(t, err)
+				t, _ := topic.Default(TopicDB, true)
 				c.Redirect(302, "/read/topic/"+slugify(t.Name))
+				return
 			}
 			stories, err = story.ListByTopic(unslugify(id))
 		}
@@ -126,7 +125,6 @@ func main() {
 			iNum = 1
 		} else {
 			iNum, err = strconv.Atoi(i)
-			log.Println(iNum, err, len(stories))
 			if err != nil || iNum > len(stories) {
 				iNum = len(stories)
 				c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(len(stories)))
@@ -137,7 +135,6 @@ func main() {
 				return
 			}
 		}
-		log.Println(iNum)
 		s = stories[iNum-1]
 		if iNum < len(stories) {
 			nextStory = strconv.Itoa(iNum + 1)
@@ -176,7 +173,6 @@ func main() {
 		s, err := story.Get(storyID)
 		fmt.Println(s)
 		if err != nil {
-			log.Println(err)
 			s = story.New(userID, "", "", "", []string{})
 		}
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
@@ -206,8 +202,6 @@ func main() {
 			ShowError(err, c)
 			return
 		}
-		log.Println(GetUserIDFromCookie(c))
-		log.Println(IsAdmin(c))
 		stories, _ := story.ListByUser(userID)
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
@@ -391,7 +385,6 @@ func handlePOSTStory(c *gin.Context) {
 	var form FormInput
 	topics, _ := topic.Load(TopicDB)
 	if err := c.ShouldBind(&form); err == nil {
-		log.Println(form)
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
 		for i, keyword := range keywords {
@@ -484,7 +477,10 @@ func handlePOSTSignup(c *gin.Context) {
 		}
 		go jsonstore.Save(keys, "keys.json")
 		// send the link to email
-		log.Println("http://localhost:" + port + "/login?key=" + uuid)
+
+		logrus.WithFields(logrus.Fields{
+			"func": "handlePOSTSignup",
+		}).Infof("http://localhost:%s/login?key=%s", port, uuid)
 		sendEmail(form.Email, "Welcome!\n\nPlease use the following link to finish logging in:\n\nhttps://storiesincognito.org/login?key="+uuid+"\n\nNote: This link will only work once. Feel free to request new ones though!\n\nThanks!\n\n- Stories Incognito Team")
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
 			InfoMessage: "You have been sent an email. Click the link in the email to login.",
@@ -629,7 +625,9 @@ func SignIn(uuid string, c *gin.Context) (err error) {
 	// Set the cookie with the API key
 	err = setCookie("apikey", apikey, c)
 	if err != nil {
-		log.Println(err)
+		logrus.WithFields(logrus.Fields{
+			"func": "SignIn",
+		}).Info(err.Error())
 	}
 
 	// Delete the UUID to prevent being used again
@@ -656,9 +654,8 @@ func GetUserIDFromCookie(c *gin.Context) (userID string, err error) {
 		u, err2 := user.Get(userID)
 		if err2 == nil {
 			logrus.WithFields(logrus.Fields{
-				"userID": userID,
-				"email":  u.Email,
-			}).Info("GetUserIDFromCookie")
+				"func": "GetUserIDFromCookie",
+			}).Infof("email:%s userid:%s", u.Email, userID)
 		}
 	}
 	return
