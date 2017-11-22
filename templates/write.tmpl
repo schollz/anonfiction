@@ -64,6 +64,12 @@
     <span class="f6 db lh-copy measure-wide">
    <em>Note:</em> You are currently not logged in. You should note down the URL to your story if you want to update in the future: <a href="/write/{{ .Story.ID }}">storiesincognito.org/write/{{.Story.ID}}</a>.
   </span>
+  {{ else }}
+    {{ if not .SignedIn }}
+      <span class="f6 db lh-copy measure-wide">
+    <em>Note:</em> You are currently not logged in. <a href="/login">Click here to login</a> to manage this story from your profile</a>.
+    </span>
+    {{ end }}
   {{ end }}
     
   {{ if .IsAdmin }}
