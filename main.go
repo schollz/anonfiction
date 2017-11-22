@@ -9,18 +9,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/matcornic/hermes"
-	"github.com/schollz/jsonstore"
-	"github.com/schollz/storiesincognito/src/utils"
-	mailgun "gopkg.in/mailgun/mailgun-go.v1"
-
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/matcornic/hermes"
 	"github.com/pkg/errors"
+	"github.com/schollz/jsonstore"
 	"github.com/schollz/storiesincognito/src/encrypt"
 	"github.com/schollz/storiesincognito/src/story"
 	"github.com/schollz/storiesincognito/src/topic"
 	"github.com/schollz/storiesincognito/src/user"
+	"github.com/schollz/storiesincognito/src/utils"
+	"github.com/sirupsen/logrus"
+	mailgun "gopkg.in/mailgun/mailgun-go.v1"
 )
 
 var (
@@ -50,7 +50,6 @@ func unslugify(s string) string {
 }
 
 func main() {
-	fmt.Println(utils.NewAPIKey())
 	flag.StringVar(&port, "port", "3001", "port of server")
 	flag.Parse()
 	gin.SetMode(gin.ReleaseMode)
@@ -411,6 +410,7 @@ func handlePOSTStory(c *gin.Context) {
 			isNewStory = true
 		}
 		s.Content.Update(form.Content)
+		s.Topic = form.Topic
 		s.Keywords = keywords
 		s.Description = form.Description
 		s.Published = form.Published == "on"
@@ -652,6 +652,15 @@ func GetUserIDFromCookie(c *gin.Context) (userID string, err error) {
 		return
 	}
 	err = keys.Get("apikey:"+apikey, &userID)
+	if err == nil {
+		u, err2 := user.Get(userID)
+		if err2 == nil {
+			logrus.WithFields(logrus.Fields{
+				"userID": userID,
+				"email":  u.Email,
+			}).Info("GetUserIDFromCookie")
+		}
+	}
 	return
 }
 
@@ -673,7 +682,9 @@ func SignInAndContinueOn(c *gin.Context) {
 	cookies.Set("continueon", c.Request.URL.String())
 	err := cookies.Save()
 	if err != nil {
-		log.Println(err)
+		logrus.WithFields(logrus.Fields{
+			"func": "SignInAndContinueOn",
+		}).Info(err.Error())
 	}
 	c.Redirect(302, "/login")
 }
