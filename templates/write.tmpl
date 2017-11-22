@@ -31,11 +31,8 @@
     <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
   Write your story online
   </h1>
-  <div class="fw2 f5 lh-copy mt0 mb3 pv2" style="max-width: 42em;">
-    You can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>.
-    {{ if not .SignedIn }}
-    <a href="/login">Log in</a> to manage your stories.
-    {{ end }}
+  <div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
+    Alternatively, you can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>.
   </div>
     <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
@@ -44,12 +41,12 @@
     {{ if .IsAdmin }}
       <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
     {{ else }}
-      {{ if .Story.Published }}
-      This story is published and cannot be edited.
-      {{ else }}
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
-
-      {{ end }}
+        {{ if .Story.Published}}
+        This story has been published and cannot be edited.
+        {{ else }}
+        <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">     
+              </input>
+        {{ end }}
     {{ end }}
 
       </a>
@@ -61,11 +58,12 @@
 
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
 <!--    <h1 class="db f4 mb1">Submitting stories</h1>
+{{ if not .SignedIn }}
     <span class="f6 db lh-copy measure-wide">
-   Once submitted, an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a>). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ if .Story.Content.CurrentText }} View your story at <a href="/read?story={{ .Story.ID }}">/read?story={{ .Story.ID }}</a>.{{ end }}
+   <em>Note:</em> You are currently not logged in. If you want to edit your story after you submit, please <a href="/login">login first</a>.
   </span>
-    -->
-
+  {{ end }}
+-->
     
   {{ if .IsAdmin }}
 			<div class="mt3">
@@ -77,7 +75,6 @@
 
 
       <div class="measure pv2 mt2">
-
       <label for="topic" class="f3 b db mb2 leader">Topic
           </label>
       <select name="topic" class="f4 pa2 ">

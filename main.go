@@ -397,11 +397,11 @@ func handlePOSTStory(c *gin.Context) {
 			userID = user.AnonymousUserID()
 		}
 		s, err = story.Get(form.StoryID)
-		isNewStory := false
+		// isNewStory := false
 		if err != nil {
 			s = story.New(userID, form.Topic, "", "", []string{})
 			s.ID = form.StoryID
-			isNewStory = true
+			// isNewStory = true
 		}
 		s.Content.Update(form.Content)
 		s.Topic = form.Topic
@@ -410,9 +410,10 @@ func handlePOSTStory(c *gin.Context) {
 		s.Published = form.Published == "on"
 		if IsAdmin(c) {
 			err = s.Save()
-		} else if !isNewStory && userID == user.AnonymousUserID() {
-			err = errors.New("cannot update an anonymous story")
-		} else if userID != s.UserID {
+			// allow to save anonymous story!
+			// } else if !isNewStory && userID == user.AnonymousUserID() {
+			// 	err = errors.New("cannot update an anonymous story")
+		} else if userID != s.UserID && userID != user.AnonymousUserID() {
 			err = errors.New("cannot update someone elses story")
 		} else {
 			err = s.Save()
@@ -422,7 +423,7 @@ func handlePOSTStory(c *gin.Context) {
 			err = errors.Wrap(err, "story not submitted")
 			errorMessage = err.Error()
 		} else {
-			infoMessage = fmt.Sprintf("Story updated, read it at <a href='/read/story/%s'>/read/story/%s</a>", s.ID, s.ID)
+			infoMessage = fmt.Sprintf("Story updated. <br><div class='ph4-ns'><small>Link for reading: <a href='/read/story/%s' class='washed-red' target='_blank'>/read/story/%s</a>, and writing: <a href='/writey/%s' class='washed-red' target='_blank'>/write/%s</a>.</small></div>", s.ID, s.ID, s.ID, s.ID)
 		}
 		fmt.Println("storyID", s.ID)
 		fmt.Println("userID", s.UserID)
@@ -508,7 +509,7 @@ func sendEmail(address, key string) {
 	}
 	email := hermes.Email{
 		Body: hermes.Body{
-			Title: "Welcome to Stories Incognito",
+			Title: "Welcome to Stories Incognito!",
 			// Intros: []string{
 			// 	"Welcome to Stories Incognito!",
 			// },
