@@ -113,11 +113,13 @@ func main() {
 			}
 			stories, err = story.ListByTopic(unslugify(id))
 		}
-		if err != nil {
-			ShowError(errors.Wrap(err, "'"+unslugify(id)+"' doesn't exist"), c)
-			return
-		} else if len(stories) == 0 {
-			ShowError(errors.New("No stories to show"), c)
+		if err != nil || len(stories) == 0 {
+			c.HTML(http.StatusOK, "error.tmpl", MainView{
+				IsAdmin:         IsAdmin(c),
+				SignedIn:        IsSignedIn(c),
+				InfoMessageHTML: template.HTML("No stories yet, <a href='/write'>why don't you write one?</a>"),
+				ErrorCode:       "Uh oh!",
+			})
 			return
 		}
 		if i == "" {
@@ -161,7 +163,7 @@ func main() {
 		if len(storyID) == 0 {
 			storyID = utils.NewAPIKey()
 		}
-		topics, err := topic.Load(TopicDB)
+		topics, err := topic.Active(TopicDB)
 		if err != nil {
 			ShowError(err, c)
 			return

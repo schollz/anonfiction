@@ -29,6 +29,23 @@ func Load(filename string) (t []Topic, err error) {
 	return
 }
 
+func Active(filename string) (newT []Topic, err error) {
+	t, err := Load(filename)
+	if err != nil {
+		return
+	}
+	newT = make([]Topic, len(t))
+	newTI := 0
+	for _, topic := range t {
+		if topic.Open {
+			newT[newTI] = topic
+			newTI++
+		}
+	}
+	newT = newT[:newTI]
+	return
+}
+
 func IsClosed(filename string, topicName string) bool {
 	topics, err := Load(filename)
 	if err != nil {

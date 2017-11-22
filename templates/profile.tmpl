@@ -4,9 +4,10 @@
   <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
 Your Profile
   </h1>
-  <h2 class="fw2 f4 lh-copy mt0 mb3">
+  <div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
    Manage your stories.
-  </h2>
+  </div>
+  
 
   <div class="">
     <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3"
@@ -24,8 +25,8 @@ Your Profile
 {{ template "messages" . }}
 
 
-<section class="pa2 pv2 ph5-ns mb5 mt2">
-<article class="ph2">
+<section class="pv2 ph5-ns mb5 mt2">
+<article class="">
  <h1 class="db f4 mb1">Your profile</h1>
  <span class="f5 db lh-copy measure-wide">
    Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
@@ -36,7 +37,7 @@ Your Profile
    The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
  </span>
  </article>
- <article class="ph2 pv4">
+ <article class="pv4">
  <ul class="list pl0 mt0 measure">
 {{range .Stories }}
    <li
