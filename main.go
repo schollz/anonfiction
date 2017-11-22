@@ -83,7 +83,7 @@ func main() {
 		if len(actions) > 2 {
 			id = strings.TrimSpace(actions[2])
 		}
-		fmt.Println(action, id)
+
 		var err error
 		var s story.Story
 		var t topic.Topic
@@ -97,7 +97,6 @@ func main() {
 				ShowError(err, c)
 				return
 			}
-			fmt.Println(len(stories))
 		} else if action == "keyword" {
 			if id == "" {
 				c.Redirect(302, "/read/topic/")
@@ -111,6 +110,9 @@ func main() {
 				return
 			}
 			stories, err = story.ListByTopic(unslugify(id))
+			logrus.WithFields(logrus.Fields{
+				"func": "handleRead",
+			}).Infof("Found %d stories for '%s'", len(stories), unslugify(id))
 		}
 		if err != nil || len(stories) == 0 {
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
@@ -169,9 +171,7 @@ func main() {
 		if err != nil {
 			userID = user.AnonymousUserID()
 		}
-		fmt.Println(storyID)
 		s, err := story.Get(storyID)
-		fmt.Println(s)
 		if err != nil {
 			s = story.New(userID, "", "", "", []string{})
 		}
@@ -343,7 +343,7 @@ func main() {
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
-	router.POST("/write", handlePOSTStory)
+	router.POST("/write/*foo", handlePOSTStory)
 	router.POST("/login", handlePOSTSignup)
 	fmt.Println("Running at http://localhost:3001")
 	router.Run(":" + port)
@@ -407,7 +407,6 @@ func handlePOSTStory(c *gin.Context) {
 		s.Keywords = keywords
 		s.Description = form.Description
 		s.Published = form.Published == "on"
-		fmt.Println(s)
 		if IsAdmin(c) {
 			err = s.Save()
 		} else if !isNewStory && userID == user.AnonymousUserID() {
@@ -477,7 +476,6 @@ func handlePOSTSignup(c *gin.Context) {
 		}
 		go jsonstore.Save(keys, "keys.json")
 		// send the link to email
-
 		logrus.WithFields(logrus.Fields{
 			"func": "handlePOSTSignup",
 		}).Infof("http://localhost:%s/login?key=%s", port, uuid)
@@ -593,15 +591,34 @@ func IsSignedIn(c *gin.Context) bool {
 func IsAdmin(c *gin.Context) bool {
 	apikey, err := getCookie("apikey", c)
 	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"func": "IsAdmin - apikey",
+		}).Info(err.Error())
 		return false
 	}
 	var userID string
 	err = keys.Get("apikey:"+apikey, &userID)
 	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"func": "IsAdmin - userID",
+		}).Info(err.Error())
+		return false
+	}
+	u, err := user.Get(userID)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"func": "IsAdmin - email",
+		}).Info(err.Error())
 		return false
 	}
 	var foo string
-	err = keys.Get("admin:"+userID, &foo)
+	err = keys.Get("admin:"+u.Email, &foo)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"func": "IsAdmin - key check",
+		}).Info(err.Error())
+		return false
+	}
 	return err == nil
 }
 
@@ -674,7 +691,6 @@ func SignOut(c *gin.Context) (err error) {
 }
 
 func SignInAndContinueOn(c *gin.Context) {
-	fmt.Println(c.Request.URL.String())
 	cookies := sessions.Default(c)
 	cookies.Set("continueon", c.Request.URL.String())
 	err := cookies.Save()
