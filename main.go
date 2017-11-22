@@ -73,6 +73,8 @@ func main() {
 		var err error
 		var s story.Story
 		var t topic.Topic
+		var stories []story.Story
+		var iNum int
 		var nextStory, previousStory string
 		if action == "story" {
 			s, err = story.Get(id)
@@ -86,7 +88,7 @@ func main() {
 				log.Println(t, err)
 				c.Redirect(302, "/read/topic/"+slugify(t.Name))
 			}
-			stories, err := story.ListByTopic(unslugify(id))
+			stories, err = story.ListByTopic(unslugify(id))
 			if err != nil {
 				ShowError(errors.Wrap(err, "topic '"+unslugify(id)+"' doesn't exist"), c)
 				return
@@ -94,7 +96,6 @@ func main() {
 				ShowError(errors.New("No stories to show"), c)
 				return
 			}
-			var iNum int
 			if i == "" {
 				iNum = 1
 			} else {
@@ -121,12 +122,14 @@ func main() {
 		}
 		t, _ = topic.Get(TopicDB, s.Topic)
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
-			Topic:    t,
-			Story:    s,
-			Next:     nextStory,
-			Previous: previousStory,
+			IsAdmin:    IsAdmin(c),
+			SignedIn:   IsSignedIn(c),
+			Topic:      t,
+			Story:      s,
+			Next:       nextStory,
+			Previous:   previousStory,
+			NumStory:   iNum,
+			NumStories: len(stories),
 		})
 	})
 	router.GET("/write/*storyID", func(c *gin.Context) {
@@ -342,6 +345,8 @@ type MainView struct {
 	StoryID         string
 	Topics          []topic.Topic
 	Stories         []story.Story
+	NumStory        int
+	NumStories      int
 	Users           []user.User
 	Next            string
 	Previous        string

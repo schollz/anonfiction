@@ -10,7 +10,7 @@
 
     <h1 class="f2 f1-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
     <span class="pa1 pv1">
-    <time class="f6 ttu tracked gray">{{ .Topic.Month }}</time>
+    <time class="f6 ttu tracked gray">{{ .Topic.Month }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
   </span>
     <div class="pv1">
     {{ with .Story}}{{ range $index, $element := .Keywords }}
