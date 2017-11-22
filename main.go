@@ -508,9 +508,10 @@ func sendEmail(address, key string) {
 	}
 	email := hermes.Email{
 		Body: hermes.Body{
-			Intros: []string{
-				"Welcome to Stories Incognito!",
-			},
+			Title: "Welcome to Stories Incognito",
+			// Intros: []string{
+			// 	"Welcome to Stories Incognito!",
+			// },
 			Actions: []hermes.Action{
 				{
 					Instructions: "To login, please click here:",
