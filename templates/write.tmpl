@@ -31,8 +31,11 @@
     <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
   Write your story online
   </h1>
-  <div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
-    You can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <br> <em>P.O. Box 123, Hillsboro, Oregon</em>.
+  <div class="fw2 f5 lh-copy mt0 mb3 pv2" style="max-width: 42em;">
+    You can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>.
+    {{ if not .SignedIn }}
+    <a href="/login">Log in</a> to manage your stories.
+    {{ end }}
   </div>
     <!-- <p class="fw1 f5 mt0 mb3">
     Sign up for beta access or learn more about x.
