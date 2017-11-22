@@ -484,9 +484,9 @@ func handlePOSTSignup(c *gin.Context) {
 		go jsonstore.Save(keys, "keys.json")
 		// send the link to email
 		log.Println("http://localhost:" + port + "/login?key=" + uuid)
-		sendEmail(form.Email, "http://localhost:"+port+"/login?key="+uuid)
+		sendEmail(form.Email, "Welcome!\n\nPlease use the following link to finish logging in:\n\nhttps://storiesincognito.org/login?key="+uuid+"\n\nNote: This link will only work once. Feel free to request new ones though!\n\nThanks!\n\n- Stories Incognito Team")
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			InfoMessage: "Check your email for your login link",
+			InfoMessage: "You have been sent an email. Click the link in the email to login.",
 			IsAdmin:     IsAdmin(c),
 			SignedIn:    IsSignedIn(c),
 		})
@@ -500,8 +500,8 @@ func handlePOSTSignup(c *gin.Context) {
 func sendEmail(address, messageText string) {
 	mg := mailgun.NewMailgun("mg.storiesincognito.org", "key-3d2e7518cd8fd1332f07f4f7013bf680", "key-3d2e7518cd8fd1332f07f4f7013bf680")
 	message := mailgun.NewMessage(
-		"stories@storiesincognito.org",
-		"Stories Incognito Login",
+		"support@storiesincognito.org",
+		"Welcome to Stories Incognito",
 		messageText,
 		address)
 	resp, id, err := mg.Send(message)
