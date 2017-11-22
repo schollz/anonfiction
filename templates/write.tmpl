@@ -58,12 +58,13 @@
 
   <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
 <!--    <h1 class="db f4 mb1">Submitting stories</h1>
-{{ if not .SignedIn }}
+-->
+
+{{ if (and (not .SignedIn) (.Story.Content.CurrentText)) }}
     <span class="f6 db lh-copy measure-wide">
-   <em>Note:</em> You are currently not logged in. If you want to edit your story after you submit, please <a href="/login">login first</a>.
+   <em>Note:</em> You are currently not logged in. You should note down the URL to your story if you want to update in the future: <a href="/write/{{ .Story.ID }}">storiesincognito.org/write/{{.Story.ID}}</a>.
   </span>
   {{ end }}
--->
     
   {{ if .IsAdmin }}
 			<div class="mt3">

@@ -423,7 +423,7 @@ func handlePOSTStory(c *gin.Context) {
 			err = errors.Wrap(err, "story not submitted")
 			errorMessage = err.Error()
 		} else {
-			infoMessage = fmt.Sprintf("Story updated. <br><div class='ph4-ns'><small>Link for reading: <a href='/read/story/%s' class='washed-red' target='_blank'>/read/story/%s</a>, and writing: <a href='/writey/%s' class='washed-red' target='_blank'>/write/%s</a>.</small></div>", s.ID, s.ID, s.ID, s.ID)
+			infoMessage = fmt.Sprintf("Story updated. Read it at <a href='/read/story/%s' class='washed-red' target='_blank'>/read/story/%s</a>.", s.ID, s.ID)
 		}
 		fmt.Println("storyID", s.ID)
 		fmt.Println("userID", s.UserID)
