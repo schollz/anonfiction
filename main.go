@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -479,9 +480,9 @@ func handlePOSTSignup(c *gin.Context) {
 		logrus.WithFields(logrus.Fields{
 			"func": "handlePOSTSignup",
 		}).Infof("http://localhost:%s/login?key=%s", port, uuid)
-		sendEmail(form.Email, "Welcome!\n\nPlease use the following link to finish logging in:\n\nhttps://storiesincognito.org/login?key="+uuid+"\n\nNote: This link will only work once. Feel free to request new ones though!\n\nThanks!\n\n- Stories Incognito Team")
+		sendEmail(form.Email, uuid)
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			InfoMessage: "You have been sent an email. Click the link in the email to login.",
+			InfoMessage: "You will receive an email in about a minute. Click the link in the email to login.",
 			IsAdmin:     IsAdmin(c),
 			SignedIn:    IsSignedIn(c),
 		})
@@ -492,37 +493,36 @@ func handlePOSTSignup(c *gin.Context) {
 	}
 }
 
-func sendEmail(address, messageText string) {
+func sendEmail(address, key string) {
 	// Configure hermes by setting a theme and your product info
 	h := hermes.Hermes{
 		// Optional Theme
 		// Theme: new(Default)
 		Product: hermes.Product{
 			// Appears in header & footer of e-mails
-			Name: "Hermes",
-			Link: "https://example-hermes.com/",
+			Name: "Stories Incognito Team",
+			Link: "https://storiesincognito.org",
 			// Optional product logo
 			Logo: "http://www.duchess-france.org/wp-content/uploads/2016/01/gopher.png",
 		},
 	}
 	email := hermes.Email{
 		Body: hermes.Body{
-			Name: "Jon Snow",
 			Intros: []string{
-				"Welcome to Hermes! We're very excited to have you on board.",
+				"Welcome to Stories Incognito!",
 			},
 			Actions: []hermes.Action{
 				{
-					Instructions: "To get started with Hermes, please click here:",
+					Instructions: "To login, please click here:",
 					Button: hermes.Button{
 						Color: "#22BC66", // Optional action button color
-						Text:  "Confirm your account",
-						Link:  "https://hermes-example.com/confirm?token=d9729feb74992cc3482b350163a1a010",
+						Text:  "Log In",
+						Link:  "https://storiesincognito.org/login?key=" + key,
 					},
 				},
 			},
 			Outros: []string{
-				"Need help, or have questions? Just reply to this email, we'd love to help.",
+				"Note: This link will only work once. Feel free to request new ones though!",
 			},
 		},
 	}
@@ -542,7 +542,7 @@ func sendEmail(address, messageText string) {
 	mg := mailgun.NewMailgun("mg.storiesincognito.org", "key-3d2e7518cd8fd1332f07f4f7013bf680", "key-3d2e7518cd8fd1332f07f4f7013bf680")
 	message := mailgun.NewMessage(
 		"support@storiesincognito.org",
-		"Welcome to Stories Incognito",
+		"Stories Incognito sign in ("+time.Now().Format("Jan 2 15:04")+")",
 		emailText,
 		address)
 	message.SetHtml(emailBody)
