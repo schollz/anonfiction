@@ -9,8 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/rs/xid"
 	"github.com/schollz/jsonstore"
+	"github.com/schollz/storiesincognito/src/utils"
+	mailgun "gopkg.in/mailgun/mailgun-go.v1"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,7 @@ func init() {
 }
 
 func slugify(s string) string {
-	return strings.ToLower(strings.Join(strings.Split(s, " "), "-"))
+	return strings.ToLower(strings.Join(strings.Split(strings.TrimSpace(s), " "), "-"))
 }
 
 func unslugify(s string) string {
@@ -48,6 +49,7 @@ func unslugify(s string) string {
 }
 
 func main() {
+	fmt.Println(utils.NewAPIKey())
 	flag.StringVar(&port, "port", "3001", "port of server")
 	flag.Parse()
 	gin.SetMode(gin.ReleaseMode)
@@ -55,7 +57,8 @@ func main() {
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 	router.SetFuncMap(template.FuncMap{
-		"slugify": slugify,
+		"slugify":   slugify,
+		"unslugify": unslugify,
 	})
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
@@ -66,10 +69,19 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
-	router.GET("/read/:action/*id", func(c *gin.Context) {
+	router.GET("/read/*actions", func(c *gin.Context) {
 		i := c.DefaultQuery("i", "")
-		action := c.Param("action")
-		id := strings.Replace(c.Param("id"), "/", "", -1)
+		actions := strings.Split(c.Param("actions"), "/")
+		if len(actions) == 1 {
+			c.Redirect(302, "/read/topic")
+			return
+		}
+		action := actions[1]
+		var id string
+		if len(actions) > 2 {
+			id = strings.TrimSpace(actions[2])
+		}
+		fmt.Println(action, id)
 		var err error
 		var s story.Story
 		var t topic.Topic
@@ -77,11 +89,22 @@ func main() {
 		var iNum int
 		var nextStory, previousStory string
 		if action == "story" {
-			s, err = story.Get(id)
+			stories = make([]story.Story, 1)
+			stories[0], err = story.Get(id)
 			if err != nil {
 				ShowError(err, c)
 				return
 			}
+			fmt.Println(len(stories))
+		} else if action == "keyword" {
+			log.Println("got /keyword")
+			if id == "" {
+				t, err := topic.Default(TopicDB, true)
+				log.Println(t, err)
+				c.Redirect(302, "/read/topic/")
+			}
+			stories, err = story.ListByKeyword(id)
+			log.Println(stories, err)
 		} else {
 			if id == "" {
 				t, err := topic.Default(TopicDB, true)
@@ -89,36 +112,36 @@ func main() {
 				c.Redirect(302, "/read/topic/"+slugify(t.Name))
 			}
 			stories, err = story.ListByTopic(unslugify(id))
-			if err != nil {
-				ShowError(errors.Wrap(err, "topic '"+unslugify(id)+"' doesn't exist"), c)
+		}
+		if err != nil {
+			ShowError(errors.Wrap(err, "'"+unslugify(id)+"' doesn't exist"), c)
+			return
+		} else if len(stories) == 0 {
+			ShowError(errors.New("No stories to show"), c)
+			return
+		}
+		if i == "" {
+			iNum = 1
+		} else {
+			iNum, err = strconv.Atoi(i)
+			log.Println(iNum, err, len(stories))
+			if err != nil || iNum > len(stories) {
+				iNum = len(stories)
+				c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(len(stories)))
 				return
-			} else if len(stories) == 0 {
-				ShowError(errors.New("No stories to show"), c)
+			}
+			if iNum < 1 {
+				c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(1))
 				return
 			}
-			if i == "" {
-				iNum = 1
-			} else {
-				iNum, err = strconv.Atoi(i)
-				log.Println(iNum, err, len(stories))
-				if err != nil || iNum > len(stories) {
-					iNum = len(stories)
-					c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(len(stories)))
-					return
-				}
-				if iNum < 1 {
-					c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(1))
-					return
-				}
-			}
-			log.Println(iNum)
-			s = stories[iNum-1]
-			if iNum < len(stories) {
-				nextStory = strconv.Itoa(iNum + 1)
-			}
-			if iNum > 1 {
-				previousStory = strconv.Itoa(iNum - 1)
-			}
+		}
+		log.Println(iNum)
+		s = stories[iNum-1]
+		if iNum < len(stories) {
+			nextStory = strconv.Itoa(iNum + 1)
+		}
+		if iNum > 1 {
+			previousStory = strconv.Itoa(iNum - 1)
 		}
 		t, _ = topic.Get(TopicDB, s.Topic)
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
@@ -130,14 +153,14 @@ func main() {
 			Previous:   previousStory,
 			NumStory:   iNum,
 			NumStories: len(stories),
+			Route:      action + "/" + id,
 		})
 	})
 	router.GET("/write/*storyID", func(c *gin.Context) {
 		storyID := c.Param("storyID")[1:]
 		if len(storyID) == 0 {
-			storyID = xid.New().String()
+			storyID = utils.NewAPIKey()
 		}
-		// storyID := c.DefaultQuery("story", xid.New().String())
 		topics, err := topic.Load(TopicDB)
 		if err != nil {
 			ShowError(err, c)
@@ -351,6 +374,7 @@ type MainView struct {
 	Next            string
 	Previous        string
 	TrixAttr        template.HTMLAttr
+	Route           string
 }
 
 func handlePOSTStory(c *gin.Context) {
@@ -368,6 +392,9 @@ func handlePOSTStory(c *gin.Context) {
 		log.Println(form)
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
 		keywords := strings.Split(form.Keywords, ",")
+		for i, keyword := range keywords {
+			keywords[i] = slugify(keyword)
+		}
 		var s story.Story
 		userID, err := GetUserIDFromCookie(c)
 		if err != nil {
@@ -447,16 +474,17 @@ func handlePOSTSignup(c *gin.Context) {
 		}
 
 		// add to validation keys
-		uuid := xid.New().String()
+		uuid := utils.NewAPIKey()
 		err = keys.Set("uuid:"+uuid, userID)
 		if err != nil {
 			log.Fatal(err)
 		}
 		go jsonstore.Save(keys, "keys.json")
 		// send the link to email
-		fmt.Println("http://localhost:" + port + "/login?key=" + uuid)
+		log.Println("http://localhost:" + port + "/login?key=" + uuid)
+		sendEmail(form.Email, "http://localhost:"+port+"/login?key="+uuid)
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			InfoMessage: "http://localhost:" + port + "/login?key=" + uuid,
+			InfoMessage: "Check your email for your login link",
 			IsAdmin:     IsAdmin(c),
 			SignedIn:    IsSignedIn(c),
 		})
@@ -465,6 +493,20 @@ func handlePOSTSignup(c *gin.Context) {
 			ErrorMessage: err.Error(),
 		})
 	}
+}
+
+func sendEmail(address, messageText string) {
+	mg := mailgun.NewMailgun("mg.storiesincognito.org", "key-3d2e7518cd8fd1332f07f4f7013bf680", "key-3d2e7518cd8fd1332f07f4f7013bf680")
+	message := mailgun.NewMessage(
+		"stories@storiesincognito.org",
+		"Stories Incognito Login",
+		messageText,
+		address)
+	resp, id, err := mg.Send(message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("ID: %s Resp: %s\n", id, resp)
 }
 
 func getCookie(key string, c *gin.Context) (cookie string, err error) {
@@ -528,7 +570,7 @@ func SignIn(uuid string, c *gin.Context) (err error) {
 	}
 
 	// Generate a new API key
-	apikey := xid.New().String()
+	apikey := utils.NewAPIKey()
 	err = keys.Set("apikey:"+apikey, userID)
 	if err != nil {
 		return

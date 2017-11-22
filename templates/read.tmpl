@@ -15,7 +15,7 @@
     <div class="pv1">
     {{ with .Story}}{{ range $index, $element := .Keywords }}
     
-    <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read?keyword={{$element}}">{{ $element }}</a>
+    <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read/keyword/{{$element}}">{{ $element | unslugify }}</a>
     {{end}}{{end}}
 
 </div>
@@ -34,7 +34,7 @@
   <footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
   <div class="flex">
     {{ if .Previous }}
-    <a href="/read/topic/{{ .Topic.Name | slugify }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+    <a href="/read/{{ .Route }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
             <title>chevronLeft icon</title>
           <path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
@@ -44,7 +44,7 @@
 
     {{ end }}
     {{ if .Next }}
-    <a href="/read/topic/{{ .Topic.Name | slugify }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+    <a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
         <span class="pr1">Next</span>
         <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
           <title>chevronRight icon</title>

@@ -6,7 +6,7 @@ import (
 
 	"github.com/asdine/storm"
 	"github.com/pkg/errors"
-	"github.com/rs/xid"
+	"github.com/schollz/storiesincognito/src/utils"
 )
 
 var DB string
@@ -35,7 +35,7 @@ func AnonymousUserID() string {
 // New creates a new user and attempts to add it to the database
 func Add(email, language string, subscribed bool) (err error) {
 	u := &User{
-		ID:         xid.New().String(),
+		ID:         utils.NewAPIKey(),
 		Email:      email,
 		Language:   language,
 		Subscribed: subscribed,

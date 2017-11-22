@@ -75,7 +75,7 @@
 
       <div class="measure pv2 mt2">
 
-      <label for="keywords" class="f3 b db mb2 leader">Topic
+      <label for="topic" class="f3 b db mb2 leader">Topic
           </label>
       <select name="topic" class="f4 pa2 ">
       {{ with .Story.Topic }}
@@ -105,7 +105,7 @@
       <label for="keywords" class="f3 b db mb2 leader">Keywords
             <span class="normal black-60">(optional)</span>
           </label>
-      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element}}{{end}}{{end}}">
+      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element | unslugify}}{{end}}{{end}}">
     </div>
     <input type="hidden" id="storyid" name="storyid" value="{{ .Story.ID }}">
     <input type="hidden" id="topic" name="topic" value="{{ .Story.Topic }}">

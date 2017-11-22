@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyz0123456789"
+const letterBytes = "abcdefghijkmnopqrstuvwxyz0123456789"
 const (
 	letterIdxBits = 6                    // 6 bits to represent a letter index
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
@@ -33,5 +33,5 @@ func RandomString(n int) string {
 }
 
 func NewAPIKey() string {
-	return RandomString(10)
+	return RandomString(8)
 }

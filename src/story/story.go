@@ -9,7 +9,7 @@ import (
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
 	"github.com/pkg/errors"
-	"github.com/rs/xid"
+	"github.com/schollz/storiesincognito/src/utils"
 	"github.com/schollz/versionedtext"
 )
 
@@ -29,6 +29,23 @@ type Story struct {
 	Content     versionedtext.VersionedText
 	Published   bool `storm:"index"`
 	Description string
+}
+
+func ListByKeyword(keyword string) (stories []Story, err error) {
+	allStories, err := All()
+	if err != nil {
+		return
+	}
+	stories = make([]Story, len(allStories)+1)
+	storyI := 0
+	for _, s := range allStories {
+		if stringInSlice(keyword, s.Keywords) {
+			stories[storyI] = s
+			storyI++
+		}
+	}
+	stories = stories[:storyI]
+	return
 }
 
 func ListByUser(userID string) (stories []Story, err error) {
@@ -61,7 +78,7 @@ func NumberOfStories(topic string) int {
 
 func New(userID, topic, content, description string, keywords []string) (s Story) {
 	return Story{
-		ID:          xid.New().String(),
+		ID:          utils.NewAPIKey(),
 		UserID:      userID,
 		Date:        time.Now(),
 		Topic:       topic,
@@ -138,4 +155,13 @@ func ConvertTrix(s string) (paragraphs []template.HTML) {
 		paragraphs[i] = template.HTML(strings.TrimSpace(p))
 	}
 	return
+}
+
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
