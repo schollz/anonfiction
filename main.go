@@ -517,7 +517,7 @@ func sendEmail(address, key string) {
 				{
 					Instructions: "To login, please click here:",
 					Button: hermes.Button{
-						Color: "#22BC66", // Optional action button color
+						Color: "#00449e", // Optional action button color
 						Text:  "Log In",
 						Link:  "https://storiesincognito.org/login?key=" + key,
 					},
