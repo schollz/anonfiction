@@ -2,6 +2,7 @@ package story
 
 import (
 	"html/template"
+	"log"
 	"strings"
 	"time"
 
@@ -47,6 +48,7 @@ func ListByTopic(topic string) (stories []Story, err error) {
 	if err != nil {
 		return
 	}
+	log.Println(topic)
 	query := db.Select(q.Eq("Topic", topic), q.Eq("Published", true)).OrderBy("Date")
 	err = query.Find(&stories)
 	return

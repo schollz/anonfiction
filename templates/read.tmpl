@@ -33,8 +33,8 @@
   </div>
   <footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
   <div class="flex">
-    {{ with .Previous }}
-    <a href="/read?story={{.}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+    {{ if .Previous }}
+    <a href="/read/topic/{{ .Topic.Name | slugify }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
           <svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
             <title>chevronLeft icon</title>
           <path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
@@ -43,8 +43,8 @@
       </a>
 
     {{ end }}
-    {{ with .Next }}
-    <a href="/read?story={{.}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+    {{ if .Next }}
+    <a href="/read/topic/{{ .Topic.Name | slugify }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
         <span class="pr1">Next</span>
         <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
           <title>chevronRight icon</title>

@@ -19,7 +19,7 @@
 <tr class="stripe-dark">
           <td class="pa2">{{ .Date }}</td>
           <td class="pa2">{{ .Topic }}</td>
-          <td class="pa2"><a href="/write?story={{ .ID }}">{{ .ID }}</a></td>
+          <td class="pa2"><a href="/write/{{ .ID }}">{{ .ID }}</a></td>
           <td class="pa2">{{ .UserID }}</td>
           <td class="pa2">{{ .Published }}</td>
 </tr>  
@@ -51,7 +51,6 @@
           <td class="pa2">{{ .Email }}</td>
           <td class="pa2">{{ .Language }}</td>
           <td class="pa2">{{ .Subscribed }}</td>
-          <td class="pa2">{{ .IsAdmin }}</td>
 </tr>  
 {{ end }}        
       </tbody>

@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/rs/xid"
@@ -33,6 +34,7 @@ func init() {
 	var err error
 	keys, err = jsonstore.Open("keys.json")
 	if err != nil {
+		log.Println("could not open jsonstore! " + err.Error())
 		keys = new(jsonstore.JSONStore)
 	}
 }
@@ -42,7 +44,7 @@ func slugify(s string) string {
 }
 
 func unslugify(s string) string {
-	return strings.Title(strings.Join(strings.Split(s, "-"), " "))
+	return strings.TrimSpace(strings.Title(strings.Join(strings.Split(s, "-"), " ")))
 }
 
 func main() {
@@ -65,12 +67,9 @@ func main() {
 		})
 	})
 	router.GET("/read/:action/*id", func(c *gin.Context) {
+		i := c.DefaultQuery("i", "")
 		action := c.Param("action")
-		id := c.Param("id")[1:]
-		if id == "" {
-			ShowError(errors.New("Need an ID"), c)
-			return
-		}
+		id := strings.Replace(c.Param("id"), "/", "", -1)
 		var err error
 		var s story.Story
 		var t topic.Topic
@@ -81,8 +80,46 @@ func main() {
 				ShowError(err, c)
 				return
 			}
-			t, _ = topic.Get(TopicDB, s.Topic)
+		} else {
+			if id == "" {
+				t, err := topic.Default(TopicDB, true)
+				log.Println(t, err)
+				c.Redirect(302, "/read/topic/"+slugify(t.Name))
+			}
+			stories, err := story.ListByTopic(unslugify(id))
+			if err != nil {
+				ShowError(errors.Wrap(err, "topic '"+unslugify(id)+"' doesn't exist"), c)
+				return
+			} else if len(stories) == 0 {
+				ShowError(errors.New("No stories to show"), c)
+				return
+			}
+			var iNum int
+			if i == "" {
+				iNum = 1
+			} else {
+				iNum, err = strconv.Atoi(i)
+				log.Println(iNum, err, len(stories))
+				if err != nil || iNum > len(stories) {
+					iNum = len(stories)
+					c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(len(stories)))
+					return
+				}
+				if iNum < 1 {
+					c.Redirect(302, "/read/topic/"+id+"/?i="+strconv.Itoa(1))
+					return
+				}
+			}
+			log.Println(iNum)
+			s = stories[iNum-1]
+			if iNum < len(stories) {
+				nextStory = strconv.Itoa(iNum + 1)
+			}
+			if iNum > 1 {
+				previousStory = strconv.Itoa(iNum - 1)
+			}
 		}
+		t, _ = topic.Get(TopicDB, s.Topic)
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
@@ -141,6 +178,8 @@ func main() {
 			ShowError(err, c)
 			return
 		}
+		log.Println(GetUserIDFromCookie(c))
+		log.Println(IsAdmin(c))
 		stories, _ := story.ListByUser(userID)
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
@@ -341,7 +380,9 @@ func handlePOSTStory(c *gin.Context) {
 		s.Description = form.Description
 		s.Published = form.Published == "on"
 		fmt.Println(s)
-		if !isNewStory && userID == user.AnonymousUserID() {
+		if IsAdmin(c) {
+			err = s.Save()
+		} else if !isNewStory && userID == user.AnonymousUserID() {
 			err = errors.New("cannot update an anonymous story")
 		} else if userID != s.UserID {
 			err = errors.New("cannot update someone elses story")

@@ -61,6 +61,9 @@
     <span class="f6 db lh-copy measure-wide">
    Once submitted, an editor will proofread and remove personally identifying information (see <a href="/privacy" target="_blank">Privacy</a>). {{if not .SignedIn}}<em><a href="/signup">Create an account</a> to manage your stories.</em>{{end}}{{ if .Story.Content.CurrentText }} View your story at <a href="/read?story={{ .Story.ID }}">/read?story={{ .Story.ID }}</a>.{{ end }}
   </span>
+    -->
+
+    
   {{ if .IsAdmin }}
 			<div class="mt3">
  			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="published" {{ with .Story }}{{ if .Published }}checked{{end}}{{end}}> Published</label>
@@ -68,7 +71,7 @@
   {{ else }}
 <input type="hidden" id="published" name="published" value="{{if .Story.Published }}on{{ end}}">
   {{ end }}
-  -->
+
 
       <div class="measure pv2 mt2">
 
