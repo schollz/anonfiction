@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/matcornic/hermes"
 	"github.com/schollz/jsonstore"
 	"github.com/schollz/storiesincognito/src/utils"
 	mailgun "gopkg.in/mailgun/mailgun-go.v1"
@@ -498,12 +499,59 @@ func handlePOSTSignup(c *gin.Context) {
 }
 
 func sendEmail(address, messageText string) {
+	// Configure hermes by setting a theme and your product info
+	h := hermes.Hermes{
+		// Optional Theme
+		// Theme: new(Default)
+		Product: hermes.Product{
+			// Appears in header & footer of e-mails
+			Name: "Hermes",
+			Link: "https://example-hermes.com/",
+			// Optional product logo
+			Logo: "http://www.duchess-france.org/wp-content/uploads/2016/01/gopher.png",
+		},
+	}
+	email := hermes.Email{
+		Body: hermes.Body{
+			Name: "Jon Snow",
+			Intros: []string{
+				"Welcome to Hermes! We're very excited to have you on board.",
+			},
+			Actions: []hermes.Action{
+				{
+					Instructions: "To get started with Hermes, please click here:",
+					Button: hermes.Button{
+						Color: "#22BC66", // Optional action button color
+						Text:  "Confirm your account",
+						Link:  "https://hermes-example.com/confirm?token=d9729feb74992cc3482b350163a1a010",
+					},
+				},
+			},
+			Outros: []string{
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			},
+		},
+	}
+
+	// Generate an HTML email with the provided contents (for modern clients)
+	emailBody, err := h.GenerateHTML(email)
+	if err != nil {
+		panic(err) // Tip: Handle error with something else than a panic ;)
+	}
+
+	// Generate the plaintext version of the e-mail (for clients that do not support xHTML)
+	emailText, err := h.GeneratePlainText(email)
+	if err != nil {
+		panic(err) // Tip: Handle error with something else than a panic ;)
+	}
+
 	mg := mailgun.NewMailgun("mg.storiesincognito.org", "key-3d2e7518cd8fd1332f07f4f7013bf680", "key-3d2e7518cd8fd1332f07f4f7013bf680")
 	message := mailgun.NewMessage(
 		"support@storiesincognito.org",
 		"Welcome to Stories Incognito",
-		messageText,
+		emailText,
 		address)
+	message.SetHtml(emailBody)
 	resp, id, err := mg.Send(message)
 	if err != nil {
 		log.Fatal(err)
