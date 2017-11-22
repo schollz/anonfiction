@@ -83,7 +83,7 @@ func Default(filename string, reading bool) (defaultTopic Topic, err error) {
 	}
 	defaultTopic = topics[0]
 	for _, t := range topics {
-		if t.Open == false {
+		if t.Open == true {
 			break
 		}
 		defaultTopic = t
