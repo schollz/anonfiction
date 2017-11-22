@@ -504,7 +504,7 @@ func sendEmail(address, key string) {
 			Name: "Stories Incognito Team",
 			Link: "https://storiesincognito.org",
 			// Optional product logo
-			Logo: "https://storiesincognito.org/static/img/books.png",
+			Logo: "https://storiesincognito.org/static/img/books2.png",
 		},
 	}
 	email := hermes.Email{
