@@ -37,6 +37,14 @@ func init() {
 	}
 }
 
+func slugify(s string) string {
+	return strings.ToLower(strings.Join(strings.Split(s, " "), "-"))
+}
+
+func unslugify(s string) string {
+	return strings.Title(strings.Join(strings.Split(s, "-"), " "))
+}
+
 func main() {
 	flag.StringVar(&port, "port", "3001", "port of server")
 	flag.Parse()
@@ -44,6 +52,9 @@ func main() {
 	router := gin.Default()
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
+	router.SetFuncMap(template.FuncMap{
+		"slugify": slugify,
+	})
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
 	router.GET("/", func(c *gin.Context) {
@@ -53,12 +64,44 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
-	router.GET("/write", func(c *gin.Context) {
-		storyID := c.DefaultQuery("story", xid.New().String())
-		topicName := c.DefaultQuery("topic", "")
-		t, err := topic.Get(TopicDB, topicName)
+	router.GET("/read/:action/*id", func(c *gin.Context) {
+		action := c.Param("action")
+		id := c.Param("id")[1:]
+		if id == "" {
+			ShowError(errors.New("Need an ID"), c)
+			return
+		}
+		var err error
+		var s story.Story
+		var t topic.Topic
+		var nextStory, previousStory string
+		if action == "story" {
+			s, err = story.Get(id)
+			if err != nil {
+				ShowError(err, c)
+				return
+			}
+			t, _ = topic.Get(TopicDB, s.Topic)
+		}
+		c.HTML(http.StatusOK, "read.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
+			Topic:    t,
+			Story:    s,
+			Next:     nextStory,
+			Previous: previousStory,
+		})
+	})
+	router.GET("/write/*storyID", func(c *gin.Context) {
+		storyID := c.Param("storyID")[1:]
+		if len(storyID) == 0 {
+			storyID = xid.New().String()
+		}
+		// storyID := c.DefaultQuery("story", xid.New().String())
+		topics, err := topic.Load(TopicDB)
 		if err != nil {
-			t, _ = topic.Default(TopicDB, false)
+			ShowError(err, c)
+			return
 		}
 		userID, err := GetUserIDFromCookie(c)
 		if err != nil {
@@ -69,12 +112,13 @@ func main() {
 		fmt.Println(s)
 		if err != nil {
 			log.Println(err)
-			s = story.New(userID, t.Name, "", "", []string{})
+			s = story.New(userID, "", "", "", []string{})
 		}
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 			Story:    s,
+			Topics:   topics,
 			TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
 		})
 	})
@@ -131,31 +175,6 @@ func main() {
 			SignedIn:    IsSignedIn(c),
 			Stories:     stories,
 			InfoMessage: "Story '" + storyID + "' deleted",
-		})
-	})
-	router.GET("/read", func(c *gin.Context) {
-		var err error
-		var s story.Story
-		var t topic.Topic
-		var nextStory, previousStory string
-		storyID := c.DefaultQuery("story", "")
-		topicName := c.DefaultQuery("topic", "")
-		if storyID != "" {
-			s, err = story.Get(storyID)
-			if err != nil {
-				ShowError(err, c)
-				return
-			}
-			topicName = s.Topic
-		}
-		t, _ = topic.Get(TopicDB, topicName)
-		c.HTML(http.StatusOK, "read.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
-			Topic:    t,
-			Story:    s,
-			Next:     nextStory,
-			Previous: previousStory,
 		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
@@ -270,23 +289,24 @@ func main() {
 }
 
 type MainView struct {
-	IsAdmin      bool
-	Title        string
-	ErrorMessage string
-	ErrorCode    string
-	InfoMessage  string
-	Landing      bool
-	SignedIn     bool
-	Story        story.Story
-	Topic        topic.Topic
-	APIKey       string
-	StoryID      string
-	Topics       []topic.Topic
-	Stories      []story.Story
-	Users        []user.User
-	Next         string
-	Previous     string
-	TrixAttr     template.HTMLAttr
+	IsAdmin         bool
+	Title           string
+	ErrorMessage    string
+	ErrorCode       string
+	InfoMessage     string
+	InfoMessageHTML template.HTML
+	Landing         bool
+	SignedIn        bool
+	Story           story.Story
+	Topic           topic.Topic
+	APIKey          string
+	StoryID         string
+	Topics          []topic.Topic
+	Stories         []story.Story
+	Users           []user.User
+	Next            string
+	Previous        string
+	TrixAttr        template.HTMLAttr
 }
 
 func handlePOSTStory(c *gin.Context) {
@@ -298,8 +318,8 @@ func handlePOSTStory(c *gin.Context) {
 		Keywords    string `form:"keywords" json:"keywords"`
 		Published   string `form:"published" json:"published"`
 	}
-	defaultTopic, _ := topic.Default(TopicDB, false)
 	var form FormInput
+	topics, _ := topic.Load(TopicDB)
 	if err := c.ShouldBind(&form); err == nil {
 		log.Println(form)
 		form.Content = strings.Replace(form.Content, `"`, "&quot;", -1)
@@ -320,6 +340,7 @@ func handlePOSTStory(c *gin.Context) {
 		s.Keywords = keywords
 		s.Description = form.Description
 		s.Published = form.Published == "on"
+		fmt.Println(s)
 		if !isNewStory && userID == user.AnonymousUserID() {
 			err = errors.New("cannot update an anonymous story")
 		} else if userID != s.UserID {
@@ -332,24 +353,25 @@ func handlePOSTStory(c *gin.Context) {
 			err = errors.Wrap(err, "story not submitted")
 			errorMessage = err.Error()
 		} else {
-			infoMessage = "updated story"
+			infoMessage = fmt.Sprintf("Story updated, read it at <a href='/read/story/%s'>/read/story/%s</a>", s.ID, s.ID)
 		}
 		fmt.Println("storyID", s.ID)
 		fmt.Println("userID", s.UserID)
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
-			IsAdmin:      IsAdmin(c),
-			SignedIn:     IsSignedIn(c),
-			InfoMessage:  infoMessage,
-			ErrorMessage: errorMessage,
-			Story:        s,
-			TrixAttr:     template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+			InfoMessageHTML: template.HTML(infoMessage),
+			ErrorMessage:    errorMessage,
+			Story:           s,
+			TrixAttr:        template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
+			Topics:          topics,
 		})
 	} else {
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
 			IsAdmin:      IsAdmin(c),
 			SignedIn:     IsSignedIn(c),
 			ErrorMessage: err.Error(),
-			Topic:        defaultTopic,
+			Topics:       topics,
 		})
 	}
 }

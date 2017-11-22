@@ -8,6 +8,16 @@
 </div>
 {{ end }}
 
+{{ with .InfoMessageHTML }}
+<div class="pa3 pv2 bg-dark-blue washed-red">
+  <section class=" pv2 ph5-ns">
+    <i data-feather="info" class="dib h2 w2 v-mid"></i>
+  <span class="lh-title ml3 v-mid">{{ . }}</span>
+</section>
+</div>
+{{ end }}
+
+
 {{ with .ErrorMessage }}
 <div class="pa3 pv2 bg-light-yellow red">
   <section class=" pv2 ph5-ns">
