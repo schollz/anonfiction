@@ -54,7 +54,7 @@ func ListByUser(userID string) (stories []Story, err error) {
 	if err != nil {
 		return
 	}
-	query := db.Select(q.Eq("UserID", userID)).OrderBy("Date").Reverse()
+	query := db.Select(q.Eq("UserID", userID)).OrderBy("DateCreated").Reverse()
 	err = query.Find(&stories)
 	return
 }
@@ -65,7 +65,7 @@ func ListByTopic(topic string) (stories []Story, err error) {
 	if err != nil {
 		return
 	}
-	query := db.Select(q.Eq("Topic", topic), q.Eq("Published", true)).OrderBy("Date")
+	query := db.Select(q.Eq("Topic", topic), q.Eq("Published", true)).OrderBy("DatePublished")
 	err = query.Find(&stories)
 	return
 }
@@ -132,7 +132,7 @@ func All() (s []Story, err error) {
 		err = errors.Wrap(err, "problem opening DB")
 		return
 	}
-	err = db.AllByIndex("Date", &s)
+	err = db.AllByIndex("DateCreated", &s)
 	if err != nil {
 		err = errors.Wrap(err, "problem getting all by date")
 	}

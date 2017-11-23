@@ -1,92 +1,78 @@
 {{ template "header" . }}
-
 <article class="pv4 bg-lightest-blue  dark-blue ph3 ph5-ns ">
-  <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
-Your Profile
-  </h1>
-  <div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
-    Manage your stories.
-  </div>
-
-
-  <div class="">
-    <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3" href="/write">
-      Write online
-    </a>
-    <a class="f4 f3-m f3-l   leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
-      href="/signout">
-     Log out
-    </a>
-  </div>
-  </span>
+	<h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
+	Your Profile
+	</h1>
+	<div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
+		Manage your stories.
+	</div>
+	<div class="">
+		<a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3" href="/write">
+			Write online
+		</a>
+		<a class="f4 f3-m f3-l   leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
+			href="/signout">
+			Log out
+		</a>
+	</div>
+</span>
 </article>
-
 {{ template "messages" . }}
-
-
 <section class="pv2 ph3 ph5-ns mb5 mt2">
-  <article class="">
-    <h1 class="db f4 mb1">Your profile</h1>
-    <span class="f5 db lh-copy measure-wide">
-   Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
- </span>
-					<form action="/profile" method="POST" enctype="multipart/form-data" id="formdata" >
-	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="email">Email:</label>
-			 <input class="pa2 input-reset ba bg-transparent w-100 measure" name="email"  id="email" type="email" value="{{ .User.Email }}">
-		 </div>
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="language">Preferred language:</label>
-			 <select class="b pa2 input-reset ba bg-transparent" name="language">
-			  <option value="">{{ .User.Language }}</option>
-			  <option value="english">English</option>
-			  <option value="german">German</option>
-			  <option value="spanish">Spanish</option>
-			  <option value="chinese">Chinese</option>
-			</select>
+<article class="">
+	<h1 class="db f4 mb1">Your profile</h1>
+	<span class="f5 db lh-copy measure-wide">
+		Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
+	</span>
+	<form action="/profile" method="POST" enctype="multipart/form-data" id="formdata" >
+		<fieldset id="sign_up" class="ba b--transparent ph0 mh0">
 			<div class="mt3">
- 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest" {{ if .User.Subscribed }}checked{{ end }}> Email me monthly updates when a new issues is published</label>
- 				 </div>
-	 <div class="mt3"><input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="submit" value="Update my profile"></div>
-
-	 </fieldset>
- </form>
-
-
-    <h1 class="db f4 mb1 pt4">Your stories</h1>
-    <span class="f5 db lh-copy measure-wide">
-   The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
- </span>
-  </article>
-  <article class="pv4">
-    <ul class="list pl0 mt0 measure">
-      {{range .Stories }}
-      <li class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-        <div class="flex-auto">
-          <span class="f6 db gray-70">{{ .Topic }} (<code>{{ .ID }}</code>)</span>
-          <span class="f6 db black-70">{{ .DateCreated.Format "January 2, 2006" }}</span>
-        </div>
-        <div>
-          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
-          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write/{{ .ID }}">Edit</a>
-          <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}">Delete</a>
-        </div>
-      </li>
-      {{end}}
-      <div class="pv4 ph2">
-        <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="#0">Download all</a>
-        <a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>
-  </article>
-
-  <!-- <article class="ph2 pv4">
-    <span class="f5 db lh-copy measure">
-    This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
-    </span>
- </article> -->
-</section>
-
-
-
-
-{{ template "footer" . }}
+				<label class="db fw4 lh-copy f6" for="email">Email:</label>
+				<input class="pa2 input-reset ba bg-transparent w-100 measure" name="email"  id="email" type="email" value="{{ .User.Email }}">
+			</div>
+			<div class="mt3">
+				<label class="db fw4 lh-copy f6" for="language">Preferred language:</label>
+				<select class="b pa2 input-reset ba bg-transparent" name="language">
+					<option value="">{{ .User.Language }}</option>
+					<option value="english">English</option>
+					<option value="german">German</option>
+					<option value="spanish">Spanish</option>
+					<option value="chinese">Chinese</option>
+				</select>
+				<div class="mt3">
+					<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest" {{ if .User.Subscribed }}checked{{ end }}> Email me monthly updates when a new issues is published</label>
+				</div>
+				<div class="mt3"><input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="submit" value="Update my profile"></div>
+			</fieldset>
+		</form>
+		<h1 class="db f4 mb1 pt4">Your stories</h1>
+		<span class="f5 db lh-copy measure-wide">
+			The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
+		</span>
+	</article>
+	<article class="pv4">
+		<ul class="list pl0 mt0 measure">
+			{{range .Stories }}
+			<li class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
+				<div class="flex-auto">
+					<span class="f6 db gray-70">{{ .Topic }} (<code>{{ .ID }}</code>)</span>
+					<span class="f6 db black-70">{{ .DateCreated.Format "January 2, 2006" }}</span>
+				</div>
+				<div>
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write/{{ .ID }}">Edit</a>
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}">Delete</a>
+				</div>
+			</li>
+			{{end}}
+			<div class="pv4 ph2">
+				<a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="#0">Download all</a>
+				<a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>
+			</article>
+			<!-- <article class="ph2 pv4">
+				<span class="f5 db lh-copy measure">
+					This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
+				</span>
+			</article> -->
+		</section>
+		{{ template "footer" . }}

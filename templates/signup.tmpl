@@ -1,49 +1,45 @@
 {{ template "header" . }}
-
 {{ template "messages" . }}
 <section class="pa2 pv2 ph5-ns">
-<article class="ph2">
- <h1 class="db f1-l f2 mb1">Sign Up</h1>
-    <span class="f5 db lh-copy measure">
-      Enter your email and a password to become a member of <strong>Stories, Incognito</strong>.
+	<article class="ph2">
+		<h1 class="db f1-l f2 mb1">Sign Up</h1>
+		<span class="f5 db lh-copy measure">
+			Enter your email and a password to become a member of <strong>Stories, Incognito</strong>.
 			Even though you provide an email address, we will never send you an email unless you request the monthly digest or require a password reset. We provide stories, not spam.
-    </span>
- </article>
+		</span>
+	</article>
 </section>
-
 <section class="pa2 pv2 ph5-ns mb5">
-<article class="ph2">
-			<div class="dt-ns dt--fixed-ns w-100">
-				<main class="black-80">
-					<form action="/signup" method="POST" enctype="multipart/form-data" id="formdata" >
-	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="email">Email:</label>
-			 <input class="pa2 input-reset ba bg-transparent w-100 measure" name="email"  id="email" type="email">
-		 </div>
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="password">Password</label>
-			 <input class="b pa2 input-reset ba bg-transparent" type="password" name="password"  id="password">
-		 </div>
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="language">Preferred language</label>
-			 <select class="b pa2 input-reset ba bg-transparent" name="language">
-			  <option value="english">English</option>
-			  <option value="german">German</option>
-			  <option value="spanish">Spanish</option>
-			  <option value="chinese">Chinese</option>
-			</select>
-			<div class="mt3">
- 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest"> Send me monthly digest</label>
- 				 </div>
-
-				 </div>
-	 </fieldset>
-	 <div class="mt3"><input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="submit" value="Sign Up"></div>
- </form>
-				</main>
-			</div>
-		</article>
-	</section>
-
+	<article class="ph2">
+		<div class="dt-ns dt--fixed-ns w-100">
+			<main class="black-80">
+				<form action="/signup" method="POST" enctype="multipart/form-data" id="formdata" >
+					<fieldset id="sign_up" class="ba b--transparent ph0 mh0">
+						<div class="mt3">
+							<label class="db fw4 lh-copy f6" for="email">Email:</label>
+							<input class="pa2 input-reset ba bg-transparent w-100 measure" name="email"  id="email" type="email">
+						</div>
+						<div class="mt3">
+							<label class="db fw4 lh-copy f6" for="password">Password</label>
+							<input class="b pa2 input-reset ba bg-transparent" type="password" name="password"  id="password">
+						</div>
+						<div class="mt3">
+							<label class="db fw4 lh-copy f6" for="language">Preferred language</label>
+							<select class="b pa2 input-reset ba bg-transparent" name="language">
+								<option value="english">English</option>
+								<option value="german">German</option>
+								<option value="spanish">Spanish</option>
+								<option value="chinese">Chinese</option>
+							</select>
+							<div class="mt3">
+								<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest"> Send me monthly digest</label>
+							</div>
+						</div>
+					</fieldset>
+					<div class="mt3"><input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="submit" value="Sign Up"></div>
+				</form>
+			</main>
+		</div>
+	</article>
+</section>
 {{ template "footer" . }}

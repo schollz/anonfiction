@@ -1,34 +1,30 @@
 {{ template "header" . }}
-
 {{ template "messages" . }}
-
 <section class="pa2 pv2 ph5-ns">
-<article class="ph2">
- <h1 class="db f1-l f2 mb1">Sign In</h1>
-    <span class="f5 db lh-copy measure-wide">
-      Log in to manage your own stories. <small><em>Note:</em> we request your email to send a link to log in, but we will never send you any other email unless specified nor do we ever distribution information with any third-party.</small>
-    </span>
- </article>
+	<article class="ph2">
+		<h1 class="db f1-l f2 mb1">Sign In</h1>
+		<span class="f5 db lh-copy measure-wide">
+			Log in to manage your own stories. <small><em>Note:</em> we request your email to send a link to log in, but we will never send you any other email unless specified nor do we ever distribution information with any third-party.</small>
+		</span>
+	</article>
 </section>
-
 <section class="pa2 pv2 ph5-ns mb5">
-<article class="ph2">
- 			<div class="dt-ns dt--fixed-ns w-100">
-				<main class="black-80">
+	<article class="ph2">
+		<div class="dt-ns dt--fixed-ns w-100">
+			<main class="black-80">
 				<form action="/login" method="POST" enctype="multipart/form-data" id="formdata" >
-	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
-		 <div class="mt3">
-			 <label class="db fw4 lh-copy f6" for="email">Email:</label>
-			 <input class="pa2 input-reset ba bg-transparent w-75 measure" name="email"  id="email" type="email">
-		 </div>
-	 </fieldset>
-	 <div class="">
-		 <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in">
-	 </div>
- </form>
-				</main>
-			</div>
-		</article>
-	</section>
-
+					<fieldset id="sign_up" class="ba b--transparent ph0 mh0">
+						<div class="mt3">
+							<label class="db fw4 lh-copy f6" for="email">Email:</label>
+							<input class="pa2 input-reset ba bg-transparent w-75 measure" name="email"  id="email" type="email">
+						</div>
+					</fieldset>
+					<div class="">
+						<input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in">
+					</div>
+				</form>
+			</main>
+		</div>
+	</article>
+</section>
 {{ template "footer" . }}

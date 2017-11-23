@@ -1,17 +1,12 @@
 {{ template "header". }}
-
 <section class="vh-100 bg-washed-blue baskerville">
-  <header class="tc ph5 lh-copy">
-      <h1 class="f1 f-headline-l code mb3 fw9 dib tracked-tight light-purple">{{ .ErrorCode }}</h1>
-      {{ if .ErrorMessage }}
-      <h2 class="tc f1-l fw1">{{ .ErrorMessage }}</h2>
-      {{ else }}
-            <h2 class="tc f1-l fw1">{{ .InfoMessageHTML }}</h2>
-{{ end }}
-  </header>
+	<header class="tc ph5 lh-copy">
+		<h1 class="f1 f-headline-l code mb3 fw9 dib tracked-tight light-purple">{{ .ErrorCode }}</h1>
+		{{ if .ErrorMessage }}
+		<h2 class="tc f1-l fw1">{{ .ErrorMessage }}</h2>
+		{{ else }}
+		<h2 class="tc f1-l fw1">{{ .InfoMessageHTML }}</h2>
+		{{ end }}
+	</header>
 </section>
-
-
-
-
 {{ template "footer" . }}

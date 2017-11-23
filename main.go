@@ -25,8 +25,9 @@ import (
 )
 
 var (
-	port string
-	keys *jsonstore.JSONStore
+	SendEmail bool
+	port      string
+	keys      *jsonstore.JSONStore
 	// Keys contain the "Validator", the "API Keys" and the "Admin" users. Sign in requests "Email". Server generates a UUID for that email address and stores in a key "uuid:Y" with the User ID as the value. An email is sent with a link, /register?key=Y where Y is UUID. When traversing the link, the server checks that the UUID is valid (it exists as a key "uuid:Y" in Validator) and gets the User ID value. If valid, it generates a API key and adds the User ID to the map (key: "apikey:X" with value User ID) and and sets a cookie containing the encrypted API key, and then deletes the UUID key. All things requiring authentication use the APIKey to determine if it is a valid user and get the and to identify the user by the User ID (each computer will be signed in unless the cookie is deleted). Signing out deletes the cookie and deletes the APIKey.
 
 	// Basically:
@@ -62,6 +63,7 @@ func unslugify(s string) string {
 }
 
 func main() {
+	flag.BoolVar(&SendEmail, "sendemail", false, "send email")
 	flag.StringVar(&port, "port", "3001", "port of server")
 	flag.Parse()
 	gin.SetMode(gin.ReleaseMode)
@@ -318,15 +320,13 @@ func main() {
 			return
 		}
 		stories, err := story.All()
-		if err != nil {
-			ShowError(err, c)
-			return
+		for i, s := range stories {
+			u, _ := user.Get(s.UserID)
+			stories[i].UserID = u.Email
 		}
-		users, err := user.All()
-		if err != nil {
-			ShowError(err, c)
-			return
-		}
+		log.Println(err)
+		users, _ := user.All()
+		// add email to the user ID
 		c.HTML(http.StatusOK, "admin.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
@@ -496,7 +496,9 @@ func handlePOSTSignup(c *gin.Context) {
 		logrus.WithFields(logrus.Fields{
 			"func": "handlePOSTSignup",
 		}).Infof("http://localhost:%s/login?key=%s", port, uuid)
-		sendEmail(form.Email, uuid)
+		if SendEmail {
+			sendEmail(form.Email, uuid)
+		}
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
 			InfoMessage: "You will receive an email in about a minute. Click the link in the email to login.",
 			IsAdmin:     IsAdmin(c),

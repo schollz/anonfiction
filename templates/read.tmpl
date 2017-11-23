@@ -1,95 +1,76 @@
 {{ template "header" . }}
-
 {{ template "messages" .}}
-
 <article class="cf ph3 ph5-ns pv4 mw8">
-  <header class="fn fl-ns w-50-ns pr4-ns">
-<div class="pv2">
-<img src="/static/img/{{ .Topic.Name }}.jpg">
+	<header class="fn fl-ns w-50-ns pr4-ns">
+		<div class="pv2">
+			<img src="/static/img/{{ .Topic.Name }}.jpg">
+		</div>
+		<h1 class="f2 f1-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
+		<span class="pa1 pv1">
+			<time class="f6 ttu tracked gray">{{ .Topic.Month }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
+		</span>
+		<div class="pv1">
+			{{ with .Story}}{{ range $index, $element := .Keywords }}
+			
+			<a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read/keyword/{{$element}}">{{ $element | unslugify }}</a>
+			{{end}}{{end}}
+		</div>
+	</header>
+	<div class="f55 f4-l fn fl-ns w-50-ns">
+		{{ with .Story}}
+		{{ range $index, $element := .Paragraphs }}
+		{{if eq $index 0 }}<p class="lh-copy measure mt0-ns">{{else}}<p class="lh-copy measure">{{end}}
+			{{ $element }}
+		</p>
+		{{end}}
+		{{end}}
+	</div>
+	<footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
+		<div class="flex">
+			{{ if .Previous }}
+			<a href="/read/{{ .Route }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+				<svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
+					<title>chevronLeft icon</title>
+				<path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
+			</svg>
+			<span class="pl1">Previous</span>
+		</a>
+		{{ end }}
+		{{ if .Next }}
+		<a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+			<span class="pr1">Next</span>
+			<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
+				<title>chevronRight icon</title>
+			<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
+		</svg>
+	</a>
+	{{ end }}
 </div>
-
-    <h1 class="f2 f1-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
-    <span class="pa1 pv1">
-    <time class="f6 ttu tracked gray">{{ .Topic.Month }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
-  </span>
-    <div class="pv1">
-    {{ with .Story}}{{ range $index, $element := .Keywords }}
-    
-    <a class="f4 fw7 dib pa1 no-underline bg-animate bg-white hover-bg-light-blue black-30" href="/read/keyword/{{$element}}">{{ $element | unslugify }}</a>
-    {{end}}{{end}}
-
-</div>
-  </header>
-  <div class="f55 f4-l fn fl-ns w-50-ns">
-
-  {{ with .Story}}
-    {{ range $index, $element := .Paragraphs }}
-      {{if eq $index 0 }}<p class="lh-copy measure mt0-ns">{{else}}<p class="lh-copy measure">{{end}} 
-      {{ $element }}
-      </p>
-    {{end}}
-  {{end}}
-
-  </div>
-  <footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
-  <div class="flex">
-    {{ if .Previous }}
-    <a href="/read/{{ .Route }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-          <svg class="w1" data-icon="chevronLeft" viewBox="0 0 32 32" style="fill:currentcolor">
-            <title>chevronLeft icon</title>
-          <path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
-        </svg>
-        <span class="pl1">Previous</span>
-      </a>
-
-    {{ end }}
-    {{ if .Next }}
-    <a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
-        <span class="pr1">Next</span>
-        <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
-          <title>chevronRight icon</title>
-        <path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
-      </svg>
-    </a>
-
-
-    {{ end }}
-  </div>
 </footer>
 </article>
-
 <script>
-
-
 window.addEventListener('load', function(){
- document.onkeydown = checkKey;
-
+document.onkeydown = checkKey;
 function checkKey(e) {
-
-    e = e || window.event;
-
-    if (e.keyCode == '38') {
-        // up arrow
-    }
-    else if (e.keyCode == '40') {
-        // down arrow
-    }
-    else if (e.keyCode == '37' && document.querySelectorAll('a.PrevP').length > 0) {
-       // left arrow
-        var prevPageURL = document.querySelectorAll('a.PrevP')[0].href;
-      window.location.href = prevPageURL;
-    }
-    else if (e.keyCode == '39' && document.querySelectorAll('a.NextP').length > 0) {
-       // right arrow
-        var nextPageUrl = document.querySelectorAll('a.NextP')[0].href;
-        window.location.href = nextPageUrl;
-    }
-
+e = e || window.event;
+if (e.keyCode == '38') {
+// up arrow
+}
+else if (e.keyCode == '40') {
+// down arrow
+}
+else if (e.keyCode == '37' && document.querySelectorAll('a.PrevP').length > 0) {
+// left arrow
+var prevPageURL = document.querySelectorAll('a.PrevP')[0].href;
+window.location.href = prevPageURL;
+}
+else if (e.keyCode == '39' && document.querySelectorAll('a.NextP').length > 0) {
+// right arrow
+var nextPageUrl = document.querySelectorAll('a.NextP')[0].href;
+window.location.href = nextPageUrl;
+}
 }
 
- 
 }, false) // end window.onload
 </script>
-
-
 {{ template "footer" . }}

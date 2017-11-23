@@ -1,153 +1,128 @@
 {{ template "header" . }}
 <link rel="stylesheet" type="text/css" href="/static/css/trix.css">
 <script type="text/javascript" src="/static/js/trix.js"></script>
-
 <style>
-  @import url("/static/css/trix.css");
-
-  .trix-container {
-    max-width: 100%;
-  }
-
-  .trix-content h1 {
-    margin-bottom: 0.4em;
-  }
-
-  .trix-content .attachment--preview {
-    margin: 0.6em 0;
-  }
-
-  trix-toolbar {
-    font-family: sans-serif;
-  }
-
-  trix-editor {
-    min-height: 320px !important;
-  }
+@import url("/static/css/trix.css");
+.trix-container {
+max-width: 100%;
+}
+.trix-content h1 {
+margin-bottom: 0.4em;
+}
+.trix-content .attachment--preview {
+margin: 0.6em 0;
+}
+trix-toolbar {
+font-family: sans-serif;
+}
+trix-editor {
+min-height: 320px !important;
+}
 </style>
-
 <form action="/write/{{ .Story.ID}}" method="POST" enctype="multipart/form-data" id="formdata" >
-  <article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
-    <h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
-  Write your story online
-  </h1>
-  <div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
-    Alternatively, you can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>.
-  </div>
-    <!-- <p class="fw1 f5 mt0 mb3">
-    Sign up for beta access or learn more about x.
-  </p> -->
-    <div>
-    {{ if .IsAdmin }}
-      <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
-    {{ else }}
-        {{ if .Story.Published}}
-        This story has been published and cannot be edited.
-        {{ else }}
-        <input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">     
-              </input>
-        {{ end }}
-    {{ end }}
-
-      </a>
-    </div>
-    </span>
-  </article>
-
+	<article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
+		<h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
+		Write your story online
+		</h1>
+		<div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
+			Alternatively, you can email your story as an attachment to stories@mg.storiesincognito.org, or mail it to <em>P.O. Box 123, Hillsboro, Oregon</em>.
+		</div>
+		<!-- <p class="fw1 f5 mt0 mb3">
+			Sign up for beta access or learn more about x.
+		</p> -->
+		<div>
+			{{ if .IsAdmin }}
+			<input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">            </input>
+			{{ else }}
+			{{ if .Story.Published}}
+			This story has been published and cannot be edited.
+			{{ else }}
+			<input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="{{ if .Story.Content.CurrentText }}Update{{ else }}Submit{{end }} Story">
+			</input>
+			{{ end }}
+			{{ end }}
+		</a>
+	</div>
+</span>
+</article>
 {{ template "messages" .}}
-
-  <section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
+<section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
 <!--    <h1 class="db f4 mb1">Submitting stories</h1>
 -->
-
 {{ if (and (not .SignedIn) (.Story.Content.CurrentText)) }}
-    <span class="f6 db lh-copy measure-wide">
-   <em>Note:</em> You are currently not logged in. You should note down the URL to your story if you want to update in the future: <a href="/write/{{ .Story.ID }}">storiesincognito.org/write/{{.Story.ID}}</a>.
-  </span>
-  {{ else }}
-    {{ if not .SignedIn }}
-      <span class="f6 db lh-copy measure-wide">
-    <em>Note:</em> You are currently not logged in. <a href="/login">Click here to login</a> to manage this story from your profile</a>.
-    </span>
-    {{ end }}
-  {{ end }}
-    
-  {{ if .IsAdmin }}
-			<div class="mt3">
- 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="published" {{ with .Story }}{{ if .Published }}checked{{end}}{{end}}> Published</label>
- 				 </div>
-  {{ else }}
+<span class="f6 db lh-copy measure-wide">
+	<em>Note:</em> You are currently not logged in. You should note down the URL to your story if you want to update in the future: <a href="/write/{{ .Story.ID }}">storiesincognito.org/write/{{.Story.ID}}</a>.
+</span>
+{{ else }}
+{{ if not .SignedIn }}
+<span class="f6 db lh-copy measure-wide">
+	<em>Note:</em> You are currently not logged in. <a href="/login">Click here to login</a> to manage this story from your profile</a>.
+</span>
+{{ end }}
+{{ end }}
+
+{{ if .IsAdmin }}
+<div class="mt3">
+	<label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="published" {{ with .Story }}{{ if .Published }}checked{{end}}{{end}}> Published</label>
+</div>
+{{ else }}
 <input type="hidden" id="published" name="published" value="{{if .Story.Published }}on{{ end}}">
-  {{ end }}
+{{ end }}
+<div class="measure pv2 mt2">
+	<label for="topic" class="f3 b db mb2 leader">Topic
+	</label>
+	<select name="topic" class="f4 pa2 ">
+		{{ with .Story.Topic }}
+		<option class="f3" value="{{ . }}">{{ . }}</option>
+		{{ end }}
+		{{ range .Topics }}
+		<option class="f3" value="{{ .Name }}">{{ .Name }}</option>
+		{{ end }}
+	</select>
+</div>
 
 
-      <div class="measure pv2 mt2">
-      <label for="topic" class="f3 b db mb2 leader">Topic
-          </label>
-      <select name="topic" class="f4 pa2 ">
-      {{ with .Story.Topic }}
-  <option class="f3" value="{{ . }}">{{ . }}</option>
-  {{ end }}
-      {{ range .Topics }}
-  <option class="f3" value="{{ .Name }}">{{ .Name }}</option>
-  {{ end }}
-</select>
-    </div>
-  
-   
-
-    <article class="mw8 center br2 ba mt3">
-      <div class="dt-ns dt--fixed-ns w-100">
-        <div class="trix-container">
-          <input type="hidden" id="content" name="content" {{ .TrixAttr }}>
-          <trix-editor input="content" class="trix-content" autofocus></trix-editor>
-        </div>
-      </div>
-      <div class="dt-ns dt--fixed-ns w-100">
-      </div>
-    </article>
-
-    <div class="measure pv2 mt2">
-
-      <label for="keywords" class="f3 b db mb2 leader">Keywords
-            <span class="normal black-60">(optional)</span>
-          </label>
-      <input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element | unslugify}}{{end}}{{end}}">
-    </div>
-    <input type="hidden" id="storyid" name="storyid" value="{{ .Story.ID }}">
-    <input type="hidden" id="topic" name="topic" value="{{ .Story.Topic }}">
-    <script>
-  function tlen(el) {
-    var n = 160 - el.value.length;
-    el.nextSibling.innerText = n > 0 ? n + ' characters left' : '';
-  }
-
+<article class="mw8 center br2 ba mt3">
+	<div class="dt-ns dt--fixed-ns w-100">
+		<div class="trix-container">
+			<input type="hidden" id="content" name="content" {{ .TrixAttr }}>
+		<trix-editor input="content" class="trix-content" autofocus></trix-editor>
+	</div>
+</div>
+<div class="dt-ns dt--fixed-ns w-100">
+</div>
+</article>
+<div class="measure pv2 mt2">
+<label for="keywords" class="f3 b db mb2 leader">Keywords
+	<span class="normal black-60">(optional)</span>
+</label>
+<input id="keywords" name="keywords" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc" value="{{ with .Story}}{{ range $index, $element := .Keywords }}{{if $index}}, {{end}}{{$element | unslugify}}{{end}}{{end}}">
+</div>
+<input type="hidden" id="storyid" name="storyid" value="{{ .Story.ID }}">
+<input type="hidden" id="topic" name="topic" value="{{ .Story.Topic }}">
+<script>
+function tlen(el) {
+var n = 160 - el.value.length;
+el.nextSibling.innerText = n > 0 ? n + ' characters left' : '';
+}
 </script>
 <div class="measure pv2 mt2">
 <label for="description" class="f3 b db mb2 leader">Description
-            <span class="normal black-60">(optional)</span>
-          </label>
+	<span class="normal black-60">(optional)</span>
+</label>
 <textarea name="description" value="" class="input-reset ba b--black-20 pa2 mb db w-100" cols=60 rows=3 oninput="tlen(this)" onfocus="tlen(this)" type="text">{{ .Story.Description }}</textarea><span style="margin-left:10px"></span>
-
 </div>
 </form>
-
 </section>
-
-
 <script>
 (function() {
-  Trix.config.attachments.preview.caption = {
-    name: false,
-    size: false
-  };
-
-  document.addEventListener("trix-attachment-add", function(event) {
-    event.preventDefault();
-  });
-
+Trix.config.attachments.preview.caption = {
+name: false,
+size: false
+};
+document.addEventListener("trix-attachment-add", function(event) {
+event.preventDefault();
+});
 }).call(this);
 </script>
-
-
 {{ template "footer" . }}
