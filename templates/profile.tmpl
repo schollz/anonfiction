@@ -30,7 +30,7 @@ Your Profile
     <span class="f5 db lh-copy measure-wide">
    Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
  </span>
-					<form action="/signup" method="POST" enctype="multipart/form-data" id="formdata" >
+					<form action="/profile" method="POST" enctype="multipart/form-data" id="formdata" >
 	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
 		 <div class="mt3">
 			 <label class="db fw4 lh-copy f6" for="email">Email:</label>
@@ -65,7 +65,7 @@ Your Profile
       <li class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
         <div class="flex-auto">
           <span class="f6 db gray-70">{{ .Topic }} (<code>{{ .ID }}</code>)</span>
-          <span class="f6 db black-70">{{ .Date.Format "January 2, 2006" }}</span>
+          <span class="f6 db black-70">{{ .DateCreated.Format "January 2, 2006" }}</span>
         </div>
         <div>
           <a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
