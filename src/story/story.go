@@ -70,6 +70,17 @@ func ListByTopic(topic string) (stories []Story, err error) {
 	return
 }
 
+func ListPublished() (stories []Story, err error) {
+	db, err := storm.Open(DB)
+	defer db.Close()
+	if err != nil {
+		return
+	}
+	query := db.Select(q.Eq("Published", true)).OrderBy("DatePublished").Reverse()
+	err = query.Find(&stories)
+	return
+}
+
 func NumberOfStories(topic string) int {
 	s, _ := ListByTopic(topic)
 	return len(s)

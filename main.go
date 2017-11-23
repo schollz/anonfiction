@@ -76,6 +76,12 @@ func main() {
 	})
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
+	router.GET("/feed.rss", func(c *gin.Context) {
+		c.Data(http.StatusOK, "application/rss+xml", []byte(RSS()))
+	})
+	router.GET("/sitemap.xml", func(c *gin.Context) {
+		c.Data(http.StatusOK, "application/xml", []byte(SiteMap()))
+	})
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "landing.tmpl", MainView{
 			Landing:  true,
