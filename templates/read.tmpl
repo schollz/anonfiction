@@ -20,11 +20,11 @@
 
 </div>
   </header>
-  <div class="fn fl-ns w-50-ns">
+  <div class="f55 f4-l fn fl-ns w-50-ns">
 
   {{ with .Story}}
     {{ range $index, $element := .Paragraphs }}
-      {{if eq $index 0 }}<p class="f4 f51-m f59-l lh-copy measure mt0-ns">{{else}}<p class="lh-copy measure">{{end}} 
+      {{if eq $index 0 }}<p class="lh-copy measure mt0-ns">{{else}}<p class="lh-copy measure">{{end}} 
       {{ $element }}
       </p>
     {{end}}

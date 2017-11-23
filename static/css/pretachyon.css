@@ -1,0 +1,8 @@
+
+@media and (min-width: 30em) and (max-width: 60em) {
+  .f55-m { font-size: 1.075rem; }
+}
+
+.f55 { 
+  font-size: 1.075rem;
+}
