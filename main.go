@@ -205,23 +205,7 @@ func main() {
 		})
 	})
 	router.GET("/profile", func(c *gin.Context) {
-		if !IsSignedIn(c) {
-			SignInAndContinueOn(c)
-			return
-		}
-		userID, err := GetUserIDFromCookie(c)
-		if err != nil {
-			ShowError(err, c)
-			return
-		}
-		stories, _ := story.ListByUser(userID)
-		u, _ := user.Get(userID)
-		c.HTML(http.StatusOK, "profile.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
-			Stories:  stories,
-			User:     u,
-		})
+		ShowProfile("", "", c)
 	})
 	router.GET("/delete", func(c *gin.Context) {
 		if !IsSignedIn(c) {
@@ -236,21 +220,10 @@ func main() {
 		}
 		err = s.Delete()
 		if err != nil {
-			ShowError(err, c)
-			return
+			ShowProfile("", err.Error(), c)
+		} else {
+			ShowProfile("Story deleted.", "", c)
 		}
-		userID, err := GetUserIDFromCookie(c)
-		if err != nil {
-			ShowError(err, c)
-			return
-		}
-		stories, _ := story.ListByUser(userID)
-		c.HTML(http.StatusOK, "profile.tmpl", MainView{
-			IsAdmin:     IsAdmin(c),
-			SignedIn:    IsSignedIn(c),
-			Stories:     stories,
-			InfoMessage: "Story '" + storyID + "' deleted",
-		})
 	})
 	router.GET("/topics", func(c *gin.Context) {
 		topics, err := topic.Load(TopicDB)
@@ -357,6 +330,7 @@ func main() {
 	})
 	router.POST("/write/*foo", handlePOSTStory)
 	router.POST("/login", handlePOSTSignup)
+	router.POST("/profile", handlePOSTProfile)
 	fmt.Println("Running at http://localhost:3001")
 	router.Run(":" + port)
 }
@@ -419,9 +393,11 @@ func handlePOSTStory(c *gin.Context) {
 		s.Topic = form.Topic
 		s.Keywords = keywords
 		s.Description = form.Description
-		if !s.Published && form.Published == "on" {
+		if form.Published == "on" {
 			s.DatePublished = time.Now()
 			s.Published = true
+		} else {
+			s.Published = false
 		}
 		if IsAdmin(c) {
 			err = s.Save()
@@ -457,6 +433,45 @@ func handlePOSTStory(c *gin.Context) {
 			SignedIn:     IsSignedIn(c),
 			ErrorMessage: err.Error(),
 			Topics:       topics,
+		})
+	}
+}
+
+func handlePOSTProfile(c *gin.Context) {
+	defer jsonstore.Save(keys, "keys.json")
+	type FormInput struct {
+		Email    string `form:"email" json:"email" binding:"required"`
+		Language string `form:"language" json:"language"`
+		Digest   string `form:"digest" json:"digest"`
+	}
+	var form FormInput
+	if err := c.ShouldBind(&form); err == nil {
+		form.Email = strings.ToLower(form.Email)
+		userID, err := user.GetID(form.Email)
+		if err != nil {
+			// create user
+			ShowError(err, c)
+			return
+			err = user.Add(form.Email, form.Language, form.Digest == "on")
+			if err != nil {
+				ShowError(err, c)
+				return
+			}
+			userID, err = user.GetID(form.Email)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		err = user.Update(userID, form.Email, form.Language, form.Digest == "on")
+		if err != nil {
+			ShowProfile("", err.Error(), c)
+		} else {
+			ShowProfile("User updated.", "", c)
+		}
+	} else {
+		c.HTML(http.StatusOK, "signup.tmpl", MainView{
+			ErrorMessage: err.Error(),
 		})
 	}
 }
@@ -727,5 +742,27 @@ func ShowError(err error, c *gin.Context) {
 		SignedIn:     IsSignedIn(c),
 		ErrorMessage: err.Error(),
 		ErrorCode:    "503",
+	})
+}
+
+func ShowProfile(infoMessage, errorMessage string, c *gin.Context) {
+	if !IsSignedIn(c) {
+		SignInAndContinueOn(c)
+		return
+	}
+	userID, err := GetUserIDFromCookie(c)
+	if err != nil {
+		ShowError(err, c)
+		return
+	}
+	stories, _ := story.ListByUser(userID)
+	u, _ := user.Get(userID)
+	c.HTML(http.StatusOK, "profile.tmpl", MainView{
+		IsAdmin:      IsAdmin(c),
+		SignedIn:     IsSignedIn(c),
+		Stories:      stories,
+		User:         u,
+		InfoMessage:  infoMessage,
+		ErrorMessage: errorMessage,
 	})
 }

@@ -58,6 +58,23 @@ func Add(email, language string, subscribed bool) (err error) {
 	return
 }
 
+func Update(id, email, language string, subscribed bool) (err error) {
+	db, err := storm.Open(DB)
+	defer db.Close()
+	if err != nil {
+		return
+	}
+	err = db.Update(&User{ID: id, Email: email, Language: language})
+	if err != nil {
+		err = errors.Wrap(err, "problem updating")
+	}
+	err = db.UpdateField(&User{ID: id}, "Subscribed", subscribed)
+	if err != nil {
+		err = errors.Wrap(err, "problem updating")
+	}
+	return
+}
+
 // Get returns the User object for the specified email
 func Get(id string) (u User, err error) {
 	db, err := storm.Open(DB)
