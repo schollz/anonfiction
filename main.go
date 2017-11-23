@@ -331,6 +331,21 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
+	router.GET("/download/:name", func(c *gin.Context) {
+		if !IsSignedIn(c) {
+			SignInAndContinueOn(c)
+			return
+		}
+		userID, _ := GetUserIDFromCookie(c)
+		s, err := story.ListByUser(userID)
+		if err != nil {
+			ShowError(err, c)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"stories": s,
+		})
+	})
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.Redirect(302, "/static/img/meta/favicon.ico")
 	})
