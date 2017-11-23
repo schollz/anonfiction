@@ -204,10 +204,12 @@ func main() {
 			return
 		}
 		stories, _ := story.ListByUser(userID)
+		u, _ := user.Get(userID)
 		c.HTML(http.StatusOK, "profile.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 			Stories:  stories,
+			User:     u,
 		})
 	})
 	router.GET("/delete", func(c *gin.Context) {
@@ -372,6 +374,7 @@ type MainView struct {
 	Previous        string
 	TrixAttr        template.HTMLAttr
 	Route           string
+	User            user.User
 }
 
 func handlePOSTStory(c *gin.Context) {
@@ -407,7 +410,10 @@ func handlePOSTStory(c *gin.Context) {
 		s.Topic = form.Topic
 		s.Keywords = keywords
 		s.Description = form.Description
-		s.Published = form.Published == "on"
+		if !s.Published && form.Published == "on" {
+			s.DatePublished = time.Now()
+			s.Published = true
+		}
 		if IsAdmin(c) {
 			err = s.Save()
 			// allow to save anonymous story!

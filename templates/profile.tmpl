@@ -13,10 +13,10 @@ Your Profile
     <a class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green ba b--dark-blue grow pv2 ph3 dib mr3" href="/write">
       Write online
     </a>
-    <!-- <a class="f4 f3-m f3-l   leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
-      href="/upload">
-     Upload from computer
-    </a> -->
+    <a class="f4 f3-m f3-l   leader br-pill dark-blue no-underline ba grow pv2 ph3 dib"
+      href="/signout">
+     Log out
+    </a>
   </div>
   </span>
 </article>
@@ -30,8 +30,31 @@ Your Profile
     <span class="f5 db lh-copy measure-wide">
    Your profile is private. Only you can see the list of stories that you have published. Only you can edit and delete them. Anyone can read them.
  </span>
+					<form action="/signup" method="POST" enctype="multipart/form-data" id="formdata" >
+	 <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
+		 <div class="mt3">
+			 <label class="db fw4 lh-copy f6" for="email">Email:</label>
+			 <input class="pa2 input-reset ba bg-transparent w-100 measure" name="email"  id="email" type="email" value="{{ .User.Email }}">
+		 </div>
+		 <div class="mt3">
+			 <label class="db fw4 lh-copy f6" for="language">Preferred language:</label>
+			 <select class="b pa2 input-reset ba bg-transparent" name="language">
+			  <option value="">{{ .User.Language }}</option>
+			  <option value="english">English</option>
+			  <option value="german">German</option>
+			  <option value="spanish">Spanish</option>
+			  <option value="chinese">Chinese</option>
+			</select>
+			<div class="mt3">
+ 			 <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" name="digest" {{ if .User.Subscribed }}checked{{ end }}> Email me monthly updates when a new issues is published</label>
+ 				 </div>
+	 <div class="mt3"><input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="submit" value="Update my profile"></div>
 
-    <h1 class="db f4 mb1">Your stories</h1>
+	 </fieldset>
+ </form>
+
+
+    <h1 class="db f4 mb1 pt4">Your stories</h1>
     <span class="f5 db lh-copy measure-wide">
    The stories you have authored are listed below.  If you need to update your story, just click Edit. Once published, you will no longer be able to Edit. If you wish to no longer have your story available, feel free to delete.
  </span>

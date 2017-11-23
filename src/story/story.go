@@ -19,15 +19,16 @@ func init() {
 }
 
 type Story struct {
-	ID          string    `storm:"unique"` // primary key, provided by client
-	UserID      string    `storm:"index"`
-	Date        time.Time `storm:"index"`
-	Topic       string    `storm:"index"`
-	Keywords    []string
-	Paragraphs  []template.HTML
-	Content     versionedtext.VersionedText
-	Published   bool `storm:"index"`
-	Description string
+	ID            string    `storm:"unique"` // primary key, provided by client
+	UserID        string    `storm:"index"`
+	DateCreated   time.Time `storm:"index"`
+	DatePublished time.Time `storm:"index"`
+	Topic         string    `storm:"index"`
+	Keywords      []string
+	Paragraphs    []template.HTML
+	Content       versionedtext.VersionedText
+	Published     bool `storm:"index"`
+	Description   string
 }
 
 func ListByKeyword(keyword string) (stories []Story, err error) {
@@ -78,7 +79,7 @@ func New(userID, topic, content, description string, keywords []string) (s Story
 	return Story{
 		ID:          utils.NewAPIKey(),
 		UserID:      userID,
-		Date:        time.Now(),
+		DateCreated: time.Now(),
 		Topic:       topic,
 		Content:     versionedtext.NewVersionedText(content),
 		Description: description,
