@@ -27,6 +27,15 @@ import (
 var (
 	port string
 	keys *jsonstore.JSONStore
+	// Keys contain the "Validator", the "API Keys" and the "Admin" users. Sign in requests "Email". Server generates a UUID for that email address and stores in a key "uuid:Y" with the User ID as the value. An email is sent with a link, /register?key=Y where Y is UUID. When traversing the link, the server checks that the UUID is valid (it exists as a key "uuid:Y" in Validator) and gets the User ID value. If valid, it generates a API key and adds the User ID to the map (key: "apikey:X" with value User ID) and and sets a cookie containing the encrypted API key, and then deletes the UUID key. All things requiring authentication use the APIKey to determine if it is a valid user and get the and to identify the user by the User ID (each computer will be signed in unless the cookie is deleted). Signing out deletes the cookie and deletes the APIKey.
+
+	// Basically:
+	// 		UUID ensures that API keys can't be generated without requesting one first
+	// 		Deleting UUID after registering ensures one email = one API key
+	// 		Multiple API keys ensures one user can login multiple times and signing out does not affect logins
+
+	// Keys also stores the admins. To add an admin simple put in a Key "admin:someemail@something.com" with a value "\"something\""
+
 )
 
 const (
