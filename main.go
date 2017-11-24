@@ -25,9 +25,8 @@ import (
 )
 
 var (
-	SendEmail bool
-	port      string
-	keys      *jsonstore.JSONStore
+	port, mailgunAPIKey string
+	keys                *jsonstore.JSONStore
 	// Keys contain the "Validator", the "API Keys" and the "Admin" users. Sign in requests "Email". Server generates a UUID for that email address and stores in a key "uuid:Y" with the User ID as the value. An email is sent with a link, /register?key=Y where Y is UUID. When traversing the link, the server checks that the UUID is valid (it exists as a key "uuid:Y" in Validator) and gets the User ID value. If valid, it generates a API key and adds the User ID to the map (key: "apikey:X" with value User ID) and and sets a cookie containing the encrypted API key, and then deletes the UUID key. All things requiring authentication use the APIKey to determine if it is a valid user and get the and to identify the user by the User ID (each computer will be signed in unless the cookie is deleted). Signing out deletes the cookie and deletes the APIKey.
 
 	// Basically:
@@ -63,8 +62,8 @@ func unslugify(s string) string {
 }
 
 func main() {
-	flag.BoolVar(&SendEmail, "sendemail", false, "send email")
 	flag.StringVar(&port, "port", "3001", "port of server")
+	flag.StringVar(&mailgunAPIKey, "mailgun", "", "mailgun private API key")
 	flag.Parse()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -541,14 +540,20 @@ func handlePOSTSignup(c *gin.Context) {
 		logrus.WithFields(logrus.Fields{
 			"func": "handlePOSTSignup",
 		}).Infof("http://localhost:%s/login?key=%s", port, uuid)
-		if SendEmail {
+		if mailgunAPIKey != "" {
 			sendEmail(form.Email, uuid)
+			c.HTML(http.StatusOK, "login.tmpl", MainView{
+				InfoMessage: "Check your email for the link to login.",
+				IsAdmin:     IsAdmin(c),
+				SignedIn:    IsSignedIn(c),
+			})
+		} else {
+			c.HTML(http.StatusOK, "login.tmpl", MainView{
+				InfoMessageHTML: template.HTML("<a href='/login?key=" + uuid + "'>Click here to login</a>"),
+				IsAdmin:         IsAdmin(c),
+				SignedIn:        IsSignedIn(c),
+			})
 		}
-		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			InfoMessage: "Check your email for the link to login.",
-			IsAdmin:     IsAdmin(c),
-			SignedIn:    IsSignedIn(c),
-		})
 	} else {
 		c.HTML(http.StatusOK, "signup.tmpl", MainView{
 			ErrorMessage: err.Error(),
@@ -603,7 +608,7 @@ func sendEmail(address, key string) {
 		panic(err) // Tip: Handle error with something else than a panic ;)
 	}
 
-	mg := mailgun.NewMailgun("mg.storiesincognito.org", "key-3d2e7518cd8fd1332f07f4f7013bf680", "key-3d2e7518cd8fd1332f07f4f7013bf680")
+	mg := mailgun.NewMailgun("mg.storiesincognito.org", mailgunAPIKey, mailgunAPIKey)
 	message := mailgun.NewMessage(
 		"support@storiesincognito.org",
 		"Stories Incognito sign in ("+time.Now().Format("Jan 2 15:04")+")",
