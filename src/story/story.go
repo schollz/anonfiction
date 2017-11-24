@@ -65,7 +65,7 @@ func ListByTopic(topic string) (stories []Story, err error) {
 	if err != nil {
 		return
 	}
-	query := db.Select(q.Eq("Topic", topic), q.Eq("Published", true)).OrderBy("DatePublished")
+	query := db.Select(q.Eq("Topic", topic), q.Eq("Published", true)).OrderBy("DatePublished").Reverse()
 	err = query.Find(&stories)
 	return
 }
