@@ -176,6 +176,11 @@ func main() {
 		})
 	})
 	router.GET("/write/*storyID", func(c *gin.Context) {
+		chosenTopic := c.DefaultQuery("topic", "")
+		var t topic.Topic
+		if len(chosenTopic) > 0 {
+			t, _ = topic.Get(TopicDB, unslugify(chosenTopic))
+		}
 		storyID := c.Param("storyID")[1:]
 		if len(storyID) == 0 {
 			storyID = utils.NewAPIKey()
@@ -191,13 +196,17 @@ func main() {
 		}
 		s, err := story.Get(storyID)
 		if err != nil {
-			s = story.New(userID, "", "", "", []string{})
+			s = story.New(userID, t.Name, "", "", []string{})
+		}
+		if strings.Contains(chosenTopic, "reply-all") {
+			s.Content.Update("Dear Editor,<break><break>")
 		}
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 			Story:    s,
 			Topics:   topics,
+			Topic:    t,
 			TrixAttr: template.HTMLAttr(`value="` + s.Content.GetCurrent() + `"`),
 		})
 	})

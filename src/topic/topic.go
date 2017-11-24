@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"github.com/schollz/storiesincognito/src/story"
 )
@@ -12,7 +13,7 @@ import (
 type Topic struct {
 	Name            string
 	Description     string
-	Month           string
+	Date            time.Time
 	Open            bool
 	NumberOfStories int
 }

@@ -6,11 +6,11 @@
 		<meta charset="utf-8">
 		<title>Stories, Incognito</title>
 		<!-- Search Engine -->
-		<meta name="description" content="Read a story, leave a story. Beautiful anonymous stories from real people.">
+		<meta name="description" content="{{ if .Story.Description }}{{ .Story.Description}}{{else}}Read a story, leave a story. Beautiful anonymous stories from real people.{{ end }}">
 		<meta name="image" content="https://storiesincognito.org/static/img/logo.jpg">
 		<!-- Schema.org for Google -->
 		<meta itemprop="name" content="Stories, Incognito">
-		<meta itemprop="description" content="Read a story, leave a story. Beautiful anonymous stories from real people.">
+		<meta itemprop="description" content="{{ if .Story.Description }}{{ .Story.Description}}{{else}}Read a story, leave a story. Beautiful anonymous stories from real people.{{ end }}">
 		<meta itemprop="image" content="https://storiesincognito.org/static/img/logo.jpg">
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary">

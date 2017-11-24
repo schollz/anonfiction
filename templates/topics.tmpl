@@ -55,7 +55,7 @@
 					<td class="pv3 pr3 bb b--black-20">
 						<img src="/static/img/{{ .Name }}.jpg" style="width:100%;" onerror="this.style.display='none'">
 						<a class="f4 fw6 db black link hover-dark-pink pointer" href="{{ if .Open }}/write?topic={{.Name}}{{else}}/read?topic={{.Name}}{{end}}">{{.Name}}</a>
-						{{.Month}} {{if .NumberOfStories }}- <small>{{ .NumberOfStories }} stories</small>{{ end }}
+						{{.Date.Format "January 2006"}} {{if .NumberOfStories }}- <small>{{ .NumberOfStories }} stories</small>{{ end }}
 						
 					</td>
 				</tr>
@@ -73,14 +73,14 @@
 		<a class="db pv4 ph3 ph0-l no-underline black dim" href="/read/topic/{{ .Name | slugify }}">
 			<div class="flex flex-column flex-row-ns">
 				<div class="pr3-ns mb4 mb0-ns w-100 w-40-ns">
-					<img src="/static/img/{{ .Name }}.jpg" class="db" alt="Photo of a dimly lit room with a computer interface terminal.">
+					<img src="/static/img/{{ .Name }}.jpg" class="db" alt="">
 				</div>
 				<div class="w-100 w-60-ns pl3-ns">
 					<h1 class="f2 fw1 mt0 lh-title mb0"><strong>{{.Name}}</strong></h1>
 					<p class="f6 f5-l lh-copy"><em>
 						{{ .Description }}
 					</em></p>
-					<p class="f6 lh-copy mv0">{{.Month}}</p>
+					<p class="f6 lh-copy mv0">{{.Date.Format "January 2006"}}</p>
 				</div>
 			</div>
 		</a>

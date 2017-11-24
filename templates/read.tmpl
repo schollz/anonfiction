@@ -3,11 +3,11 @@
 <article class="cf ph3 ph5-ns pv4 mw8">
 	<header class="fn fl-ns w-50-ns pr4-ns">
 		<div class="pv2">
-			<img src="/static/img/{{ .Topic.Name }}.jpg">
+			<img src="/static/img/{{ .Topic.Name }}.jpg" alt="">
 		</div>
 		<h1 class="f2 f1-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
 		<span class="pa1 pv1">
-			<time class="f6 ttu tracked gray">{{ .Topic.Month }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
+			<time class="f6 ttu tracked gray">{{ .Topic.Date.Format "January 2006" }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
 		</span>
 		<div class="pv1">
 			{{ with .Story}}{{ range $index, $element := .Keywords }}
@@ -36,6 +36,10 @@
 			<span class="pl1">Previous</span>
 		</a>
 		{{ end }}
+
+					<a href="/write/?topic=reply-all-{{ .Story.Topic | slugify }}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+			<span class="pl1">Reply All</span>
+		</a>
 		{{ if .Next }}
 		<a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
 			<span class="pr1">Next</span>

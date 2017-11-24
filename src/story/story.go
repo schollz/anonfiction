@@ -164,7 +164,7 @@ func ConvertTrix(s string) (paragraphs []template.HTML) {
 			continue
 		}
 		if paragraphI == 0 {
-			p = `<span class="leader f4">` + strings.Replace(p, ". ", "</span>. ", 1)
+			p = `<span class="leader">` + strings.Replace(p, ". ", "</span>. ", 1)
 		}
 		paragraphs[paragraphI] = template.HTML(p)
 		paragraphI++

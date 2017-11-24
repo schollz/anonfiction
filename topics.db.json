@@ -2,32 +2,38 @@
   {
     "name": "Wild Animals",
     "description": "Getting in touch with nature and the creatues around us.",
-    "month": "January 2018",
+    "date": "2018-01-01T23:00:00Z",
+    "open": true
+  },
+  {
+    "name": "Reply All Wild Animals",
+    "description": "Readers response to stories about 'Wild Animals'.",
+    "date": "2018-02-28T23:00:00Z",
     "open": true
   },
   {
     "name": "First Time",
     "description": "The first time I did X.",
-    "month": "February 2018",
+    "date": "2018-02-01T23:00:00Z",
     "open": true
   },
   {
     "name": "Just The Two Of Us",
     "description": "Stories about family, friends, enemies, or lovers.",
-    "month": "March 2018",
+    "date": "2018-03-10T23:00:00Z",
     "open": true
   },
   {
     "name": "Dreams",
     "description": "Aspirations, hopes, or just days where you think you are dreaming.",
-    "month": "April 2018",
+    "date": "2018-04-10T23:00:00Z",
     "open": true
   },
 
   {
     "name": "I Laughed",
     "description": "Things that made me laugh, whether appropriate or not.",
-    "month": "May 2018",
+    "date": "2018-05-10T23:00:00Z",
     "open": true
   }
 ]
