@@ -13,12 +13,13 @@ import (
 const rssTemplate = `
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
+	<atom:link href="https://storiesincognito.org/rss.xml" rel="self" type="application/rss+xml" />
 	<title>Stories Incognito</title>
 	<link>https://storiesincognito.org</link>
 	<description></description>
 	<generator></generator>
 	<language>eng</language>
-	<managingEditor>editor@mg.storiesincognito.org (Stories Incognito Editors</managingEditor>
+	<managingEditor>editor@mg.storiesincognito.org (Stories Incognito Editors)</managingEditor>
 	<webMaster>web@mg.storiesincognito.org (Web Guru)</webMaster>
 	<copyright>Copyright 2017 Stories Incognito</copyright>
 	<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
@@ -29,7 +30,6 @@ const rssTemplate = `
 		<guid>https://storiesincognito.org/read/story/{{ .ID }}</guid>
 		<description>{{ .Description }}</description>
 	</item>{{ end }}
-	<atom:link href="https://storiesincognitor.org/rss.xml" rel="self" type="application/rss+xml" />
 </channel>
 </rss>
 `
