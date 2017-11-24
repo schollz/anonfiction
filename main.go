@@ -136,7 +136,7 @@ func main() {
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
 				IsAdmin:         IsAdmin(c),
 				SignedIn:        IsSignedIn(c),
-				InfoMessageHTML: template.HTML("No stories yet, <a href='/write'>why don't you write one?</a>"),
+				InfoMessageHTML: template.HTML("No stories yet, <a href='/write?topic=" + id + "'>why don't you write one?</a>"),
 				ErrorCode:       "Uh oh!",
 			})
 			return
