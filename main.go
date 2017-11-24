@@ -545,7 +545,7 @@ func handlePOSTSignup(c *gin.Context) {
 			sendEmail(form.Email, uuid)
 		}
 		c.HTML(http.StatusOK, "login.tmpl", MainView{
-			InfoMessage: "You will receive an email in about a minute. Click the link in the email to login.",
+			InfoMessage: "Check your email for the link to login.",
 			IsAdmin:     IsAdmin(c),
 			SignedIn:    IsSignedIn(c),
 		})

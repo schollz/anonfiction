@@ -33,16 +33,17 @@
 					<title>chevronLeft icon</title>
 				<path d="M20 1 L24 5 L14 16 L24 27 L20 31 L6 16 z"></path>
 			</svg>
-			<span class="pl1">Previous</span>
+			<span class="pl1 f7 f6-s f5-m f4-l">Previous</span>
 		</a>
 		{{ end }}
 
 					<a href="/write/?topic=reply-all-{{ .Story.Topic | slugify }}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-			<span class="pl1">Reply All</span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+			<span class="pl1 f7 f6-s  f5-m f4-l">Reply</span>
 		</a>
 		{{ if .Next }}
 		<a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
-			<span class="pr1">Next</span>
+			<span class="pr1 f7 f6-s  f5-m f4-l ">Next</span>
 			<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
 				<title>chevronRight icon</title>
 			<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
