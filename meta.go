@@ -17,9 +17,9 @@ const rssTemplate = `
 	<link>https://storiesincognito.org</link>
 	<description></description>
 	<generator></generator>
-	<language>English</language>
-	<managingEditor>stories@mg.storiesincognito.org</managingEditor>
-	<webMaster>stories@mg.storiesincognito.org</webMaster>
+	<language>eng</language>
+	<managingEditor>editor@mg.storiesincognito.org (Stories Incognito Editors</managingEditor>
+	<webMaster>web@mg.storiesincognito.org (Web Guru)</webMaster>
 	<copyright>Copyright 2017 Stories Incognito</copyright>
 	<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
 	{{ range .Stories }}<item>
@@ -29,6 +29,7 @@ const rssTemplate = `
 		<guid>https://storiesincognito.org/read/story/{{ .ID }}</guid>
 		<description>{{ .Description }}</description>
 	</item>{{ end }}
+	<atom:link href="https://storiesincognitor.org/rss.xml" rel="self" type="application/rss+xml" />
 </channel>
 </rss>
 `
