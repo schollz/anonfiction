@@ -318,10 +318,10 @@ func main() {
 			return
 		}
 		stories, err := story.All()
-		for i, s := range stories {
-			u, _ := user.Get(s.UserID)
-			stories[i].UserID = u.Email
-		}
+		// for i, s := range stories {
+		// 	u, _ := user.Get(s.UserID)
+		// 	stories[i].UserID = u.Email
+		// }
 		log.Println(err)
 		users, _ := user.All()
 		// add email to the user ID
