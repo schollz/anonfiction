@@ -117,7 +117,7 @@ func main() {
 		var t topic.Topic
 		var stories []story.Story
 		var iNum int
-		var nextStory, previousStory string
+		var nextStory, previousStory, nextTopic string
 		if action == "story" {
 			stories = make([]story.Story, 1)
 			stories[0], err = story.Get(id)
@@ -168,6 +168,8 @@ func main() {
 		s = stories[iNum-1]
 		if iNum < len(stories) {
 			nextStory = strconv.Itoa(iNum + 1)
+		} else {
+			nextTopic = topic.Next(TopicDB, s.Topic)
 		}
 		if iNum > 1 {
 			previousStory = strconv.Itoa(iNum - 1)
@@ -179,6 +181,7 @@ func main() {
 			Topic:      t,
 			Story:      s,
 			Next:       nextStory,
+			NextTopic:  nextTopic,
 			Previous:   previousStory,
 			NumStory:   iNum,
 			NumStories: len(stories),
@@ -394,6 +397,7 @@ type MainView struct {
 	NumStories      int
 	Users           []user.User
 	Next            string
+	NextTopic       string
 	Previous        string
 	TrixAttr        template.HTMLAttr
 	Route           string

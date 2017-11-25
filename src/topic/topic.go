@@ -62,16 +62,23 @@ func IsClosed(filename string, topicName string) bool {
 
 // Next returns the next topic
 func Next(filename string, topicName string) string {
-	topics, err := Load(filename)
+	allTopics, err := Load(filename)
 	if err != nil {
 		return ""
 	}
-	for i, t := range topics {
-		if i == 0 {
+	topics := make([]Topic, len(allTopics))
+	i := 0
+	for _, t := range allTopics {
+		if strings.Contains(t.Name, "Reply To") {
 			continue
 		}
-		if strings.ToLower(topicName) == strings.ToLower(t.Name) {
-			return topics[i-1].Name
+		topics[i] = t
+		i++
+	}
+	topics = topics[:i]
+	for i, t := range topics {
+		if t.Name == topicName && i < len(topics)-1 {
+			return topics[i+1].Name
 		}
 	}
 	return ""
