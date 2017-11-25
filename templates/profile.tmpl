@@ -51,28 +51,44 @@
 		</span>
 	</article>
 	<article class="pv4">
-		<ul class="list pl0 mt0 measure">
-			{{range .Stories }}
-			<li class="flex items-center lh-copy pa3 ph0-l bb b--black-10">
-				<div class="flex-auto">
-					<span class="f6 db gray-70">{{ .Topic }} (<code>{{ .ID }}</code>)</span>
-					<span class="f6 db black-70">{{ .DateCreated.Format "January 2, 2006" }}</span>
-				</div>
-				<div>
-					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
+<div class="overflow-auto" style="max-width: 66rem;">
+			<table class="f6 w-100 mw8" cellspacing="0">
+				<thead>
+					<tr class="stripe-dark">
+						<th class="fw6 tl pa2 bg-white">Topic</th>
+						<th class="fw6 tl pa2 bg-white">ID</th>
+						<th class="fw6 tl pa2 bg-white">Story</th>
+<!--						<th class="fw6 tl pa2 bg-white">User</th>-->
+						<th class="fw6 tl pa2 bg-white">Created</th>
+						<th class="fw6 tl pa2 bg-white">Published</th>
+						<th class="fw6 tl pa2 bg-white"></th>
+						<th class="fw6 tl pa2 bg-white"></th>
+						<th class="fw6 tl pa2 bg-white"></th>
+					</tr>
+				</thead>
+				<tbody class="lh-copy">
+					{{ range .Stories }}
+					<tr class="stripe-dark">
+						<td class="pa2">{{ .Topic }}</td>
+						<td class="pa2"><code><a href="/write/{{ .ID }}">{{ .ID }}</a></code></td>
+						<td class="pa2"><small><em>“{{ .Content.CurrentText | firsttenwords }} …”</em></small></td>
+						<!--<td class="pa2">{{ .UserID }}</td>-->
+						<td class="pa2"><small>{{ .DateCreated.Format "Jan 02, 2006 3:04PM" }}</small></td>
+						<td class="pa2"><small>{{ if .Published}}{{ .DatePublished.Format "Jan 02, 2006 15:04PM" }}{{ end }}</small> </td>
+						<td class="pa2"><a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
+						</td>
+					<td class="pa2">
 					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write/{{ .ID }}">Edit</a>
-					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}" onclick="return confirm('Are you sure?')">Delete</a>
-				</div>
-			</li>
-			{{end}}
+					</td>
+					<td class="pa2">					
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}" onclick="return confirm('Are you sure?')">Delete</a></td>
+					</tr>
+					{{ end }}
+				</tbody>
+			</table>
+		</div>
 			<div class="pv4 ph2">
 				<a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib blue" href="/download/data.json">Download all</a>
-				<!--<a class="f6 link dim br1 ba bw1 ph5 pv2 mb2 dib gray" href="#0">Delete profile</a>-->
 			</article>
-			<!-- <article class="ph2 pv4">
-					<span class="f5 db lh-copy measure">
-							This is the current list of topics, some of which are passed. Click on a topic to read the stories from it.
-					</span>
-			</article> -->
 		</section>
 		{{ template "footer" . }}

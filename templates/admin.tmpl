@@ -6,21 +6,33 @@
 			<table class="f6 w-100 mw8 center" cellspacing="0">
 				<thead>
 					<tr class="stripe-dark">
-						<th class="fw6 tl pa2 bg-white">ID</th>
 						<th class="fw6 tl pa2 bg-white">Topic</th>
-						<th class="fw6 tl pa2 bg-white">User</th>
+						<th class="fw6 tl pa2 bg-white">ID</th>
+						<th class="fw6 tl pa2 bg-white">Story</th>
+<!--						<th class="fw6 tl pa2 bg-white">User</th>-->
 						<th class="fw6 tl pa2 bg-white">Created</th>
 						<th class="fw6 tl pa2 bg-white">Published</th>
+						<th class="fw6 tl pa2 bg-white"></th>
+						<th class="fw6 tl pa2 bg-white"></th>
+						<th class="fw6 tl pa2 bg-white"></th>
 					</tr>
 				</thead>
 				<tbody class="lh-copy">
 					{{ range .Stories }}
 					<tr class="stripe-dark">
-						<td class="pa2"><a href="/write/{{ .ID }}">{{ .ID }}</a></td>
 						<td class="pa2">{{ .Topic }}</td>
-						<td class="pa2">{{ .UserID }}</td>
-						<td class="pa2">{{ .DateCreated.Format "Jan 02, 2006 15:04:05 UTC" }}</td>
-						<td class="pa2">{{ if .Published}}{{ .DatePublished.Format "Jan 02, 2006 15:04:05 UTC" }}{{ end }} </td>
+						<td class="pa2"><code><a href="/write/{{ .ID }}">{{ .ID }}</a></code></td>
+						<td class="pa2"><small><em>“{{ .Content.CurrentText | firsttenwords }} …”</em></small></td>
+						<!--<td class="pa2">{{ .UserID }}</td>-->
+						<td class="pa2"><small>{{ .DateCreated.Format "Jan 02, 2006 3:04PM" }}</small></td>
+						<td class="pa2"><small>{{ if .Published}}{{ .DatePublished.Format "Jan 02, 2006 15:04PM" }}{{ end }}</small> </td>
+						<td class="pa2"><a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib blue" href="/read/story/{{ .ID }}">Read</a>
+						</td>
+					<td class="pa2">
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib black" href="/write/{{ .ID }}">Edit</a>
+					</td>
+					<td class="pa2">					
+					<a class="f6 link dim br1 ba bw1 ph3 pv2 mb2 dib red" href="/delete?story={{ .ID }}" onclick="return confirm('Are you sure?')">Delete</a></td>
 					</tr>
 					{{ end }}
 				</tbody>

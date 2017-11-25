@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/matcornic/hermes"
 	"github.com/pkg/errors"
+	strip "github.com/schollz/html-strip-tags-go"
 	"github.com/schollz/jsonstore"
 	"github.com/schollz/storiesincognito/src/encrypt"
 	"github.com/schollz/storiesincognito/src/story"
@@ -61,6 +62,15 @@ func unslugify(s string) string {
 	return strings.TrimSpace(strings.Title(strings.Join(strings.Split(s, "-"), " ")))
 }
 
+func firsttenwords(s string) string {
+	s = strings.Replace(s, "&nbsp;", " ", -1)
+	words := strings.Fields(strip.StripTags(s))
+	if len(words) > 10 {
+		words = words[:10]
+	}
+	return strings.Join(words, " ")
+}
+
 func main() {
 	flag.StringVar(&port, "port", "3001", "port of server")
 	flag.StringVar(&mailgunAPIKey, "mailgun", "", "mailgun private API key")
@@ -70,8 +80,9 @@ func main() {
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 	router.SetFuncMap(template.FuncMap{
-		"slugify":   slugify,
-		"unslugify": unslugify,
+		"slugify":       slugify,
+		"unslugify":     unslugify,
+		"firsttenwords": firsttenwords,
 	})
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
@@ -197,7 +208,7 @@ func main() {
 		if err != nil {
 			s = story.New(userID, t.Name, "", "", []string{})
 		}
-		if strings.Contains(chosenTopic, "reply-all") {
+		if strings.Contains(chosenTopic, "reply-to") {
 			s.Content.Update("Dear Editor,<break><break>")
 		}
 		c.HTML(http.StatusOK, "write.tmpl", MainView{
