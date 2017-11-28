@@ -86,6 +86,9 @@ func main() {
 	})
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
+	router.HEAD("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	})
 	router.GET("/rss.xml", func(c *gin.Context) {
 		c.Data(http.StatusOK, "application/rss+xml", []byte(RSS()))
 	})
