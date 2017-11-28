@@ -357,7 +357,7 @@ func main() {
 		})
 	})
 	router.GET("/about", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "about.tmpl", MainView{
+		c.HTML(http.StatusOK, "contact.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 		})

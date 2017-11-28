@@ -1,29 +1,38 @@
 {{ template "header" . }}
-<form action="https://formspree.io/storiesincognito.org@gmail.com" method="POST">
-	<article class="pv4 bg-lightest-blue dark-blue ph3 ph5-ns">
-		<h1 class="fw6 f3 f2-ns lh-title mt0 mb0">
-		Contact
-		</h1>
-		<div class="fw2 f5 lh-copy mt0 mb3 pv2 measure-wide">
-			Feel free to get in touch.
+<article data-name="article-full-bleed-background" class="ph5-ns" style="max-width: 67rem;">
+	<div class="cf" style="background: url(/static/img/landing.jpg) no-repeat center center fixed; background-size: cover; ">
+		<div class="fl pa3 bg-white black-70 measure-narrow f3 pv4">
+			<header class="bb b--black-70">
+				<h3 class="f2 fw7 ttu tracked lh-title mt0 mb3 avenir">
+				About</h3>
+			</header>
+			<section class="pt2 pb4">
+				<p class="f5 lh-copy measure-wide">
+					<span class="leader f4">Stores Incognito</span> is a place for anonymous, short, creative nonfiction.
+				</p>
+			</section>
+		</div>
+		<div class="fl pa3 bg-white black-70 measure-narrow f3 pv4">
+						<header class="bb b--black-70">
+				<h3 class="f2 fw7 ttu tracked lh-title mt0 mb3 avenir">
+				Contact</h3>
+			</header>
+			<form action="https://formspree.io/storiesincognito.org@gmail.com" method="POST">
+				<div class="measure pv2 mt2">
+					<label for="keywords" class="f3 b db mb2 leader">Leave a message
+					</label>
+					<input id="name" name="name" placeholder="Your name" class="merri f4 input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc">
+				</div>
+				<div class="measure pv2 mt2">
+					<input name="_replyto"  placeholder="Your email" class="merri f4 input-reset ba b--black-20 pa2 mb db w-100" type="email" aria-describedby="name-desc">
+				</div>
+				<div class="measure pv2 mt2">
+					<textarea name="message"  placeholder="Your message" class="merri f4 input-reset ba b--black-20 pa2 mb db w-100" cols=60 rows=3 type="text"></textarea>
+				</div>
+				<div class="measure pv2 mt2">
+					<input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="Submit">
+				</div>
+			</form>
 		</div>
 	</article>
-	<section class="ph3 ph5-ns pv3 mb5" style="max-width: 66rem;">
-		
-		<div class="measure pv2 mt2">
-			<label for="keywords" class="f3 b db mb2 leader">Leave a message
-			</label>
-			<input id="name" name="name" placeholder="Your name" class="input-reset ba b--black-20 pa2 mb db w-100" type="text" aria-describedby="name-desc">
-		</div>		
-		<div class="measure pv2 mt2">
-			<input name="_replyto"  placeholder="Your email" class="input-reset ba b--black-20 pa2 mb db w-100" type="email" aria-describedby="name-desc">
-		</div>
-		<div class="measure pv2 mt2">
-			<textarea name="message"  placeholder="Your message" class="input-reset ba b--black-20 pa2 mb db w-100" cols=60 rows=3 type="text"></textarea>
-		</div>
-		<div class="measure pv2 mt2">
-		<input class="f4 f3-m f3-l  leader br-pill bg-dark-blue no-underline washed-green pointer ba b--dark-blue grow pv2 ph3 dib mr3" type="Submit" value="Submit">
-		</div>
-	</form>
-</section>
-{{ template "footer" . }}
+	{{ template "footer" . }}

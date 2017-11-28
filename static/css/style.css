@@ -1,9 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Merriweather");
-
 @import url("https://fonts.googleapis.com/css?family=Alegreya+Sans+SC");
 
-
-body {
+body,.merri {
     font-family: merriweather,serif;
 }
 
