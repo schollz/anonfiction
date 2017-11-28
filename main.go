@@ -344,6 +344,12 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
+	router.GET("/contact", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "contact.tmpl", MainView{
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
+		})
+	})
 	router.GET("/privacy", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "privacy.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
