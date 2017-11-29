@@ -592,15 +592,15 @@ func sendEmail(address, key string) {
 		// Theme: new(Default)
 		Product: hermes.Product{
 			// Appears in header & footer of e-mails
-			Name: "Stories Incognito Team",
-			Link: "https://storiesincognito.org",
+			Name: "anonfiction team",
+			Link: "https://www.anonfiction.com",
 			// Optional product logo
-			Logo: "https://storiesincognito.org/static/img/books2.png",
+			Logo: "https://www.anonfiction.com/static/img/books2.png",
 		},
 	}
 	email := hermes.Email{
 		Body: hermes.Body{
-			Title: "Welcome to Stories Incognito!",
+			Title: "Welcome to anonfiction!",
 			// Intros: []string{
 			// 	"Welcome to Stories Incognito!",
 			// },
@@ -610,7 +610,7 @@ func sendEmail(address, key string) {
 					Button: hermes.Button{
 						Color: "#00449e", // Optional action button color
 						Text:  "Log In",
-						Link:  "https://storiesincognito.org/login?key=" + key,
+						Link:  "https://www.anonfiction.com/login?key=" + key,
 					},
 				},
 			},
@@ -632,10 +632,10 @@ func sendEmail(address, key string) {
 		panic(err) // Tip: Handle error with something else than a panic ;)
 	}
 
-	mg := mailgun.NewMailgun("mg.storiesincognito.org", mailgunAPIKey, mailgunAPIKey)
+	mg := mailgun.NewMailgun("anonfiction.com", mailgunAPIKey, mailgunAPIKey)
 	message := mailgun.NewMessage(
-		"support@storiesincognito.org",
-		"Stories Incognito sign in ("+time.Now().Format("Jan 2 15:04")+")",
+		"support@anonfiction.com",
+		"anonfiction sign in ("+time.Now().Format("Jan 2 15:04")+")",
 		emailText,
 		address)
 	message.SetHtml(emailBody)
