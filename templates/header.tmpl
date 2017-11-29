@@ -52,11 +52,13 @@
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-2345677-20"></script>
 		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'UA-2345677-20');
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-2345677-20');
 		</script>
+
 	</head>
 	<body id="touchsurface">
 		<header class="sans-serif">
@@ -82,10 +84,10 @@
 		{{ if .Landing }}
 		<script>
 			$(function() {
-		$('#landingtitle').fadeOut(1000, function() {
-		$(this).text('Anonfiction').fadeIn(1000);
-		});
-		});
+			  $('#landingtitle').delay(2000).fadeOut(1000, function() {
+			    $(this).text('Anonfiction').fadeIn(1000);
+			  });
+			});
 		</script>
 		{{ end }}
 		{{ end }}
