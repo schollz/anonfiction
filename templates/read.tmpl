@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "messages" .}}
 <article class="cf ph3 ph5-ns pv4 mw8">
-	<header class="fn fl-ns w-50-ns pr4-ns">
+	<header class="fn fl-ns w-40-ns pr4-ns">
 		<div class="pv2">
 			<img src="/static/img/{{ .Topic.Name }}.jpg" alt="">
 		</div>
@@ -16,7 +16,7 @@
 			{{end}}{{end}}
 		</div>
 	</header>
-	<div class="f55 f4-l fn fl-ns w-50-ns">
+	<div class="f55 f4-l fn fl-ns w-60-ns">
 		{{ with .Story}}
 		{{ range $index, $element := .Paragraphs }}
 		{{if eq $index 0 }}<p class="lh-copy measure mt0-ns">{{else}}<p class="lh-copy measure">{{end}}
@@ -24,8 +24,12 @@
 		</p>
 		{{end}}
 		{{end}}
+		<div class="pv1 f5 leader">
+			{{ with .Story}}Story Permalink: <a href="/read/story/{{ .ID}}">/read/story/{{.ID}}</a>
+			{{end}}
+		</div>
 	</div>
-	<footer class="fn fl-ns w-50-ns pr4-ns pv4" style="float:right;">
+	<footer class="fn fl-ns w-60-ns pr4-ns pv4" style="float:right;">
 		<div class="flex">
 			{{ if .Previous }}
 			<a href="/read/{{ .Route }}/?i={{.Previous}}" class="PrevP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">

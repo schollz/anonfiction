@@ -112,7 +112,7 @@ func main() {
 		action := actions[1]
 		var id string
 		if len(actions) > 2 {
-			id = strings.TrimSpace(actions[2])
+			id = strings.ToLower(strings.TrimSpace(actions[2]))
 		}
 
 		var err error
