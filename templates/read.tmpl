@@ -3,9 +3,9 @@
 <article class="cf ph3 ph5-ns pv4 mw8">
 	<header class="fn fl-ns w-40-ns pr4-ns">
 		<div class="pv2">
-			<img src="/static/img/{{ .Topic.Name }}.jpg" alt="">
+			<img src="/static/img/{{ .Topic.Name }}.jpg" alt="" style="border-radius: 25px;">
 		</div>
-		<h1 class="f2 f1-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
+		<h1 class="f3 f2-l mb0 mt0 lh-title">“{{ .Topic.Name }}”</h1>
 		<span class="pa1 pv1">
 			<time class="f6 ttu tracked gray">{{ .Topic.Date.Format "January 2006" }} {{ if .NumStory }}#{{ .NumStory }}/{{.NumStories}} {{ end }}</time>
 		</span>
@@ -40,30 +40,27 @@
 			<span class="pl1 f7 f6-s f5-m f4-l">Previous</span>
 		</a>
 		{{ end }}
-
-					<a href="/write/?topic=reply-to-{{ .Story.Topic | slugify }}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-			<span class="pl1 f7 f6-s  f5-m f4-l">Reply</span>
-		</a>
-		{{ if .Next }}
-		<a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
-			<span class="pr1 f7 f6-s  f5-m f4-l ">Next</span>
-			<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
-				<title>chevronRight icon</title>
-			<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
-		</svg>
+		<a href="/write/?topic=reply-to-{{ .Story.Topic | slugify }}" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box mr4">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+		<span class="pl1 f7 f6-s  f5-m f4-l">Reply</span>
 	</a>
-	{{ else }}
-			<a href="/read/topic/{{.NextTopic | slugify}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
-			<span class="pr1 f7 f6-s  f5-m f4-l ">Next</span>
-			<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
-				<title>chevronRight icon</title>
-			<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
-		</svg>
-	</a>
-
-	{{ end }}
-
+	{{ if .Next }}
+	<a href="/read/{{ .Route }}/?i={{.Next}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+		<span class="pr1 f7 f6-s  f5-m f4-l ">Next</span>
+		<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
+			<title>chevronRight icon</title>
+		<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
+	</svg>
+</a>
+{{ else }}
+<a href="/read/topic/{{.NextTopic | slugify}}" class="NextP f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 ba border-box">
+	<span class="pr1 f7 f6-s  f5-m f4-l ">Next</span>
+	<svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
+		<title>chevronRight icon</title>
+	<path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
+</svg>
+</a>
+{{ end }}
 </div>
 </footer>
 </article>
@@ -89,7 +86,6 @@ var nextPageUrl = document.querySelectorAll('a.NextP')[0].href;
 window.location.href = nextPageUrl;
 }
 }
-
 }, false) // end window.onload
 </script>
 {{ template "footer" . }}
