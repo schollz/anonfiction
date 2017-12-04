@@ -1,0 +1,22 @@
+{{ template "header" . }}
+<article data-name="article-full-bleed-background" class="ph5-ns" style="max-width: 67rem;">
+	<div class="cf" style="background: url(https://www.anonfiction.com/static/img/landing.jpg) no-repeat center center fixed; background-size: cover; ">
+		<div class="fl pa3 bg-white black-70 measure-narrow f3 pv4">
+			<header class="bb b--black-70">
+				<h3 class="f2 f1-l fw7 ttu tracked lh-title mt0 mb3 avenir tc measure">
+				anonfiction</h3>
+			</header>
+			<section class="pv2">
+				<span class="f3 leader db lh-copy center pv2 fw6 tc measure">
+					First Time <em class="f4 fw3">February 2017</em>
+				</span>
+				{{ range .Stories }}
+				<span class="f5 db lh-copy  center tc measure pa2">
+					<a href="/read/topic/{{ .Topic | slugify}}/?i=1" class="no-underline bg-animate bg-white hover-blue black-70 pa2">{{ .Description }}</a>
+				</span>
+				{{ end }}
+			</section>
+		</div>
+	</div>
+</article>
+{{ template "footer" . }}
