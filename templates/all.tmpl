@@ -6,16 +6,20 @@
 				<h3 class="f2 f1-l fw7 ttu tracked lh-title mt0 mb3 avenir tc measure">
 				anonfiction</h3>
 			</header>
+			{{ range $i, $e := .Topics }}
 			<section class="pv2">
 				<span class="f3 leader db lh-copy center pv2 fw6 tc measure">
-					First Time <em class="f4 fw3">February 2017</em>
+					{{ $e.Name}} <em class="f4 fw3">{{ $e.Date.Format "January 2006" }} </em>
 				</span>
-				{{ range .Stories }}
+				{{ range $.Stories }}
+				{{ if eq .Topic $e.Name }}
 				<span class="f5 db lh-copy  center tc measure pa2">
-					<a href="/read/topic/{{ .Topic | slugify}}/?i=1" class="no-underline bg-animate bg-white hover-blue black-70 pa2">{{ .Description }}</a>
+					<a href="/read/topic/{{ .Topic | slugify}}/?i={{.ID}}" class="no-underline bg-animate bg-white hover-blue black-70 pa2">{{ .Description }}</a>
 				</span>
 				{{ end }}
+				{{ end }}
 			</section>
+			{{ end }}
 		</div>
 	</div>
 </article>

@@ -362,6 +362,26 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
+	router.GET("/all", func(c *gin.Context) {
+		topics, _ := topic.Load(TopicDB)
+		stories, _ := story.ListPublished()
+
+		for _, topic := range topics {
+			topic.NumberOfStories = 1
+			for i, story := range stories {
+				if topic.Name == story.Topic {
+					stories[i].ID = strconv.Itoa(topic.NumberOfStories)
+					topic.NumberOfStories++
+				}
+			}
+		}
+		c.HTML(http.StatusOK, "all.tmpl", MainView{
+			Stories:  stories,
+			Topics:   topics,
+			IsAdmin:  IsAdmin(c),
+			SignedIn: IsSignedIn(c),
+		})
+	})
 	router.GET("/download/:name", func(c *gin.Context) {
 		if !IsSignedIn(c) {
 			SignInAndContinueOn(c)
