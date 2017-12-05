@@ -9,7 +9,7 @@
 			{{ range $i, $e := .Topics }}
 			<section class="pv2">
 				<span class="f3 leader db lh-copy center pv2 fw6 tc measure">
-					{{ $e.Name}} <em class="f4 fw3">{{ $e.Date.Format "January 2006" }} </em>
+					“{{ $e.Name}}” <em class="f4 fw3">{{ $e.Date.Format "January 2006" }} </em>
 				</span>
 				{{ range $.Stories }}
 				{{ if eq .Topic $e.Name }}

@@ -365,19 +365,33 @@ func main() {
 	router.GET("/all", func(c *gin.Context) {
 		topics, _ := topic.Load(TopicDB)
 		stories, _ := story.ListPublished()
-
+		s := make([]story.Story, len(stories))
+		t := make([]topic.Topic, len(topics))
+		si := 0
+		ti := 0
 		for _, topic := range topics {
 			topic.NumberOfStories = 1
-			for i, story := range stories {
+			fmt.Println(strings.Contains(strings.ToLower(topic.Name), "reply to"))
+			if strings.Contains(strings.ToLower(topic.Name), "reply to") {
+				continue
+			}
+			t[ti] = topic
+			for _, story := range stories {
 				if topic.Name == story.Topic {
-					stories[i].ID = strconv.Itoa(topic.NumberOfStories)
-					topic.NumberOfStories++
+					s[si] = story
+					s[si].ID = strconv.Itoa(topic.NumberOfStories)
+					t[ti].NumberOfStories++
+					si++
 				}
 			}
+			ti++
 		}
+		s = s[:si]
+		t = t[:ti]
 		c.HTML(http.StatusOK, "all.tmpl", MainView{
-			Stories:  stories,
-			Topics:   topics,
+			Landing:  true,
+			Stories:  s,
+			Topics:   t,
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 		})
