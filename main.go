@@ -362,7 +362,7 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
-	router.GET("/all", func(c *gin.Context) {
+	router.GET("/stories", func(c *gin.Context) {
 		topics, _ := topic.Load(TopicDB)
 		stories, _ := story.ListPublished()
 		s := make([]story.Story, len(stories))
@@ -389,7 +389,6 @@ func main() {
 		s = s[:si]
 		t = t[:ti]
 		c.HTML(http.StatusOK, "all.tmpl", MainView{
-			Landing:  true,
 			Stories:  s,
 			Topics:   t,
 			IsAdmin:  IsAdmin(c),

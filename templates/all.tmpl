@@ -4,7 +4,7 @@
 		<div class="fl pa3 bg-white black-70 measure-narrow f3 pv4">
 			<header class="bb b--black-70">
 				<h3 class="f2 f1-l fw7 ttu tracked lh-title mt0 mb3 avenir tc measure">
-				anonfiction</h3>
+				read</h3>
 			</header>
 			{{ range $i, $e := .Topics }}
 			<section class="pv2">
@@ -14,7 +14,7 @@
 				{{ range $.Stories }}
 				{{ if eq .Topic $e.Name }}
 				<span class="f5 db lh-copy  center tc measure pa2">
-					<a href="/read/topic/{{ .Topic | slugify}}/?i={{.ID}}" class="no-underline bg-animate bg-white hover-blue black-70 pa2">{{ .Description }}</a>
+					<a href="/read/topic/{{ .Topic | slugify}}/?i={{.ID}}" class="no-underline bg-animate hover-blue black-70 pa2">{{ .Description }}</a>
 				</span>
 				{{ end }}
 				{{ end }}

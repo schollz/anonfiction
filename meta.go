@@ -13,9 +13,9 @@ import (
 const rssTemplate = `
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-	<atom:link href="https://storiesincognito.org/rss.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.anonfiction.com/rss.xml" rel="self" type="application/rss+xml" />
 	<title>Stories Incognito</title>
-	<link>https://storiesincognito.org</link>
+	<link>https://www.anonfiction.com</link>
 	<description></description>
 	<generator></generator>
 	<language>eng</language>
@@ -25,9 +25,9 @@ const rssTemplate = `
 	<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
 	{{ range .Stories }}<item>
 		<title>{{ .Topic }}</title>
-		<link>https://storiesincognito.org/read/story/{{ .ID }}</link>
+		<link>https://www.anonfiction.com/read/story/{{ .ID }}</link>
 		<pubDate>{{ .DatePublished.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
-		<guid>https://storiesincognito.org/read/story/{{ .ID }}</guid>
+		<guid>https://www.anonfiction.com/read/story/{{ .ID }}</guid>
 		<description>{{ .Description }}</description>
 	</item>{{ end }}
 </channel>
@@ -67,13 +67,13 @@ func RSS() string {
 
 const siteMapTemplate = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {{ range .Topics }}<url>
-<loc>https://storiesincognito.org/read/topic/{{ .Name | slugify }}</loc>
+<loc>https://www.anonfiction.com/read/topic/{{ .Name | slugify }}</loc>
 <lastmod>{{ $.Date.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
 <changefreq>monthly</changefreq>
 <priority>1</priority>
 </url>{{ end }}
 {{ range .Stories }}<url>
-<loc>https://storiesincognito.org/read/story/{{ .ID }}</loc>
+<loc>https://www.anonfiction.com/read/story/{{ .ID }}</loc>
 <lastmod>{{ .DatePublished.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.75</priority>
