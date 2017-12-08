@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/schollz/storiesincognito/src/user"
+	"github.com/schollz/anonfiction/src/user"
 	"github.com/stretchr/testify/assert"
 )
 

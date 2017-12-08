@@ -6,7 +6,7 @@ import (
 
 	"github.com/asdine/storm"
 	"github.com/pkg/errors"
-	"github.com/schollz/storiesincognito/src/utils"
+	"github.com/schollz/anonfiction/src/utils"
 	"github.com/sirupsen/logrus"
 )
 

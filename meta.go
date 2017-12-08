@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/schollz/storiesincognito/src/story"
-	"github.com/schollz/storiesincognito/src/topic"
+	"github.com/schollz/anonfiction/src/story"
+	"github.com/schollz/anonfiction/src/topic"
 )
 
 const rssTemplate = `

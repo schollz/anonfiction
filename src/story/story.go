@@ -8,7 +8,7 @@ import (
 	"github.com/asdine/storm"
 	"github.com/asdine/storm/q"
 	"github.com/pkg/errors"
-	"github.com/schollz/storiesincognito/src/utils"
+	"github.com/schollz/anonfiction/src/utils"
 	"github.com/schollz/versionedtext"
 )
 

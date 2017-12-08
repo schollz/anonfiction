@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/schollz/storiesincognito/src/story"
+	"github.com/schollz/anonfiction/src/story"
 )
 
 type Topic struct {
