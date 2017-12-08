@@ -18,9 +18,21 @@
     "open": true
   },
   {
+    "name": "Reply To First Time",
+    "description": "Readers response to stories about 'First Time'.",
+    "date": "2018-03-28T23:00:00Z",
+    "open": true
+  },
+  {
     "name": "Just The Two Of Us",
     "description": "Stories about family, friends, enemies, or lovers.",
     "date": "2018-03-10T23:00:00Z",
+    "open": true
+  },
+  {
+    "name": "Reply To Just The Two Of Us",
+    "description": "Readers response to stories about 'Just The Two Of Us'.",
+    "date": "2018-04-28T23:00:00Z",
     "open": true
   },
   {
@@ -29,11 +41,22 @@
     "date": "2018-04-10T23:00:00Z",
     "open": true
   },
-
+  {
+    "name": "Reply To Dreams",
+    "description": "Readers response to stories about 'Dreams'.",
+    "date": "2018-05-28T23:00:00Z",
+    "open": true
+  },
   {
     "name": "I Laughed",
     "description": "Things that made me laugh, whether appropriate or not.",
     "date": "2018-05-10T23:00:00Z",
+    "open": true
+  },
+  {
+    "name": "Reply To I Laughed",
+    "description": "Readers response to stories about 'I Laughed'.",
+    "date": "2018-06-28T23:00:00Z",
     "open": true
   }
 ]
