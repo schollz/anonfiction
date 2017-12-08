@@ -19,8 +19,8 @@ const rssTemplate = `
 	<description></description>
 	<generator></generator>
 	<language>eng</language>
-	<managingEditor>editor@mg.storiesincognito.org (Stories Incognito Editors)</managingEditor>
-	<webMaster>web@mg.storiesincognito.org (Web Guru)</webMaster>
+	<managingEditor>editor@anonfiction.com (Stories Incognito Editors)</managingEditor>
+	<webMaster>web@anonfiction.com (Web Guru)</webMaster>
 	<copyright>Copyright 2017 Stories Incognito</copyright>
 	<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
 	{{ range .Stories }}<item>
