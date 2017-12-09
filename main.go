@@ -14,13 +14,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/matcornic/hermes"
 	"github.com/pkg/errors"
-	strip "github.com/schollz/html-strip-tags-go"
-	"github.com/schollz/jsonstore"
 	"github.com/schollz/anonfiction/src/encrypt"
 	"github.com/schollz/anonfiction/src/story"
 	"github.com/schollz/anonfiction/src/topic"
 	"github.com/schollz/anonfiction/src/user"
 	"github.com/schollz/anonfiction/src/utils"
+	strip "github.com/schollz/html-strip-tags-go"
+	"github.com/schollz/jsonstore"
 	"github.com/sirupsen/logrus"
 	mailgun "gopkg.in/mailgun/mailgun-go.v1"
 )
@@ -379,7 +379,7 @@ func main() {
 			for _, story := range stories {
 				if topic.Name == story.Topic {
 					s[si] = story
-					s[si].ID = strconv.Itoa(topic.NumberOfStories)
+					s[si].ID = strconv.Itoa(t[ti].NumberOfStories)
 					t[ti].NumberOfStories++
 					si++
 				}
