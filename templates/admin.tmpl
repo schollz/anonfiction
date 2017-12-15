@@ -22,7 +22,7 @@
 					<tr class="stripe-dark">
 						<td class="pa2">{{ .Topic }}</td>
 						<td class="pa2"><code><a href="/write/{{ .ID }}">{{ .ID }}</a></code></td>
-						<td class="pa2"><small><em>“{{ .Content.CurrentText | firsttenwords }} …”</em></small></td>
+						<td class="pa2"><small><em>“{{ .Description }}”</em></small></td>
 						<td class="pa2"><a href="#{{ .UserID }}"><code>{{ .UserID }}</code></a></td>
 						<td class="pa2"><small>{{ .DateCreated.Format "Jan 02, 2006 3:04PM" }}</small></td>
 						<td class="pa2"><small>{{ if .Published}}{{ .DatePublished.Format "Jan 02, 2006 15:04PM" }}{{ end }}</small> </td>
