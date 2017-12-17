@@ -40,7 +40,8 @@ var (
 )
 
 const (
-	TopicDB = "topics.db.json"
+	TopicDB          = "topics.db.json"
+	UniversalMessage = template.HTML(`<a href="/promo" class="special-link">Get $1 for your story!</a>`)
 )
 
 func init() {
@@ -97,9 +98,10 @@ func main() {
 	})
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "landing.tmpl", MainView{
-			Landing:  true,
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
+			Landing:         true,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+			InfoMessageHTML: UniversalMessage,
 		})
 	})
 	router.GET("/read/*actions", func(c *gin.Context) {
@@ -179,16 +181,17 @@ func main() {
 		}
 		t, _ = topic.Get(TopicDB, s.Topic)
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
-			IsAdmin:    IsAdmin(c),
-			SignedIn:   IsSignedIn(c),
-			Topic:      t,
-			Story:      s,
-			Next:       nextStory,
-			NextTopic:  nextTopic,
-			Previous:   previousStory,
-			NumStory:   iNum,
-			NumStories: len(stories),
-			Route:      action + "/" + id,
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+			Topic:           t,
+			Story:           s,
+			Next:            nextStory,
+			NextTopic:       nextTopic,
+			Previous:        previousStory,
+			NumStory:        iNum,
+			NumStories:      len(stories),
+			Route:           action + "/" + id,
 		})
 	})
 	router.GET("/write/*storyID", func(c *gin.Context) {
@@ -263,9 +266,10 @@ func main() {
 			return
 		}
 		c.HTML(http.StatusOK, "topics.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
-			Topics:   topics,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+			Topics:          topics,
+			InfoMessageHTML: UniversalMessage,
 		})
 	})
 	router.GET("/login", func(c *gin.Context) {
@@ -340,24 +344,34 @@ func main() {
 	})
 	router.GET("/terms", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "terms.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
 		})
 	})
 	router.GET("/contact", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "contact.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
 		})
 	})
 	router.GET("/privacy", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "privacy.tmpl", MainView{
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
 		})
 	})
 	router.GET("/about", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "contact.tmpl", MainView{
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+		})
+	})
+	router.GET("/promo", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "promo.tmpl", MainView{
 			IsAdmin:  IsAdmin(c),
 			SignedIn: IsSignedIn(c),
 		})
@@ -389,10 +403,11 @@ func main() {
 		s = s[:si]
 		t = t[:ti]
 		c.HTML(http.StatusOK, "all.tmpl", MainView{
-			Stories:  s,
-			Topics:   t,
-			IsAdmin:  IsAdmin(c),
-			SignedIn: IsSignedIn(c),
+			Stories:         s,
+			Topics:          t,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+			InfoMessageHTML: UniversalMessage,
 		})
 	})
 	router.GET("/download/:name", func(c *gin.Context) {
@@ -606,7 +621,7 @@ func handlePOSTSignup(c *gin.Context) {
 			})
 		} else {
 			c.HTML(http.StatusOK, "login.tmpl", MainView{
-				InfoMessageHTML: template.HTML("<a href='/login?key=" + uuid + "'>Click here to login</a>"),
+				InfoMessageHTML: template.HTML("<a class='special-link' href='/login?key=" + uuid + "'>Click here to login</a>"),
 				IsAdmin:         IsAdmin(c),
 				SignedIn:        IsSignedIn(c),
 			})
