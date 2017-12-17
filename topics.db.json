@@ -58,5 +58,17 @@
     "description": "Readers response to stories about 'I Laughed'.",
     "date": "2018-06-28T23:00:00Z",
     "open": true
+  },
+  {
+    "name": "Close Calls",
+    "description": "Situations, experiences, events that are about to go one way but suddenly go another.",
+    "date": "2018-06-10T23:00:00Z",
+    "open": true
+  },
+  {
+    "name": "Reply To Close Calls",
+    "description": "Readers response to stories about 'Close Calls'.",
+    "date": "2018-07-28T23:00:00Z",
+    "open": true
   }
 ]
