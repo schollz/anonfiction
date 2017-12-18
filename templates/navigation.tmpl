@@ -1,56 +1,47 @@
 {{ define "navigation" }}
 <nav class="dt w-100" style="max-width: 58rem;">
-	{{ if .Landing }} {{ else }}
-	<div class="dtc w2 v-mid pa3 v-mid">
-		<a href="/" class="dib w2 h2 pa1 ba b--white-90 grow-large border-box v-mid">
+    {{ if .Landing }} {{ else }}
+    <div class="dtc w2 v-mid pa3 v-mid">
+        <a href="/" class="dib w2 h2 pa1 ba b--white-90 grow-large border-box v-mid">
 			{{ template "books" }}
 		</a>
-	</div>
-	{{ end }}
-	<div class="dtc v-mid tr pa3 v-mid">
-		<a class="f6 fw4 hover-white no-underline white-70 dib pv2 ph1 v-mid" href="/stories">
+    </div>
+    {{ end }}
+    <div class="dtc v-mid tr pa3 v-mid">
+        <a class="f6 fw4 hover-white no-underline white-70 dib pv2 ph1 v-mid" href="/stories">
 			<i data-feather="eye" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2 v-mid">Read</span>
 		</a>
-		<a class="f6 fw4 hover-white no-underline white-70 dib pv2 ph1 v-mid" href="/write">
+        <a class="f6 fw4 hover-white no-underline white-70 dib pv2 ph1 v-mid" href="/write">
 			<i data-feather="edit-2" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2 v-mid">Write</span>
 		</a>
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1 v-mid" href="/topics">
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1 v-mid" href="/topics">
 			<i data-feather="layers" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2  v-mid">Topics</span>
 		</a>
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib pv2 ph1 v-mid" href="/guestbook">
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib pv2 ph1 v-mid" href="/guestbook">
 			<i data-feather="book" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2  v-mid">Guestbook</span>
-		</a>
-
-		{{ if .SignedIn }}
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib pv2 ph1 v-mid" href="/profile">
+		</a> {{ if .SignedIn }}
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib pv2 ph1 v-mid" href="/profile">
 			<i data-feather="user" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2  v-mid">Me</span>
-		</a>
-		{{ end }}
-		{{ if .IsAdmin }}
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib-l dib-m pv2 ph1 v-mid" href="/admin">
+		</a> {{ end }} {{ if .IsAdmin }}
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib-l dib-m pv2 ph1 v-mid" href="/admin">
 			<i data-feather="stop-circle" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2  v-mid">Admin</span>
-		</a>
-		{{ end }}
-		<!-- <a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1" href="/about">
+		</a> {{ end }}
+        <!-- <a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1" href="/about">
 									<i data-feather="help-circle" class="dib h1 w1"></i>
 									<span class="f6 pr2">About</span>
 		</a> -->
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1 v-mid" href="/rss.xml">
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib-l pv2 ph1 v-mid" href="/rss.xml">
 			<i data-feather="radio" class="dib h1 w1 v-mid"></i>
 			<span class="f6 pr2  v-mid">feed</span>
-		</a>
-
-		{{ if .SignedIn }}
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib-l dib-m ml2 pv2 ph3 ba v-mid" href="/signout">Log Out</a>
-		{{ else }}
-		<a class="f6 fw4 hover-white no-underline white-70 dn dib ml2 pv2 ph3 ba v-mid" href="/login">Log In</a>
-		{{ end }}
-	</div>
+		</a> {{ if .SignedIn }}
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib-l dib-m ml2 pv2 ph3 ba v-mid" href="/signout">Log Out</a> {{ else }}
+        <a class="f6 fw4 hover-white no-underline white-70 dn dib ml2 pv2 ph3 ba v-mid" href="/login">Log In</a> {{ end }}
+    </div>
 </nav>
 {{ end }}
