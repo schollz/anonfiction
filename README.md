@@ -1,7 +1,7 @@
 <p align="center">
 <img
     src="/static/img/anonfiction.png"
-    width="100%" border="0" alt="anonfiction">
+    width="450px" border="0" alt="anonfiction">
 <br>
 <a href="https://travis-ci.org/schollz/anonfiction"><img src="https://travis-ci.org/schollz/anonfiction.svg?branch=master" alt="Build Status"></a>
 <a href="https://github.com/schollz/anonfiction/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
