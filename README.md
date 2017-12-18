@@ -9,7 +9,7 @@
 
 <p align="center">A homemade CMS designed for writing and publishing sincere and honest nonfiction stories.</p>
 
-This repository powers [www.anonfiction.com](https://www.anonfiction.com). Your welcome to fork this project, or steal ideas from it, or contribute to it. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. Its written in Go with the [Gin web framework](https://github.com/gin-gonic/gin) and the CSS framework is in [Tachyon](http://www.tachyons.io). The database uses [BoltDB via @asdine's storm interface](https://github.com/asdine/storm) and my simple [jsonstore](https://github.com/schollz/jsonstore).
+This repository powers [www.anonfiction.com](https://www.anonfiction.com). Your welcome to fork this project, or steal ideas from it, or contribute to it. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. Its written in Go with the [Gin web framework](https://github.com/gin-gonic/gin) and the CSS framework is in [Tachyon](http://www.tachyons.io). The database uses [BoltDB via @asdine's storm interface](https://github.com/asdine/storm) and my simple [schollz/jsonstore](https://github.com/schollz/jsonstore). All changes to every story are saved via [schollz/versionedtext](github.com/schollz/versionedtext). The built-in editor comes from [basecamp/trix](https://github.com/basecamp/trix).
 
 ## Why?
 
