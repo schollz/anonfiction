@@ -7,9 +7,13 @@
 <a href="https://github.com/schollz/anonfiction/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 <a href="https://goreportcard.com/report/github.com/schollz/anonfiction"><img src="https://goreportcard.com/badge/github.com/schollz/anonfiction" alt="Go Report Card"></a>
 
-<p align="center">A homemade CMS designed for writing and publishing sincere and honest nonfiction stories.</p>
+<p align="center"> A fully-fledged CMS for reading and writing stories in a online magazine format.</p>
 
-This repository powers [www.anonfiction.com](https://www.anonfiction.com). Your welcome to fork this project, or steal ideas from it, or contribute to it. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. Its written in Go with the [Gin web framework](https://github.com/gin-gonic/gin) and the CSS framework is in [Tachyon](http://www.tachyons.io). The database uses [BoltDB via @asdine's storm interface](https://github.com/asdine/storm) and my simple [schollz/jsonstore](https://github.com/schollz/jsonstore). All changes to every story are saved via [schollz/versionedtext](github.com/schollz/versionedtext). The built-in editor comes from [basecamp/trix](https://github.com/basecamp/trix).
+This repository powers [www.anonfiction.com](https://www.anonfiction.com), an online magazine where regular people contribute sincere and honest nonfiction stories. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. 
+
+*anonfiction* is written in Go with the [Gin web framework](https://github.com/gin-gonic/gin) and the CSS framework is in [Tachyon](http://www.tachyons.io). The database uses [BoltDB via @asdine's storm interface](https://github.com/asdine/storm) and my simple [schollz/jsonstore](https://github.com/schollz/jsonstore). All changes to every story are saved via [schollz/versionedtext](github.com/schollz/versionedtext). The built-in editor comes from [basecamp/trix](https://github.com/basecamp/trix).
+
+Please fork this project, steal ideas from it, contribute to it, love it, or hate it.
 
 ## Why?
 
