@@ -376,6 +376,13 @@ func main() {
 			SignedIn: IsSignedIn(c),
 		})
 	})
+	router.GET("/guestbook", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "guestbook.tmpl", MainView{
+			InfoMessageHTML: UniversalMessage,
+			IsAdmin:         IsAdmin(c),
+			SignedIn:        IsSignedIn(c),
+		})
+	})
 	router.GET("/stories", func(c *gin.Context) {
 		topics, _ := topic.Load(TopicDB)
 		stories, _ := story.ListPublished()

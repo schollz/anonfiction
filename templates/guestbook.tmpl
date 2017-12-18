@@ -1,0 +1,72 @@
+{{ template "header" . }}
+<article data-name="article-full-bleed-background" class="ph5-ns" style="max-width: 67rem;">
+    <div class="cf" style="background: url(/static/img/landing.jpg) no-repeat center center fixed; background-size: cover; ">
+        <div class="fl pa3 bg-white black-70 f3 pv4" style="max-width: 50em;">
+            <header class="bb b--black-70">
+                <h3 class="f2 fw7 ttu tracked lh-title mt0 mb3 avenir">
+				Guestbook</h3>
+            </header>
+            <section class="pt2 pb4">
+                <!-- Start of guestbook -->
+                <div class="guestbook">
+                    <!-- Guestbook form -->
+                    <div class="black-80 measure-wide">
+                        <label for="name" class="f6 b db mb2">Name
+                        </label>
+                        <input id="name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+                        <label for="email" class="f6 b db mb2">Email
+                            <span class="normal black-60">(optional)</span>
+                        </label>
+                        <input id="email" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+                        <label for="message" class="f6 b db mb2">Message
+                        </label>
+                        <textarea id="message" name="message" class="input-reset ba b--black-20 pa2 mb2 db w-100" aria-describedby="message-desc"></textarea>
+                        <div class="mt3">
+                            <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6" type="button" id="btn" value="Submit">
+                        </div>
+                    </div>
+                    <!-- End of Guestbook form -->
+                    <!-- Guestbook comments -->
+                    <div class="guestbook-comments">
+                        <div id="guestbook" class="measure-wide">
+                        </div>
+                    </div>
+                    <!-- End of Guestbook comments -->
+                </div>
+            </section>
+        </div>
+    </div>
+</article>
+<script>
+'use strict';
+
+var btn = document.getElementById("btn");
+var guestbook = document.getElementById("guestbook");
+var serverURL = "https://guestbook.schollz.com"
+
+function myCallback(acptlang) {
+    if (acptlang.Message != "") {
+        alert(acptlang.Message);
+    }
+    console.log(acptlang);
+    guestbook.innerHTML = "";
+    console.log(acptlang.Entries.length);
+    for (var i = 0; i < acptlang.Entries.length; i++) {
+        guestbook.innerHTML = guestbook.innerHTML + ' <div class="pv2 ph1 bb b--black-10"> <span class="f5 db lh-copy measure i"> ' + acptlang.Entries[i].Message + ' </span> <span class="f5 db lh-copy measure tr"> - ' + acptlang.Entries[i].Name + '</span> <span class="f5 db lh-copy measure tr"> ' + acptlang.Entries[i].Location + '</span> <span class="f5 db lh-copy measure tr"> ' + acptlang.Entries[i].DateString + '</span> </div>';
+
+    }
+}
+
+function jsonp() {
+    guestbook.innerHTML = "Loading ...";
+    var tag = document.createElement("script");
+    var message = encodeURIComponent(document.querySelector('#message').value);
+    var name = encodeURIComponent(document.querySelector('#name').value);
+    var email = encodeURIComponent(document.querySelector('#email').value);
+    tag.src = `${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;
+    document.querySelector("head").appendChild(tag);
+}
+btn.addEventListener("click", jsonp);
+window.onload = jsonp;
+</script>
+{{ template "footer" . }}
