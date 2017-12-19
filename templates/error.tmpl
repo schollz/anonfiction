@@ -1,11 +1,11 @@
 {{ template "header". }}
-<section class="vh-100 bg-washed-blue baskerville">
+<section class="ph5-ns vh-100 bg-washed-blue baskerville" style="max-width:58rem">
 	<header class="tc ph5 lh-copy">
-		<h1 class="f1 f-headline-l code mb3 fw9 dib tracked-tight light-purple">{{ .ErrorCode }}</h1>
+		<h1 class="f4 f3-m f2-l pt6 code mb3 fw9 dib tracked-tight light-purple">{{ .ErrorCode }}</h1>
 		{{ if .ErrorMessage }}
-		<h2 class="tc f1-l fw1">{{ .ErrorMessage }}</h2>
+		<h2 class="tc f4 f3-m f2-l f3 fw1">{{ .ErrorMessage }}</h2>
 		{{ else }}
-		<h2 class="tc f1-l fw1">{{ .InfoMessageHTML }}</h2>
+		<h2 class="tc f4 f3-m f2-l f3 fw1">{{ .InfoMessageHTML }}</h2>
 		{{ end }}
 	</header>
 </section>

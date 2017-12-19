@@ -147,12 +147,17 @@ func main() {
 				"func": "handleRead",
 			}).Infof("Found %d stories for '%s'", len(stories), unslugify(id))
 		}
+
 		if err != nil || len(stories) == 0 {
+			storiesString := "stories"
+			if strings.Contains(id, "reply-to") {
+				storiesString = "replies"
+			}
 			c.HTML(http.StatusOK, "error.tmpl", MainView{
 				IsAdmin:         IsAdmin(c),
 				SignedIn:        IsSignedIn(c),
-				InfoMessageHTML: template.HTML("No stories yet, <a href='/write?topic=" + id + "'>why don't you write one?</a>"),
-				ErrorCode:       "Uh oh!",
+				InfoMessageHTML: template.HTML("No " + storiesString + " yet, <a href='/write?topic=" + id + "'>why don't you write one?</a>"),
+				ErrorCode:       RandomQuote(),
 			})
 			return
 		}
