@@ -41,7 +41,7 @@ var (
 
 const (
 	TopicDB          = "topics.db.json"
-	UniversalMessage = template.HTML(`<a href="/promo" class="special-link">Get $3 for your story!</a>`)
+	UniversalMessage = template.HTML(`<a href="/promo" class="special-link">Get paid for your story!</a>`)
 )
 
 func init() {
