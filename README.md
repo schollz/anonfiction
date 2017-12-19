@@ -7,7 +7,7 @@
 <a href="https://github.com/schollz/anonfiction/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 <a href="https://goreportcard.com/report/github.com/schollz/anonfiction"><img src="https://goreportcard.com/badge/github.com/schollz/anonfiction" alt="Go Report Card"></a>
 
-<p align="center"> A fully-fledged CMS for reading and writing stories in a online magazine format.</p>
+<p align="center"> A CMS for reading and writing stories in a online magazine format.</p>
 
 This repository powers [www.anonfiction.com](https://www.anonfiction.com), an online magazine where regular people contribute sincere and honest nonfiction stories. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. 
 
