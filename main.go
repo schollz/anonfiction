@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/matcornic/hermes"
@@ -147,7 +148,6 @@ func main() {
 				"func": "handleRead",
 			}).Infof("Found %d stories for '%s'", len(stories), unslugify(id))
 		}
-
 		if err != nil || len(stories) == 0 {
 			storiesString := "stories"
 			if strings.Contains(id, "reply-to") {
@@ -185,6 +185,14 @@ func main() {
 			previousStory = strconv.Itoa(iNum - 1)
 		}
 		t, _ = topic.Get(TopicDB, s.Topic)
+		// update the story count
+		var views int
+		err = keys.Get("views:"+s.ID, &views)
+		if err != nil {
+			views = 0
+		}
+		keys.Set("views:"+s.ID, views+1)
+		go jsonstore.Save(keys, "keys.json")
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			InfoMessageHTML: UniversalMessage,
 			IsAdmin:         IsAdmin(c),
@@ -197,6 +205,7 @@ func main() {
 			NumStory:        iNum,
 			NumStories:      len(stories),
 			Route:           action + "/" + id,
+			Views:           humanize.Comma(int64(views)),
 		})
 	})
 	router.GET("/write/*storyID", func(c *gin.Context) {
@@ -471,6 +480,7 @@ type MainView struct {
 	TrixAttr        template.HTMLAttr
 	Route           string
 	User            user.User
+	Views           string
 }
 
 func handlePOSTStory(c *gin.Context) {

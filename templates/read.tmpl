@@ -28,6 +28,10 @@
 			{{ with .Story}}Story Permalink: <a href="/read/story/{{ .ID}}">/read/story/{{.ID}}</a>
 			{{end}}
 		</div>
+		<div class="pv1 f5 leader">
+			{{ with .Views}}Views: {{.}}
+			{{end}}
+		</div>
 	</div>
 	<footer class="fn fl-ns w-60-ns pr4-ns pv4" style="float:right;">
 		<div class="flex">
