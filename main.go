@@ -191,7 +191,8 @@ func main() {
 		if err != nil {
 			views = 0
 		}
-		keys.Set("views:"+s.ID, views+1)
+		views++
+		keys.Set("views:"+s.ID, views)
 		go jsonstore.Save(keys, "keys.json")
 		c.HTML(http.StatusOK, "read.tmpl", MainView{
 			InfoMessageHTML: UniversalMessage,
