@@ -9,7 +9,7 @@
 
 <p align="center"> A CMS for reading and writing stories in a online magazine format.</p>
 
-This repository powers [www.anonfiction.com](https://www.anonfiction.com), an online magazine where regular people contribute sincere and honest nonfiction stories. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. 
+This repository powers an online magazine where regular people contribute sincere and honest nonfiction stories. It basically contains a fully-fledged CMS (content-management system) with passwordless authentication. I needed something similar to Wordpress and Ghost, but I wanted more control in the layout and the interface so I decided to write it myself. 
 
 *anonfiction* is written in Go with the [Gin web framework](https://github.com/gin-gonic/gin) and the CSS framework is in [Tachyon](http://www.tachyons.io). The database uses [BoltDB via @asdine's storm interface](https://github.com/asdine/storm) and my simple [schollz/jsonstore](https://github.com/schollz/jsonstore). All changes to every story are saved via [schollz/versionedtext](github.com/schollz/versionedtext). The built-in editor comes from [basecamp/trix](https://github.com/basecamp/trix).
 
